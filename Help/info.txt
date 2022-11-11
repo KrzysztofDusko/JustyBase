@@ -1,0 +1,13 @@
+https://github.com/KrzysztofDusko/Just-Data
+https://dotnet.microsoft.com/download/dotnet/5.0
+
+https://docs.microsoft.com/en-US/dotnet/core/tools/dotnet-install-script
+
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+C:\Users\test\Downloads\dotnet-install.ps1 -Channel Current -Runtime dotnet
+C:\Users\test\Downloads\dotnet-install.ps1 -Channel Current -Runtime windowsdesktop
+Set-ExecutionPolicy -ExecutionPolicy Undefined -Scope CurrentUser
+
+
+DOTNET_ROOT
+%LocalAppData%\Microsoft\dotnet
