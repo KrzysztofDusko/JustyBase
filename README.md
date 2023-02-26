@@ -212,13 +212,3 @@ Just Data instaler, issues and support page
    
 ### Supported DB's
 * https://youtu.be/xJOMBVqfZIg
-
-### Samples
- * https://github.com/KrzysztofDusko/Just-Data/tree/main/Help/Examples
-
-## FAQs
-### 1. Question 
-Answer 1
-
-## Source Code
-Source code can be provided for request (e.g. for security reasons).
