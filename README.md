@@ -2,9 +2,9 @@
 Just Data is SQL editor. Mainly for Netezza, but DB2, Microsft SQL, Oracle, PosgreSQL are also supported.
 
 > **Warning**
-> Please not that description is related to no longer supported version (**Just Data**). Currently in development is **Just Data Evo**.
-If you need old Just Data please reach me by email. New desctiption will be avaiable in some time.
-If you need some lacking functionality from Just Data please open https://github.com/KrzysztofDusko/Just-Data/issues.
+> This readme is related to no longer supported **Just Data** version. Currently in development is **Just Data Evo**.
+If you want to download old Just Data/or need some support please reach me by email. New desctiption will be avaiable in some time.
+If you need some lacking functionality from Just Data/report bug/propose enhancement -  please open issue https://github.com/KrzysztofDusko/Just-Data/issues.
 
 
 ## [Download Preview](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v0.0.1-preview)
