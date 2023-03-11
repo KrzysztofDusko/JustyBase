@@ -6,6 +6,10 @@ Just Data is SQL editor. Mainly for Netezza, but DB2, Microsft SQL, Oracle, Posg
 If you want to download old Just Data/or need some support please reach me by email. New desctiption will be avaiable in some time.
 If you need some lacking functionality from Just Data/report bug/propose enhancement -  please open issue https://github.com/KrzysztofDusko/Just-Data/issues.
 
+> **Warning**
+> Please note that since 2023-03-11 some configurations require NET Runtime to be installed
+https://github.com/KrzysztofDusko/Just-Data/issues/208
+
 
 ## [Download Preview](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v0.0.1-preview)
 ## Table of Contents
