@@ -7,8 +7,14 @@ If you want to download old Just Data/or need some support please reach me by em
 If you need some lacking functionality from Just Data/report bug/propose enhancement -  please open issue https://github.com/KrzysztofDusko/Just-Data/issues.
 
 > **Warning**
-> Please note that since 2023-03-11 some configurations require NET Runtime to be installed
+> Please note that since 2023-03-11 some configurations require NET Runtime to be installed. Issue:
 https://github.com/KrzysztofDusko/Just-Data/issues/208
+
+
+> **Warning**
+> Please note that since 2023-03-11 some configurations required to use DB2 and Oracle external drivers Issues:
+https://github.com/KrzysztofDusko/Just-Data/issues/209
+https://github.com/KrzysztofDusko/Just-Data/issues/210
 
 
 ## [Download Preview](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v0.0.1-preview)
