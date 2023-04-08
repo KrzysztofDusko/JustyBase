@@ -32,7 +32,7 @@ https://github.com/KrzysztofDusko/Just-Data/issues/210
 
 ## Overview
 Just Data instaler, issues and support page
-![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic1.png)
+![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
 
 ## Instalation
