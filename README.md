@@ -17,7 +17,7 @@ https://github.com/KrzysztofDusko/Just-Data/issues/209
 https://github.com/KrzysztofDusko/Just-Data/issues/210
 
 
-## [Download Preview](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
+## [Download Preview (Avalonia version)](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
 ## Table of Contents
    - [Overview](#overview)
    - [Instalation](#Instalation)
@@ -32,7 +32,17 @@ https://github.com/KrzysztofDusko/Just-Data/issues/210
 
 ## Overview
 Just Data instaler, issues and support page
+
+### Avalonia version
+[Download Preview (Avalonia version)](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
+
+### WPF Premium version
+Download - to do
+![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo2.png)
+### Legacy version
+Download - to do
+![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
 
 
