@@ -17,7 +17,7 @@ https://github.com/KrzysztofDusko/Just-Data/issues/209
 https://github.com/KrzysztofDusko/Just-Data/issues/210
 
 
-## [Download Preview](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v0.0.1-preview)
+## [Download Preview](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
 ## Table of Contents
    - [Overview](#overview)
    - [Instalation](#Instalation)
@@ -35,13 +35,11 @@ Just Data instaler, issues and support page
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
 
-## Instalation
-*  https://github.com/KrzysztofDusko/Just-Data/blob/main/Installers/Offline/Output/SetupNetIncluded.7z
 
 ### Recorded instalation
 * https://youtu.be/XCf-0uHXfY4
 * (NET included) https://youtu.be/fFqa-Cq16Qc
-* net 5 without admin privileges https://youtu.be/_NH1fQZa6Ac
+* net without admin privileges https://youtu.be/_NH1fQZa6Ac
 
 ## Features
 ### Import and Export
