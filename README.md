@@ -1,4 +1,8 @@
-# Just Data - Netezza oriented SQL Editor
+>**Warning**
+> # Note this reposirity is archived
+
+
+## Just Data - Netezza oriented SQL Editor
 Just Data is SQL editor. Mainly for Netezza, but DB2, Microsft SQL, Oracle, PosgreSQL are also supported.
 
 > **Warning**
