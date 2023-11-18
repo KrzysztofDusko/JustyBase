@@ -1,7 +1,6 @@
 ## Justy Base- Netezza oriented SQL Editor
 Justy Base is SQL editor.
 
-## [Download Preview (Avalonia version)](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
 ## Table of Contents
    - [Overview](#overview)
    - [Instalation](#Instalation)
