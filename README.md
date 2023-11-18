@@ -1,25 +1,5 @@
->**Warning**
-> # Note this reposirity is archived
-
-
-## Just Data - Netezza oriented SQL Editor
-Just Data is SQL editor. Mainly for Netezza, but DB2, Microsft SQL, Oracle, PosgreSQL are also supported.
-
-> **Warning**
-> This readme is related to no longer supported **Just Data** version. Currently in development is **Just Data Evo**.
-If you want to download old Just Data/or need some support please reach me by email. New desctiption will be avaiable in some time.
-If you need some lacking functionality from Just Data/report bug/propose enhancement -  please open issue https://github.com/KrzysztofDusko/Just-Data/issues.
-
-> **Warning**
-> Please note that since 2023-03-11 some configurations require NET Runtime to be installed. Issue:
-https://github.com/KrzysztofDusko/Just-Data/issues/208
-
-
-> **Warning**
-> Please note that since 2023-03-11 some configurations required to use DB2 and Oracle external drivers Issues:
-https://github.com/KrzysztofDusko/Just-Data/issues/209
-https://github.com/KrzysztofDusko/Just-Data/issues/210
-
+## Justy Base- Netezza oriented SQL Editor
+Justy Base is SQL editor.
 
 ## [Download Preview (Avalonia version)](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
 ## Table of Contents
@@ -37,17 +17,22 @@ https://github.com/KrzysztofDusko/Just-Data/issues/210
 ## Overview
 Just Data instaler, issues and support page
 
+
 ### Avalonia version
-[Download Preview (Avalonia version)](https://github.com/KrzysztofDusko/Just-Data/releases/tag/avalonia.v2-preview)
+**Download - to do**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 
 ### WPF Premium version
-Download - to do
+**Download - to do**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo2.png)
+
 ### Legacy version
-Download - to do
+[Download Legacy (Winforms version)](https://download.justybase.com/JDLegacy/SetupWithoutNet.exe)
+
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
+
+
 
 
 ### Recorded instalation
