@@ -18,7 +18,7 @@ Just Data instaler, issues and support page
 
 
 ### Avalonia version
-**Download - to do**
+[Download](https://download.justybase.com/JustyBaseSetup.exe)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 
 ### WPF Premium version
@@ -26,7 +26,7 @@ Just Data instaler, issues and support page
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo2.png)
 
 ### Legacy version
-[Download Legacy (Winforms version)](https://download.justybase.com/JDLegacy/SetupWithoutNet.exe)
+[Download](https://download.justybase.com/JDLegacy/SetupWithoutNet.exe)
 
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
