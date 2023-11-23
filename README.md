@@ -1,4 +1,4 @@
-## Justy Base- Netezza oriented SQL Editor
+## Justy Base - Netezza oriented SQL Editor
 Justy Base is SQL editor.
 
 ## Table of Contents
@@ -14,7 +14,7 @@ Justy Base is SQL editor.
    - [Source Code](#sourcecode)
 
 ## Overview
-Just Data instaler, issues and support page
+Justy Base instaler, issues and support page
 
 
 ### Avalonia version
