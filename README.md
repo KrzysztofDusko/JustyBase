@@ -25,6 +25,10 @@ Justy Base instaler, issues and support page
 **Download - to do**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo2.png)
 
+![image](https://github.com/KrzysztofDusko/JustyBase/assets/69449360/697c8bc2-16f2-413d-a05d-0769f7fe6f53)
+
+
+
 ### Legacy version
 [Download](https://download.justybase.com/JDLegacy/SetupWithoutNet.exe)
 
