@@ -33,7 +33,7 @@ Justy Base instaler, issues and support page
 > [!CAUTION]
 > Legacy version is not developed and definitively should not be used in production environment (may be subject to experimentation, can periodically stop working, etc.). I strongly encourage you to start using other options listed above. If they lack some functionality please fill issue or contact me by email.
 
-[Download](https://download.justybase.com/JDLegacy/SetupWithoutNet.exe)
+**Download - is not available**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
 
