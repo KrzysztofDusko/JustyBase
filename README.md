@@ -1,5 +1,5 @@
 ## Justy Base - Netezza oriented SQL Editor
-### Current Version 1.0.0.24
+### Current Version 1.0.0.28
 Justy Base is SQL editor.
 
 ## Table of Contents
@@ -18,11 +18,11 @@ Justy Base is SQL editor.
 Justy Base instaler, issues and support page
 
 
-### Avalonia version
+### Justy Base (base avalonia version)
 [Download](https://download.justybase.com/JustyBaseSetup.exe)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 
-### WPF Premium version
+### Justy Base Evo (premium WPF version)
 **Download - to do**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo2.png)
 
@@ -30,7 +30,7 @@ Justy Base instaler, issues and support page
 
 
 
-### Legacy version
+### Justy Base Legacy (not maintained)
 > [!CAUTION]
 > Legacy version is not developed and definitively should not be used in production environment (may be subject to experimentation, can periodically stop working, etc.). I strongly encourage you to start using other options listed above. If they lack some functionality please fill issue or contact me by email.
 
