@@ -19,7 +19,8 @@ Justy Base instaler, issues and support page
 
 
 ### Justy Base (base avalonia version)
-[Download](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Setup.exe)
+[Download - windows installer](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Setup.exe)
+[Download - portable](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Portable.zip)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 
 ### Justy Base Evo (premium WPF version)
