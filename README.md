@@ -1,5 +1,5 @@
 ## Justy Base - Netezza oriented SQL Editor
-### Current Version 1.0.3-beta.4
+### Current Version 1.0.5-beta.2
 Justy Base is SQL editor.
 
 ## Table of Contents
