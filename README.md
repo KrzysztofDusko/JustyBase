@@ -1,5 +1,5 @@
-## Justy Base - Netezza oriented SQL Editor
-Justy Base is SQL editor.
+## Justy Base - SQL Editor
+Justy Base is GUI SQL tool
 
 ## Table of Contents
    - [Overview](#overview)
@@ -20,10 +20,13 @@ Justy Base instaler, issues and support page
 ### Justy Base (base avalonia version)
 * [Download - windows installer](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Setup.exe)
 * [Download - portable](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Portable.zip)
+> [!Warning]
+> Significant changes are being worked on https://github.com/KrzysztofDusko/JustyBase/issues/298
+
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo1.png)
 
 ### Justy Base Evo (premium WPF version)
-**Download - to do**
+**contact justdata.sql@gmail.com if you are interested**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/evo2.png)
 
 ![image](https://github.com/KrzysztofDusko/JustyBase/assets/69449360/697c8bc2-16f2-413d-a05d-0769f7fe6f53)
@@ -31,10 +34,11 @@ Justy Base instaler, issues and support page
 
 
 ### Justy Base Legacy (not maintained)
-> [!CAUTION]
-> Legacy version is not developed and definitively should not be used in production environment (may be subject to experimentation, can periodically stop working, etc.). I strongly encourage you to start using other options listed above. If they lack some functionality please fill issue or contact me by email.
+> [!WARNING]
+> Legacy version is in maitaince mode 
+> But if you want to buy licences still you can reach me
 
-**Download - is not available**
+**contact justdata.sql@gmail.com if you are interested**
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic1.png)
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
 
