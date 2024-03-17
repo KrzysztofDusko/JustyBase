@@ -31,8 +31,6 @@ Justy Base instaler, issues and support page
 
 ![image](https://github.com/KrzysztofDusko/JustyBase/assets/69449360/697c8bc2-16f2-413d-a05d-0769f7fe6f53)
 
-
-
 ### Justy Base Legacy (not maintained)
 > [!WARNING]
 > Legacy version is in maitaince mode 
@@ -43,22 +41,15 @@ Justy Base instaler, issues and support page
 ![alt text](https://github.com/KrzysztofDusko/Just-Data/blob/main/pictures/pic2.png)
 
 
-
-
-### Recorded instalation
-* https://youtu.be/XCf-0uHXfY4
-* (NET included) https://youtu.be/fFqa-Cq16Qc
-* net without admin privileges https://youtu.be/_NH1fQZa6Ac
-
 ## Features
-### Import and Export
+### Import and Export (legacy)
 * https://youtu.be/XWsvLrp2ghQ
 * https://youtu.be/8D3m8hdOyKE
 
-### Code hints
+### Code hints (legacy)
 * https://youtu.be/pS8R9q2asfE
 
-### Scripting
+### Scripting (legacy)
 * https://youtu.be/IMrX2PAq96g
 * Examples
    * Basic Sample 
@@ -233,10 +224,5 @@ Justy Base instaler, issues and support page
         #end
 
    ```
-   
-### Supported DB's
-* https://youtu.be/xJOMBVqfZIg
-### More info
-> **Note**
-> Some antivirus software can detect installer as susspicious. Virus Total report is here https://www.virustotal.com/gui/file/c07309a09b09b87b95576bfbe4025d014bb0081d01e8e5796200ccfd7a0a3f82/detection
+  
 
