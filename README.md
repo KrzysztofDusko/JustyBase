@@ -11,9 +11,11 @@ This project is based on
 ## Help
 Help definitely is needed and will be available soon, but if you want install now you can reach me at telegram https://t.me/JustyBase
 
+## Source
+* 🚧 WIP...
+
 ### Download
-* [Download - windows installer](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Setup.exe)
-* [Download - portable](https://download.justybase.com/Velopack/JustyBase/JustyBase-win-Portable.zip)
+* 🚧 WIP...
 
 ![image](https://github.com/KrzysztofDusko/JustyBase/assets/69449360/d4e91bf5-e069-49a6-aff2-44a7b15ab7d4)
 
