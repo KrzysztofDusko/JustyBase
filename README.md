@@ -1,4 +1,4 @@
-# <img src="https://github.com/KrzysztofDusko/JustyBase/blob/main/pictures/logo.png"> 
+# <img src="pictures/logo.png"> 
 
 This project is based on
 * [Avalonia](https://avaloniaui.net/) Best C# UI framework
