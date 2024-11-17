@@ -1,4 +1,4 @@
-# <img src="https://github.com/KrzysztofDusko/JustyBase/blob/main/pictures/logo.png"> 
+# <img src="pictures/logo.png"> 
 
 This project is based on
 * [Avalonia](https://avaloniaui.net/) Best C# UI framework
@@ -20,6 +20,6 @@ This project is based on
 ## License
 * 🚧 WIP...
 
-![image](https://github.com/KrzysztofDusko/JustyBase/assets/69449360/d4e91bf5-e069-49a6-aff2-44a7b15ab7d4)
+<img src="pictures/main.png"> 
 
 
