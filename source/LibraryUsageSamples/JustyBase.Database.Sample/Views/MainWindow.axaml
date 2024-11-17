@@ -1,0 +1,76 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:JustyBase.Database.Sample.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="300"
+        Height="350" Width="566"
+        MinHeight="350" MinWidth="566"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        Topmost="True"
+        ShowInTaskbar="True"
+        x:Class="JustyBase.Database.Sample.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Justy Base Sample"
+	    DragDrop.AllowDrop="True"
+	>
+	<!--Icon="/Assets/logo.ico"-->
+	<Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+	<Grid Margin="10 5" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
+		<ComboBox Grid.Row="0" Grid.Column="0"  Margin="1 1 0 0" MaxDropDownHeight="100" 
+				  SelectedItem="{Binding SelectedDatabase}"
+			  ItemsSource="{Binding DatabasesList}" BorderThickness="0" Width="130"
+				  ToolTip.Tip="NetezzaTest/OracleTest environment variables needed"
+				  />
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="Auto,Auto,*,Auto">
+        <Border Grid.Row="0" Margin="0 1" BorderThickness="1" CornerRadius="10" BorderBrush="Gray" Padding="5" >
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Button Command="{Binding ExportCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontWeight="Bold">Export</TextBlock>
+                            <TextBlock xml:space="preserve"> and copy to clipboard</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="0 1" Command="{Binding ExportAndOpenCommand}" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontWeight="Bold">Export</TextBlock>
+                            <TextBlock xml:space="preserve"> and open</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="10 0" FontWeight="Bold">format</TextBlock>
+                    <RadioButton GroupName="Export Group" Content="xlsb" IsChecked="{Binding XlsbSelected}" />
+                    <RadioButton GroupName="Export Group" Content="xlsx" IsChecked="{Binding XlsxSelected}" />
+                    <RadioButton GroupName="Export Group" Content="csv" IsChecked="{Binding CsvSelected}" />
+                    <ComboBox SelectedIndex="0" MaxDropDownHeight="100"
+                                SelectedItem="{Binding SelectedMode}"
+                                IsVisible="{Binding CsvSelected}"
+                                ItemsSource="{Binding CsvCompresionModes}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <StackPanel Grid.Row="1" Margin="0 1" Orientation="Horizontal">
+            <Button Command="{Binding ImportCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold">Import</TextBlock>
+                    <TextBlock xml:space="preserve"> from clipboard</TextBlock>
+                </StackPanel>
+            </Button>
+            <TextBlock VerticalAlignment="Center" Margin="10 0 0 0">file or excel cells range</TextBlock>
+        </StackPanel>
+        <TextBox Grid.Row="2" Margin="0 1" Text="{Binding Info}" AcceptsReturn="True" Watermark="info"
+                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <Button Grid.Row="3" Margin="0 1" Command="{Binding CopyFromClipCommand}" HorizontalAlignment="Right">Copy text and exit</Button>
+        </Grid>
+    </Grid>
+	
+</Window>

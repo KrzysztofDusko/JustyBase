@@ -1,0 +1,88 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.AvaloniaSpecificHelpers", "JustyBase.AvaloniaSpecificHelpers\JustyBase.AvaloniaSpecificHelpers.csproj", "{5C1E99AD-4949-4290-B5C7-68BE7D0562B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.PluginCommon", "JustyBase.PluginCommon\JustyBase.PluginCommon.csproj", "{CE89637B-30FF-48BF-A7B7-E94ECE74E32E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Tools", "JustyBase.ToolsLib\JustyBase.Tools.csproj", "{4047CD87-20C9-434B-B90A-18E950BBFBE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{762B55DB-C8BB-45D0-A8D9-67200B2831FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{39A0BE66-BF41-422A-801F-C6868FB98FA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Helpers.Importers", "Plugins\Helpers\JustyBase.Helpers.Importers\JustyBase.Helpers.Importers.csproj", "{81532EB6-1010-4BB5-A77F-977E9FEDB49C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Helpers.NetezzaImporter", "Plugins\Helpers\NetezzaImporter\JustyBase.Helpers.NetezzaImporter.csproj", "{888BBB8E-65F0-43AB-980D-FEDC5B8FC290}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Common", "JustyBase.Common\JustyBase.Common.csproj", "{A94614CD-9687-42D7-9BFC-2EB95DC5A3C1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibraryUsageSamples", "LibraryUsageSamples", "{CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Database.Sample", "LibraryUsageSamples\JustyBase.Database.Sample\JustyBase.Database.Sample.csproj", "{00ACAF89-9712-44B2-B2C2-E2987F585B06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Database.Sample.Lib", "LibraryUsageSamples\JustyBase.Database.Sample.Lib\JustyBase.Database.Sample.Lib.csproj", "{5E1D14D9-EB5D-459C-AB19-EFB423C48816}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C1A4567-8377-4CF9-B6E3-79D8F8F50D9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{497C1ADB-2791-4E86-8BB6-7F0D4CC97FDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchy", "Benchmarks\Benchy\Benchy.csproj", "{788E04A6-7A7F-49BF-97D5-89A07466DA45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C1E99AD-4949-4290-B5C7-68BE7D0562B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1E99AD-4949-4290-B5C7-68BE7D0562B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1E99AD-4949-4290-B5C7-68BE7D0562B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1E99AD-4949-4290-B5C7-68BE7D0562B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE89637B-30FF-48BF-A7B7-E94ECE74E32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE89637B-30FF-48BF-A7B7-E94ECE74E32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE89637B-30FF-48BF-A7B7-E94ECE74E32E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE89637B-30FF-48BF-A7B7-E94ECE74E32E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4047CD87-20C9-434B-B90A-18E950BBFBE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4047CD87-20C9-434B-B90A-18E950BBFBE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4047CD87-20C9-434B-B90A-18E950BBFBE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4047CD87-20C9-434B-B90A-18E950BBFBE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81532EB6-1010-4BB5-A77F-977E9FEDB49C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81532EB6-1010-4BB5-A77F-977E9FEDB49C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81532EB6-1010-4BB5-A77F-977E9FEDB49C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81532EB6-1010-4BB5-A77F-977E9FEDB49C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{888BBB8E-65F0-43AB-980D-FEDC5B8FC290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{888BBB8E-65F0-43AB-980D-FEDC5B8FC290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{888BBB8E-65F0-43AB-980D-FEDC5B8FC290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{888BBB8E-65F0-43AB-980D-FEDC5B8FC290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A94614CD-9687-42D7-9BFC-2EB95DC5A3C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A94614CD-9687-42D7-9BFC-2EB95DC5A3C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A94614CD-9687-42D7-9BFC-2EB95DC5A3C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A94614CD-9687-42D7-9BFC-2EB95DC5A3C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Release|Any CPU.Build.0 = Release|Any CPU
+		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{39A0BE66-BF41-422A-801F-C6868FB98FA6} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
+		{81532EB6-1010-4BB5-A77F-977E9FEDB49C} = {39A0BE66-BF41-422A-801F-C6868FB98FA6}
+		{888BBB8E-65F0-43AB-980D-FEDC5B8FC290} = {39A0BE66-BF41-422A-801F-C6868FB98FA6}
+		{00ACAF89-9712-44B2-B2C2-E2987F585B06} = {CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}
+		{5E1D14D9-EB5D-459C-AB19-EFB423C48816} = {CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}
+		{788E04A6-7A7F-49BF-97D5-89A07466DA45} = {497C1ADB-2791-4E86-8BB6-7F0D4CC97FDD}
+	EndGlobalSection
+EndGlobal

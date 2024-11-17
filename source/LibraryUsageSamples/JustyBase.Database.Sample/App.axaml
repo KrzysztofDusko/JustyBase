@@ -1,0 +1,30 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="JustyBase.Database.Sample.App"
+             RequestedThemeVariant="Default">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Styles>
+        <FluentTheme />
+        <!--<SimpleTheme />-->
+
+		<Style Selector="TabItem">
+			<Setter Property="Height" Value="24"/>
+			<Setter Property="MinHeight" Value="24"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="10 0"/>
+			<Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+		</Style>
+
+		<Style Selector="TabStripItem">
+			<Setter Property="Height" Value="24"/>
+			<Setter Property="MinHeight" Value="24" />
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}"/>
+		</Style>
+
+	</Application.Styles>
+</Application>
