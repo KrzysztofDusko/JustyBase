@@ -1,11 +1,8 @@
-﻿using System;
-using System.Buffers.Text;
+﻿using System.Buffers.Text;
 using System.Data.Common;
 using System.Data.Odbc;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using JustyBase.Common.Helpers;
 using JustyBase.Database.Sample.Contracts;
 using JustyBase.PluginCommon.Contracts;
@@ -121,7 +118,7 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
                 throw new ArgumentNullException();
             }
 
-            if (!Base64Url.IsValid(cs))
+            if (!Base64.IsValid(cs))
             {
                 cs = EncryptionHelper.Encrypt(cs);
                 Environment.SetEnvironmentVariable("NetezzaTest",cs, EnvironmentVariableTarget.User);
@@ -136,7 +133,7 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
             {
                 throw new ArgumentNullException();
             }
-            if (!Base64Url.IsValid(cs))
+            if (!Base64.IsValid(cs))
             {
                 cs = EncryptionHelper.Encrypt(cs);
                 Environment.SetEnvironmentVariable("OracleTest",cs, EnvironmentVariableTarget.User);

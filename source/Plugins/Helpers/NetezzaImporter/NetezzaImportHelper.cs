@@ -95,7 +95,6 @@ public static class NetezzaImportHelper
             server.WaitForConnection();
             StreamWriter writer = new StreamWriter(server, Encoding.UTF8, 65_536);
 
-            
             object[] row = new object[rdr.FieldCount];
             TypeCode[]? dataTypesCodes = null;
 

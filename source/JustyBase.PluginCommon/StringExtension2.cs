@@ -1,10 +1,116 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Buffers;
+using System.Collections.Frozen;
+using System.Text.RegularExpressions;
 
 namespace JustyBase.PluginDatabaseBase.Extensions;
 
 public static partial class StringExtension2
 {
-    private static readonly HashSet<string> _notAllowdedWords = new(StringComparer.OrdinalIgnoreCase)
+    private readonly static SearchValues<char> _specialCharsToFind = SearchValues.Create(['\'', '\"', '-', '/']);
+    public static string CreateCleanSql(this string actualString)
+    {
+        string str = string.Create(actualString.Length, actualString, static (chars, buf) =>
+        {
+            var span = buf.AsSpan();
+            var orginalBufAsSpan = buf.AsSpan();
+            for (int i = 0; i < chars.Length; i++)
+            {
+                span = orginalBufAsSpan[i..];
+                int nextSpecialIndex = span.IndexOfAny(_specialCharsToFind);
+                if (nextSpecialIndex == -1)
+                {
+                    nextSpecialIndex = chars.Length - i - 1;
+                }
+                span[..nextSpecialIndex].CopyTo(chars[i..]);
+                i += nextSpecialIndex;
+
+                char c = buf[i];
+
+                if (c == '\'')
+                {
+                    chars[i] = ' ';
+                    i++;
+                    if (i == chars.Length)
+                    {
+                        break;
+                    }
+                    int indx = orginalBufAsSpan[i..].IndexOf('\'');
+                    if (indx == -1)
+                    {
+                        chars[i..].Fill(' ');
+                        break;
+                    }
+                    chars.Slice(i, indx + 1).Fill(' ');
+                    i += indx;
+                    continue;
+                }
+                else if (c == '\"')
+                {
+                    chars[i] = ' ';
+                    i++;
+                    if (i == chars.Length)
+                    {
+                        break;
+                    }
+                    int indx = orginalBufAsSpan[i..].IndexOf('\"');
+                    if (indx == -1)
+                    {
+                        chars[i..].Fill(' ');
+                        break;
+                    }
+                    chars.Slice(i, indx + 1).Fill(' ');
+                    i += indx;
+                    continue;
+                }
+                else if (c == '-' && i < chars.Length - 1 && buf[i + 1] == '-')
+                {
+                    chars[i] = ' ';
+                    c = (char)0;
+                    i++;
+                    while (i < chars.Length && c != '\n')
+                    {
+                        c = buf[i];
+                        if (c != '\r' && c != '\n')
+                        {
+                            chars[i] = ' ';
+                        }
+                        else
+                        {
+                            chars[i] = c;
+                        }
+
+                        i++;
+                    }
+                    i--;
+                    continue;
+                }
+                else if (c == '/' && i < chars.Length - 1 && buf[i + 1] == '*')
+                {
+                    chars[i] = ' ';
+                    chars[i + 1] = ' ';
+                    i += 2;
+                    if (i == chars.Length)
+                    {
+                        break;
+                    }
+                    int indx = orginalBufAsSpan[i..].IndexOf("*/");
+                    if (indx == -1)
+                    {
+                        chars[i..].Fill(' ');
+                        break;
+                    }
+                    chars.Slice(i, indx + 2).Fill(' ');
+                    i += indx;
+                    i++;
+                    continue;
+                }
+                chars[i] = c;
+            }
+        });
+        return str;
+    }
+
+    private static readonly FrozenSet<string> _notAllowdedWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "ABORT", "DECIMAL", "INTERVAL", "PRESERVE",
         "ALL", "DECODE", "INTO", "PRIMARY",
@@ -45,7 +151,7 @@ public static partial class StringExtension2
         "CURRENT_USEROID", "INOUT", "PRECEDING", "RESET",
         "DEALLOCATE", "INTERSECT", "PRECISION", "REUSE",
         "DEC"
-    };
+    }.ToFrozenSet();
 
 
     [GeneratedRegex(@"[^a-zA-Z0-9_]", RegexOptions.Compiled | RegexOptions.Singleline)]

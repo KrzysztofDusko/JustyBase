@@ -8,6 +8,6 @@ namespace JustyBase.PluginDatabaseBase.AnotherContracts;
 
 public interface ISearchInFiles
 {
-    bool IsWordInFile(string path, string toSearch);
-    bool IsWholeWordInFile(string path, string toSearch);
+    bool IsWordInFile(string path, string toSearch, bool searchInSqlComments);
+    bool IsWholeWordInFile(string path, string toSearch, bool searchInSqlComments);
 }

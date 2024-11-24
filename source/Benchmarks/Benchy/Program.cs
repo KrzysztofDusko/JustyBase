@@ -8,9 +8,33 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-//DatabaseTypeChooserBench b = new DatabaseTypeChooserBench();
-//b.Path = @"D:\DEV\sqls\CsvReader\1000000 Sales Records.csv";
-//b.Met1();
+CreateCleanSqlBench createCleanSqlBench = new CreateCleanSqlBench();
 
-//_ = BenchmarkRunner.Run<DatabaseTypeChooserBench>();
+#if DEBUG
+foreach (var item in createCleanSqlBench.StringsToTest)
+{
+    createCleanSqlBench.ActualString = item;
+    var std = createCleanSqlBench.CreateCleanSql();
+    var better = createCleanSqlBench.CreateCleanSqlBetter();
+    var betterv2 = createCleanSqlBench.CreateCleanSqlBetterV2();
+    var betterv3 = createCleanSqlBench.CreateCleanSqlBetterV3();
+    Debug.Assert(std == better);
+    Debug.Assert(std == betterv2);
+    Debug.Assert(std == betterv3);
+}
+foreach (var item in Directory.GetFiles("D:\\DEV\\sqls\\", "*.sql", SearchOption.AllDirectories))
+{
+    createCleanSqlBench.ActualString = File.ReadAllText(item);
+    var std = createCleanSqlBench.CreateCleanSql();
+    var better = createCleanSqlBench.CreateCleanSqlBetter();
+    var betterv2 = createCleanSqlBench.CreateCleanSqlBetterV2();
+    var betterv3 = createCleanSqlBench.CreateCleanSqlBetterV3();
+    Debug.Assert(std == better);
+    Debug.Assert(std == betterv2);
+    Debug.Assert(std == betterv3);
+}
+#endif
+
+_ = BenchmarkRunner.Run<CreateCleanSqlBench>();
+
 Console.WriteLine("done");
