@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>c14149b4-c29b-4a46-8af7-a30900f97f3b</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>RoslynPad.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BraceMatcherHighlightRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BraceMatching.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeEditorCompletionWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeSnippet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeTextEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CommonPropertyChangedArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionDataSql.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\Glyph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\ICodeEditorCompletionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\ISqlAutocompleteData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\SnippetInfoService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\SqlCompletionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EditorHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ICompletionDataEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IOverloadProviderEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MarkSameWord.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProeprtyExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReflectionUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SnippetManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SqlCodeEditor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SqlCodeEditorHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SqlFoldingStrategy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextMarker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextMarkerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextMarkerToolTipProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TruncateLongLines.cs" />
+  </ItemGroup>
+</Project>

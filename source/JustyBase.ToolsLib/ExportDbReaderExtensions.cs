@@ -1,5 +1,5 @@
 ﻿using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using JustyBase.Tools.ImportHelpers;
 using K4os.Compression.LZ4.Streams;
 using SpreadSheetTasks;

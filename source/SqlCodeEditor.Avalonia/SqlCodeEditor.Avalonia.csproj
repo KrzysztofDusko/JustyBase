@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	 <DefineConstants>AVALONIA</DefineConstants>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.2.2" />
+		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.1.0" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
+		<PackageReference Include="System.Reactive" Version="6.0.1" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\JustyBase.StringExtensions\JustyBase.StringExtensions.csproj" />
+	</ItemGroup>
+	<Import Project="..\RoslynPad.Shared\RoslynPad.Shared.projitems" Label="Shared" />
+
+</Project>

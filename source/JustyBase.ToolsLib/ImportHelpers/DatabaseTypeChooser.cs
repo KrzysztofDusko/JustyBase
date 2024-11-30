@@ -1,7 +1,7 @@
 ﻿using JustyBase.PluginCommon;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using SpreadSheetTasks;
 using System.Diagnostics;
 

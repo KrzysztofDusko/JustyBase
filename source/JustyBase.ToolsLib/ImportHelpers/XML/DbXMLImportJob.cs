@@ -1,6 +1,6 @@
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using JustyBase.Tools.Import;
 using System.Data;
 using System.Globalization;
@@ -258,8 +258,8 @@ public sealed class DbXMLImportJob : DbImportJob, IDbXMLImportJob
                     colNum = 0;
                     if (rowNum == 1)//headers
                     {
-                        _columnHeadersNames = _linesX[0].Select(arg => (arg?.OriginalValue ?? StringExtension2.RandomName("COL_")).NormalizeDbColumnName()).ToArray();
-                        StringExtension2.DeDuplicate(_columnHeadersNames);
+                        _columnHeadersNames = _linesX[0].Select(arg => (arg?.OriginalValue ?? StringExtension.RandomSuffix("COL_")).NormalizeDbColumnName()).ToArray();
+                        StringExtension.DeDuplicate(_columnHeadersNames);
                     }
                     if (rowNum % 100_000 == 0 || rowNum == _linesX.Length - 1)
                     {
@@ -274,7 +274,7 @@ public sealed class DbXMLImportJob : DbImportJob, IDbXMLImportJob
             throw new Exception("_columnHeadersNames is not string[]");
         _databaseTypeChoser.OriginalColumnHeaderNames = (string[])_columnHeadersNames.Clone();
         _databaseTypeChoser.ChooseTypes();
-        StringExtension2.DeDuplicate(_columnHeadersNames);
+        StringExtension.DeDuplicate(_columnHeadersNames);
 
         AsReader = new DataReaderFromLines(_linesX!, _databaseTypeChoser);
     }

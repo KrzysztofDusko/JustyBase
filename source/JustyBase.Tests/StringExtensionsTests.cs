@@ -1,4 +1,4 @@
-﻿using JustyBase.PluginDatabaseBase.Extensions;
+﻿using JustyBase.StringExtensions;
 
 namespace JustyBase.Tests;
 

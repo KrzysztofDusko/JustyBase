@@ -1,5 +1,5 @@
 ﻿using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 
 namespace JustyBase.PluginCommon.Contracts;
 
@@ -13,7 +13,7 @@ public interface IDatabaseWithSpecificImportService
     async Task<string> PerformImportFromXmlAsync(IDbXMLImportJob importJob, object data,
         Action<string>? messageAction)
     {
-        var randName = StringExtension2.RandomName("IMP_");
+        var randName = StringExtension.RandomSuffix("IMP_");
         try
         {
             await importJob.AnalyzeXmlClipboardDataAndStoreLines(data);

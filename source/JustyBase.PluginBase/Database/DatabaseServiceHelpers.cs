@@ -141,8 +141,6 @@ public static class DatabaseServiceHelpers
         }
     }
 
-
-
     /// <summary>
     /// connectionName = name of connection
     /// forceRefresh = delete and load again
@@ -186,7 +184,7 @@ public static class DatabaseServiceHelpers
 
             databaseInfo.LoadPluginsIfNeeded(null).Wait();
 
-            var databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetTempDir());
+            var databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetDataDir());
             databaseService.Logger = databaseInfo.GlobalLoggerObject;
 
             _cachedDbServices[connectionName] = databaseService;

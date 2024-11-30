@@ -7,6 +7,9 @@ using System.IO;
 using System.Linq;
 using System;
 using JustyBase.Database.Sample.ViewModels;
+using JustyBase.Editor;
+using System.Threading.Tasks;
+using AvaloniaEdit.Highlighting;
 
 namespace JustyBase.Database.Sample.Views;
 
@@ -17,6 +20,8 @@ public partial class MainWindow : Window
         InitializeComponent();
         AddHandler(DragDrop.DragOverEvent, DragOver);
         AddHandler(DragDrop.DropEvent, Drop);
+        sqlCodeEditor.SyntaxHighlighting = AvaloniaEdit.Highlighting.HighlightingManager.Instance.GetDefinition("SQL");
+        sqlCodeEditor.Initialize(new TestAutocompleteData(), new TestOptions());
     }
 
     private void DragOver(object? sender, DragEventArgs e)
@@ -58,4 +63,29 @@ public partial class MainWindow : Window
             }
         }
     }
+}
+
+
+public class TestAutocompleteData : ISqlAutocompleteData
+{
+    public async IAsyncEnumerable<CompletionDataSql> GetWordsList(string input, Dictionary<string, List<string>> aliasDbTable, Dictionary<string, List<string>> subqueriesHints, Dictionary<string, List<string>> withs, Dictionary<string, List<string>> tempTables)
+    {
+        yield return new CompletionDataSql("abcdefghi", "desc", false, Editor.CompletionProviders.Glyph.None, null);
+        yield return new CompletionDataSql("defghi", "desc", false, Editor.CompletionProviders.Glyph.None, null);
+        yield return new CompletionDataSql("qwerty", "desc", false, Editor.CompletionProviders.Glyph.None, null);
+        await Task.CompletedTask;
+    }
+}
+
+public class TestOptions : ISomeEditorOptions
+{
+    public Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> GetAllSnippets { get; set; } =  [];
+
+    public Dictionary<string, string> FastReplaceDictionary { get; set; } = [];
+
+    public List<string> TypoPatternList { get; set; } = [];
+
+    public Dictionary<string, string> VariablesDictStatic { get; set; } = [];
+
+    public bool CollapseFoldingOnStartup => true;
 }

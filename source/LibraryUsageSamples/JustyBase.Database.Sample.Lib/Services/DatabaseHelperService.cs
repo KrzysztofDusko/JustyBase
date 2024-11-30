@@ -7,15 +7,14 @@ using JustyBase.Common.Helpers;
 using JustyBase.Database.Sample.Contracts;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
 using JustyBase.Tools;
 using JustyBase.Tools.ImportHelpers;
 using JustyBase.Tools.ImportHelpers.XML;
+using JustyBase.StringExtensions;
 
 #if ORACLE
 using Oracle.ManagedDataAccess.Client;
 #endif
-
 
 namespace JustyBase.Database.Sample.Services;
 
@@ -48,7 +47,7 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
             cmd.CommandText = sql;
             cmd.CommandTimeout = 3600;
             using var rdr = cmd.ExecuteReader();
-            if (filePath.EndsWith([".xlsx", ".xlsb"]))
+            if (filePath.EndsWithAny([".xlsx", ".xlsb"]))
             {
                 rdr.HandleExcelOutput(filePath, sql, null, null);
             }

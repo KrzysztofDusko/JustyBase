@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:JustyBase.Database.Sample.ViewModels"
+		xmlns:v2="using:JustyBase.Editor"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="300"
@@ -67,10 +68,15 @@
             </Button>
             <TextBlock VerticalAlignment="Center" Margin="10 0 0 0">file or excel cells range</TextBlock>
         </StackPanel>
-        <TextBox Grid.Row="2" Margin="0 1" Text="{Binding Info}" AcceptsReturn="True" Watermark="info"
-                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <!--<TextBox IsVisible="False" Grid.Row="2" Margin="0 1" Text="{Binding Info}" AcceptsReturn="True" Watermark="info"
+                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />-->
+		<v2:SqlCodeEditor Name="sqlCodeEditor"
+			Grid.Row="2" Margin="0 1" Document="{Binding Document}"
+						  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+			
         <Button Grid.Row="3" Margin="0 1" Command="{Binding CopyFromClipCommand}" HorizontalAlignment="Right">Copy text and exit</Button>
-        </Grid>
+			
+		</Grid>
     </Grid>
 	
 </Window>

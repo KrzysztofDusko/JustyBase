@@ -1,12 +1,60 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="JustyBase.Database.Sample.App"
+			 xmlns:cc="clr-namespace:AvaloniaEdit.CodeCompletion;assembly=AvaloniaEdit"
+			 xmlns:editor="using:JustyBase.Editor"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.Styles>
         <FluentTheme />
         <!--<SimpleTheme />-->
+		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+
+		<Style Selector="cc|CompletionList">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<!--Background="Gray" BorderThickness="1" BorderBrush="LightGray"-->
+					<cc:CompletionListBox Name="PART_ListBox" >
+						<cc:CompletionListBox.ItemTemplate>
+							<DataTemplate x:DataType="editor:CompletionDataSql">
+								<!--VerticalAlignment="Center" Height="18"-->
+								<StackPanel Orientation="Horizontal">
+									<Image Source="{Binding Image}"
+										   Width="16"
+										   Height="16"
+										   Margin="0,0,2,0" />
+									<!--Foreground="#eeeeee"-->
+									<!--FontSize="20" FontFamily="Consolas"-->
+									<!--Margin="10,0,0,0"-->
+									<TextBlock VerticalAlignment="Center" Text="{Binding Content}"
+											   FontSize="13" />
+								</StackPanel>
+							</DataTemplate>
+						</cc:CompletionListBox.ItemTemplate>
+					</cc:CompletionListBox>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="cc|CompletionTipContentControl">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<ContentPresenter Name="PART_ContentPresenter"
+									  Background="{TemplateBinding Background}"
+									  BorderBrush="{TemplateBinding BorderBrush}"
+									  BorderThickness="{TemplateBinding BorderThickness}"
+									  CornerRadius="{TemplateBinding CornerRadius}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  Content="{TemplateBinding Content}"
+									  Padding="{TemplateBinding Padding}"
+									  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+									  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+									  MaxWidth="940"
+									  MaxHeight="500"/>
+				</ControlTemplate>
+			</Setter>
+		</Style>
 
 		<Style Selector="TabItem">
 			<Setter Property="Height" Value="24"/>

@@ -8,5 +8,5 @@ public interface IDatabaseInfo
     Task LoadPluginsIfNeeded(Action? uiAction);
     ISimpleLogger GlobalLoggerObject { get; }
     Dictionary<string, LoginDataModel> LoginDataDic { get; }
-    string GetTempDir();
+    string GetDataDir();
 }

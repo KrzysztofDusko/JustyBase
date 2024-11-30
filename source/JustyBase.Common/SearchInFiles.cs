@@ -1,5 +1,5 @@
 ﻿using JustyBase.PluginDatabaseBase.AnotherContracts;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using System.Buffers;
 using System.Text.RegularExpressions;
 

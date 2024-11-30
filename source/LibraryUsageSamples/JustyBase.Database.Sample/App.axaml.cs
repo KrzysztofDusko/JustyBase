@@ -2,9 +2,11 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using JustyBase.Database.Sample.ViewModels;
 using JustyBase.Database.Sample.Views;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace JustyBase.Database.Sample;
 
@@ -13,6 +15,18 @@ public class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        var uri = new Uri($"avares://JustyBase.Database.Sample/Assets/SQL-Mode.xshd");
+        using (var stream = AssetLoader.Open(uri))
+        {
+            using (var reader = new System.Xml.XmlTextReader(stream))
+            {
+                AvaloniaEdit.Highlighting.HighlightingManager.Instance.RegisterHighlighting("SQL", Array.Empty<string>(),
+                    AvaloniaEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
+                        AvaloniaEdit.Highlighting.HighlightingManager.Instance));
+            }
+        }       
+
     }
 
     public override void OnFrameworkInitializationCompleted()

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using AvaloniaEdit.Document;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.Database.Sample.Contracts;
@@ -21,7 +23,21 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private bool _csvSelected;
 
-    [ObservableProperty] private string _info = "";
+    //[ObservableProperty]
+    private string _info = "";
+
+    public string Info
+    {
+        get => Dispatcher.UIThread.Invoke<string>(() => Document.Text); 
+        set 
+        {
+            Dispatcher.UIThread.Post(() => Document.Text = value);
+            OnPropertyChanged(nameof(Document));
+        }
+    }
+
+    [ObservableProperty] private TextDocument _document = new TextDocument();
+
 
     [ObservableProperty] private string _selectedMode = "plain";
 

@@ -1,6 +1,6 @@
 ﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using JustyBase.Tools.Import;
 using SpreadSheetTasks;
 using System.Text;
@@ -182,7 +182,7 @@ public sealed class ImportFromExcelFile
                 SheetNamesToImport.Clear();
                 SheetNamesToImport.Add(sheetName);
 
-                string randomName = StringExtension2.RandomName("IMP_D_");
+                string randomName = StringExtension.RandomSuffix("IMP_D_");
                 await ImportFromFileAllSteps(databaseType, databaseWithSpecificImportService, null, randomName);
 
                 StandardMessageAction?.Invoke($"FINISHED ** {randomName} **");

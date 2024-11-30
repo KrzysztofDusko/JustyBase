@@ -1,7 +1,7 @@
 using JustyBase.PluginCommon;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using JustyBase.Tools.ImportHelpers;
 using JustyBase.Tools.ImportHelpers.XML;
 using System.Data;
@@ -37,7 +37,7 @@ public class DbImportJob : IDbImportJob
 
     public string[] ReturnHeadersWithDataTypes(DatabaseTypeEnum databaseType = DatabaseTypeEnum.NetezzaSQL)
     {
-        StringExtension2.DeDuplicate(ColumnHeadersNames);
+        StringExtension.DeDuplicate(ColumnHeadersNames);
         string[] res = new string[ColumnHeadersNames.Length];
         for (int i = 0; i < ColumnHeadersNames.Length; i++)
         {

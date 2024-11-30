@@ -1,7 +1,7 @@
 ﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginDatabaseBase.Enums;
-using JustyBase.PluginDatabaseBase.Extensions;
+using JustyBase.StringExtensions;
 using JustyBase.PluginDatabaseBase.Models;
 using System.Buffers;
 using System.Data;
@@ -127,7 +127,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
     {
         foreach (var item in _databaseSchemaTable.Keys)
         {
-            if (string.IsNullOrWhiteSpace(filter) || item.Contains("_" + filter, StringComparison.OrdinalIgnoreCase) || item.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrWhiteSpace(filter) || item.StartsWith(filter, StringComparison.OrdinalIgnoreCase) || item.Contains("_" + filter, StringComparison.OrdinalIgnoreCase))
             {
                 yield return item;
             }
@@ -147,7 +147,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
         {
             foreach (var item in pairs.Keys)
             {
-                if (string.IsNullOrWhiteSpace(filter) || item.Contains("_" + filter, StringComparison.OrdinalIgnoreCase) || item.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrWhiteSpace(filter) || item.StartsWith(filter, StringComparison.OrdinalIgnoreCase) || item.Contains("_" + filter, StringComparison.OrdinalIgnoreCase))
                 {
                     yield return item;
                 }
