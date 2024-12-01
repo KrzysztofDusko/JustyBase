@@ -2,7 +2,9 @@
 using System;
 using System.Data.Common;
 using System.Threading.Tasks;
+#if NETEZZA
 using System.Data.Odbc;
+#endif
 using JustyBase.Helpers.Importers;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
@@ -44,6 +46,7 @@ internal sealed class ItemToImportService : IDatabaseWithSpecificImportService
         {
             throw new NullReferenceException();
         }
+#if NETEZZA
         if (DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc || DatabaseType == DatabaseTypeEnum.NetezzaSQL)
         {
             await _connection.OpenAsync();
@@ -59,6 +62,7 @@ internal sealed class ItemToImportService : IDatabaseWithSpecificImportService
             progress?.Invoke("database processing...");
             await _connection.CloseAsync();
         }
+#endif
         else
         {
             throw new NotImplementedException();

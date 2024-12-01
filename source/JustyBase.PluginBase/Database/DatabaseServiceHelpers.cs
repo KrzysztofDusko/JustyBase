@@ -152,7 +152,7 @@ public static class DatabaseServiceHelpers
     /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public static IDatabaseService? GetDatabaseService(IDatabaseInfo databaseInfo, string connectionName, bool forceRefresh = false, bool delayCache = false, int connectionTimeout = 0,
-        Action<string>? messageAction = null)
+        Action<string>? messageAction = null, IDatabaseService? ownDatabaseService = null)
     {
         if (forceRefresh)
         {
@@ -180,11 +180,18 @@ public static class DatabaseServiceHelpers
             string driver = loginDataModel.Driver;
             loginDataModel.ConnectionName = connectionName;
 
-            DatabaseTypeEnum typedDriver = StringToDatabaseTypeEnum(driver);
+            IDatabaseService databaseService;
+            if (ownDatabaseService is null)
+            {
+                DatabaseTypeEnum typedDriver = StringToDatabaseTypeEnum(driver);
+                databaseInfo.LoadPluginsIfNeeded(null).Wait();
+                databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetDataDir());
+            }
+            else 
+            {
+                databaseService = ownDatabaseService;
+            }
 
-            databaseInfo.LoadPluginsIfNeeded(null).Wait();
-
-            var databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetDataDir());
             databaseService.Logger = databaseInfo.GlobalLoggerObject;
 
             _cachedDbServices[connectionName] = databaseService;

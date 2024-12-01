@@ -38,7 +38,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private TextDocument _document = new TextDocument();
 
-
     [ObservableProperty] private string _selectedMode = "plain";
 
     [ObservableProperty] private bool _xlsbSelected = true;
@@ -51,7 +50,7 @@ public partial class MainWindowViewModel : ViewModelBase
         "Oracle", "NetezzaOdbc"
     ];
 
-    private string _selectedDatabase = "NetezzaOdbc";
+    private string _selectedDatabase = "Oracle";
 
     public string SelectedDatabase
     {
@@ -106,6 +105,22 @@ public partial class MainWindowViewModel : ViewModelBase
     public async Task ImportFromPath(string path)
     {
         await _databaseHelperService.PerformImportFromFileAsync(path);
+    }
+
+    private async ValueTask<string> GetSql()
+    {
+        string sql = Document.Text;
+        if (!sql.Contains("FROM", StringComparison.OrdinalIgnoreCase) && !sql.Contains("SELECT", StringComparison.OrdinalIgnoreCase))
+        {
+            var clipboard = _avaloniaSpecificHelpers.GetClipboard();
+            if (clipboard is null)
+            {
+                Info += "ERROR - Clipboard is empty\n";
+                return "";
+            }
+            sql = await clipboard.GetTextAsync();
+        }
+        return sql;
     }
 
     [RelayCommand]
@@ -169,14 +184,14 @@ public partial class MainWindowViewModel : ViewModelBase
                 return;
             }
 
-            var sql = await clipboard.GetTextAsync();
-            if (sql is null)
+            string sql = await GetSql();
+            if (string.IsNullOrEmpty(sql))
             {
                 Info = "ERROR - sql is null\n";
                 return;
             }
 
-            Info += "sql is running\n";
+            Info += "\nsql is running\n";
             var filePath = await ExportRaw(sql);
             if (filePath is null) return;
             var dataObject = new DataObject();
@@ -205,21 +220,15 @@ public partial class MainWindowViewModel : ViewModelBase
         try
         {
             Info = "";
-            var clipboard = _avaloniaSpecificHelpers.GetClipboard();
-            if (clipboard is null)
+            string sql = await GetSql();
+
+            if (string.IsNullOrEmpty(sql))
             {
-                Info += "ERROR - Clipboard is empty\n";
+                Info = "ERROR - sql is null\n";
                 return;
             }
 
-            var sql = await clipboard.GetTextAsync();
-            if (sql is null)
-            {
-                Info += "ERROR - sql is null\n";
-                return;
-            }
-
-            Info += "sql is running\n";
+            Info += "\nsql is running\n";
             var filePath = await ExportRaw(sql);
 
             Info += "opening\n";

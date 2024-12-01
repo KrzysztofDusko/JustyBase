@@ -41,28 +41,35 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
 
         await Task.Run(() =>
         {
-            using var connection = GetConnection();
-            connection.Open();
-            using var cmd = connection.CreateCommand();
-            cmd.CommandText = sql;
-            cmd.CommandTimeout = 3600;
-            using var rdr = cmd.ExecuteReader();
-            if (filePath.EndsWithAny([".xlsx", ".xlsb"]))
+            try
             {
-                rdr.HandleExcelOutput(filePath, sql, null, null);
-            }
-            else
-            {
-                var opt = new AdvancedExportOptions
+                using var connection = GetConnection();
+                connection.Open();
+                using var cmd = connection.CreateCommand();
+                cmd.CommandText = sql;
+                cmd.CommandTimeout = 3600;
+                using var rdr = cmd.ExecuteReader();
+                if (filePath.EndsWithAny([".xlsx", ".xlsb"]))
                 {
-                    LineDelimiter = "\r\n",
-                    Delimiter = '|',
-                    Encod = Encoding.UTF8,
-                    Header = true,
-                    CompresionType = csvCompression
-                };
+                    rdr.HandleExcelOutput(filePath, sql, null, null);
+                }
+                else
+                {
+                    var opt = new AdvancedExportOptions
+                    {
+                        LineDelimiter = "\r\n",
+                        Delimiter = '|',
+                        Encod = Encoding.UTF8,
+                        Header = true,
+                        CompresionType = csvCompression
+                    };
 
-                filePath = rdr.HandleCsvOrParquetOutput(filePath, opt, null);
+                    filePath = rdr.HandleCsvOrParquetOutput(filePath, opt, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageAction?.Invoke(ex.Message);
             }
         });
 
@@ -109,6 +116,7 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
 
     private DbConnection GetConnection()
     {
+#if NETEZZA
         if (DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc)
         {
             var cs = Environment.GetEnvironmentVariable("NetezzaTest");
@@ -124,8 +132,9 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
             }
             return new OdbcConnection(EncryptionHelper.Decrypt(cs));
         }
+#endif
 #if ORACLE
-        else if (DatabaseType == DatabaseTypeEnum.Oracle)
+        if (DatabaseType == DatabaseTypeEnum.Oracle)
         {
             var cs = Environment.GetEnvironmentVariable("OracleTest");
             if (cs is null)

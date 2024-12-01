@@ -38,7 +38,10 @@
 		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
     </ItemGroup>
 
-    <ItemGroup>		
+    <ItemGroup>			
+		<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" />			
+		<ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common.csproj" />			
+		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj" />		
 		<ProjectReference Include="..\..\SqlCodeEditor.Avalonia\SqlCodeEditor.Avalonia.csproj" />
 		<ProjectReference Include="..\JustyBase.Database.Sample.Lib\JustyBase.Database.Sample.Lib.csproj" />
     </ItemGroup>

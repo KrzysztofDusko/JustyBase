@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeTextEditor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommonPropertyChangedArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CompletionDataSql.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\AutocompleteService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\Glyph.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\ICodeEditorCompletionProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CompletionProviders\ISqlAutocompleteData.cs" />

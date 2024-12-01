@@ -267,16 +267,22 @@ public sealed class SqlCodeEditor : CodeTextEditor
 
     public void ExpandFoldings()
     {
-        foreach (var fold in _foldingManager.AllFoldings)
+        if (_foldingManager is not null)
         {
-            fold.IsFolded = false;
+            foreach (var fold in _foldingManager.AllFoldings)
+            {
+                fold.IsFolded = false;
+            }
         }
     }
     public void CollapseFoldings()
     {
-        foreach (var fold in _foldingManager.AllFoldings)
+        if (_foldingManager is not null)
         {
-            fold.IsFolded = true;
+            foreach (var fold in _foldingManager.AllFoldings)
+            {
+                fold.IsFolded = true;
+            }
         }
     }
     public bool ForceUpdateFoldings()

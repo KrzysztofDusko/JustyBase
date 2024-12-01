@@ -77,6 +77,9 @@ public partial class CodeTextEditor : TextEditor
     }
     private async void OnMouseHover(object? sender, MouseEventArgs e)
     {
+#if AVALONIA
+        return;
+#endif
         TextViewPosition? position;
         try
         {
