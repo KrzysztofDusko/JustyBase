@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>d27f09a9-f801-4d6f-8c2d-3444b564bb05</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>JustyBase.Shared.Code</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ICleanableViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IGeneralApplicationData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InteractionsHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\OtherHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ConnectionItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\HistoryEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\LogMessageMinor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\MenuItemForCurrentOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\QueryInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SnippetModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SnippetsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SqlCommandState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Helpers\" />
+  </ItemGroup>
+</Project>

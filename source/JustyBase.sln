@@ -39,6 +39,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCodeEditor.Avalonia", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetezzaOdbcPlugin", "Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj", "{70BE95F8-8DD8-442F-AA0C-964243F5F85E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Shared.Lib", "JustyBase.Shared.Lib\JustyBase.Shared.Lib.csproj", "{0430EFF3-E29C-4201-A624-6949614DC9BC}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JustyBase.Shared.Code", "JustyBase.Shared.Code\JustyBase.Shared.Code.shproj", "{D27F09A9-F801-4D6F-8C2D-3444B564BB05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,10 @@ Global
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0430EFF3-E29C-4201-A624-6949614DC9BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0430EFF3-E29C-4201-A624-6949614DC9BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0430EFF3-E29C-4201-A624-6949614DC9BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0430EFF3-E29C-4201-A624-6949614DC9BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,5 +118,6 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{c14149b4-c29b-4a46-8af7-a30900f97f3b}*SharedItemsImports = 13
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{d012b2a2-2c7c-4b1c-9f66-6a90c6ee4165}*SharedItemsImports = 5
+		JustyBase.Shared.Code\JustyBase.Shared.Code.projitems*{d27f09a9-f801-4d6f-8c2d-3444b564bb05}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

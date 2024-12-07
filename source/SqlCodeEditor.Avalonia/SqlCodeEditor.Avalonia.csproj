@@ -15,6 +15,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj" />
 	  <ProjectReference Include="..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj" />
+	  <ProjectReference Include="..\JustyBase.Shared.Lib\JustyBase.Shared.Lib.csproj" />
 	  <ProjectReference Include="..\JustyBase.StringExtensions\JustyBase.StringExtensions.csproj" />
 	</ItemGroup>
 	<Import Project="..\RoslynPad.Shared\RoslynPad.Shared.projitems" Label="Shared" />

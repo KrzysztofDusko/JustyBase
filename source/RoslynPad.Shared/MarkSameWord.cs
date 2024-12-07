@@ -3,7 +3,7 @@
 namespace JustyBase.Editor;
 
 //https://stackoverflow.com/questions/9223674/highlight-all-occurrences-of-selected-word-in-avalonedit
-public class MarkSameWord : DocumentColorizingTransformer
+public sealed class MarkSameWord : DocumentColorizingTransformer
 {
     private readonly string _selectedText;
 

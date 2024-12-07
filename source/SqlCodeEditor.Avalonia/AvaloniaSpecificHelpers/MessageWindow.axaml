@@ -10,10 +10,8 @@
 		ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="PreferSystemChrome"
 		UseLayoutRounding="True" 
-		Icon="/Assets/Icon2.ico"
 		ShowInTaskbar="False">
 	<Grid RowDefinitions="Auto,*,Auto">
-
 		<TextBlock Name="titleLabel" Grid.Row="0" HorizontalAlignment="Center" FontSize="24" Margin="20"
 			   FontWeight="SemiBold">Information</TextBlock>
 			<TextBox Name="contentTextBlock" Grid.Row="1" AcceptsReturn="True" IsReadOnly="True" BorderBrush="Transparent"   
