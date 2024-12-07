@@ -119,18 +119,16 @@ public sealed class DatabaseHelperService : IDatabaseHelperService
 #if NETEZZA
         if (DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc)
         {
-            var cs = Environment.GetEnvironmentVariable("NetezzaTest");
-            if (cs is null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            if (!Base64.IsValid(cs))
-            {
-                cs = EncryptionHelper.Encrypt(cs);
-                Environment.SetEnvironmentVariable("NetezzaTest",cs, EnvironmentVariableTarget.User);
-            }
-            return new OdbcConnection(EncryptionHelper.Decrypt(cs));
+            OdbcConnectionStringBuilder builder = new OdbcConnectionStringBuilder();
+            builder.Driver = "NetezzaSQL";
+            builder["username"] = EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestUser")!);
+            builder["password"] = EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestPass")!);
+            builder["port"] = "5480";
+            builder["servername"] = EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestServer")!);
+            builder["database"] = "JUST_DATA";
+            var conn = new OdbcConnection(builder.ConnectionString);
+            conn.ConnectionTimeout = 10;
+            return conn;
         }
 #endif
 #if ORACLE

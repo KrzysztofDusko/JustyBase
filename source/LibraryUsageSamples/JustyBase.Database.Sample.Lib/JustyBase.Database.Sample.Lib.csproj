@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	 <!--<DefineConstants>NETEZZA</DefineConstants>-->
-	 <DefineConstants>ORACLE</DefineConstants>
+	 <DefineConstants>NETEZZA</DefineConstants>
+	 <!--<DefineConstants>ORACLE</DefineConstants>-->
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +15,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common.csproj" />
 		<ProjectReference Include="..\..\JustyBase.ToolsLib\JustyBase.Tools.csproj" />
-		<ProjectReference Include="..\..\Plugins\Helpers\NetezzaImporter\JustyBase.Helpers.NetezzaImporter.csproj" />
+		<ProjectReference Include="..\..\Plugins\Helpers\NetezzaImporter\JustyBase.Helpers.NetezzaImporter.csproj" Condition="$(DefineConstants.Contains(NETEZZA))" />
 		<ProjectReference Include="..\..\Plugins\Helpers\JustyBase.Helpers.Importers\JustyBase.Helpers.Importers.csproj" Condition="$(DefineConstants.Contains(ORACLE))" />
 	</ItemGroup>
 	

@@ -10,7 +10,6 @@ using AvaloniaEdit.Document;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.Database.Sample.Contracts;
-using JustyBase.Database.Sample.Services;
 using JustyBase.PluginCommon.Enums;
 using JustyBase.Services;
 
@@ -50,7 +49,8 @@ public partial class MainWindowViewModel : ViewModelBase
         "Oracle", "NetezzaOdbc"
     ];
 
-    private string _selectedDatabase = "Oracle";
+    //private string _selectedDatabase = "Oracle";
+    private string _selectedDatabase = "NetezzaOdbc";
 
     public string SelectedDatabase
     {

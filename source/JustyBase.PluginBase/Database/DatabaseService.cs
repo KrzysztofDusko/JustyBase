@@ -398,7 +398,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
     }
     public string ChangeDatabaseIfNeeded(DbConnection con, string selectedDatabaseName)
     {
-        if (this.DatabaseType == DatabaseTypeEnum.NetezzaSQL || this.DatabaseType == DatabaseTypeEnum.PostgreSql)
+        if (this.DatabaseType == DatabaseTypeEnum.NetezzaSQL || this.DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc || this.DatabaseType == DatabaseTypeEnum.PostgreSql)
         {
             if (string.IsNullOrWhiteSpace(selectedDatabaseName))
             {
@@ -562,7 +562,21 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                             }
                         }
 
-                        con.Close();
+
+                        Task t1 = Task.Run(() =>
+                        {
+                            try
+                            {
+                                con.Close();
+                            }
+                            catch (Exception)
+                            {
+                            }}
+                        );
+                        //problems with netezza ODBC
+                        Task t2 = Task.Delay(2_000);
+                        Task.WaitAny(t1, t2);
+
                     }
                     catch (Exception ex)
                     {
@@ -706,7 +720,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                         con.Open();
                         LoadDatabaseObject(database, con);
                         ConnectedLevel = DatabaseConnectedLevel.ConnectedDatabaseObjects;
-                        if (DatabaseType == DatabaseTypeEnum.PostgreSql)
+                        if (DatabaseType == DatabaseTypeEnum.PostgreSql || DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc)
                         {
                             con.Close();
                             con.Dispose();
@@ -714,6 +728,13 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                             con.Open();
                         }
                         LoadColumns(database, con);
+                        if (DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc)
+                        {
+                            con.Close();
+                            con.Dispose();
+                            con = GetConnection(database, false, true);
+                            con.Open();
+                        }
                         if (this is INetezza netezza)
                         {
                             netezza.FillDistInfoForDatabase(database, con);
@@ -1152,9 +1173,9 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
         return "not supported";
     }
 
-    public abstract ValueTask GetCreateTableTextStringBuilder(StringBuilder sb, string database, string schema, string tableName, string overrideTableName = null, string middleCode = null, string endingCode = null, List<string> distOverride = null);
+    public abstract ValueTask GetCreateTableTextStringBuilder(StringBuilder sb, string database, string schema, string tableName, string? overrideTableName = null, string? middleCode = null, string? endingCode = null, List<string>? distOverride = null);
 
-    public async ValueTask<string> GetCreateTableText(string database, string schema, string tableName, string overrideTableName = null, string middleCode = null, string endingCode = null, List<string> distOverride = null)
+    public async ValueTask<string> GetCreateTableText(string database, string schema, string tableName, string? overrideTableName = null, string? middleCode = null, string? endingCode = null, List<string>? distOverride = null)
     {
         StringBuilder stringBuilder = new StringBuilder();
         await GetCreateTableTextStringBuilder(stringBuilder, database, schema, tableName, overrideTableName, middleCode, endingCode, distOverride);

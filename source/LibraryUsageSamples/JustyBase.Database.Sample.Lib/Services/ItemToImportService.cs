@@ -1,7 +1,4 @@
-
-using System;
 using System.Data.Common;
-using System.Threading.Tasks;
 #if NETEZZA
 using System.Data.Odbc;
 #endif

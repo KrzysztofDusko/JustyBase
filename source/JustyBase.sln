@@ -37,6 +37,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RoslynPad.Shared", "RoslynP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCodeEditor.Avalonia", "SqlCodeEditor.Avalonia\SqlCodeEditor.Avalonia.csproj", "{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetezzaOdbcPlugin", "Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj", "{70BE95F8-8DD8-442F-AA0C-964243F5F85E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{5E1D14D9-EB5D-459C-AB19-EFB423C48816} = {CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}
 		{788E04A6-7A7F-49BF-97D5-89A07466DA45} = {497C1ADB-2791-4E86-8BB6-7F0D4CC97FDD}
 		{E561C903-EC7F-46CE-B600-0E90BCF2E2CB} = {5C1A4567-8377-4CF9-B6E3-79D8F8F50D9D}
+		{70BE95F8-8DD8-442F-AA0C-964243F5F85E} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{c14149b4-c29b-4a46-8af7-a30900f97f3b}*SharedItemsImports = 13

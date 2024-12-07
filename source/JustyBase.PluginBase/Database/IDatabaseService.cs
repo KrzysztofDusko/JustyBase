@@ -43,8 +43,8 @@ public interface IDatabaseService : IDatabaseWithSpecificImportService
     string GetCreateSynonymPatternText();
     ValueTask<string> GetCreateSynonymText(string database, string schema, string synonymName);
     ValueTask GetCreateSynonymTextStringBuilder(StringBuilder stringBuilder, string database, string schema, string synonymName);
-    ValueTask<string> GetCreateTableText(string database, string schema, string tableName, string overrideTableName = null, string middleCode = null, string endingCode = null, List<string> distOverride = null);
-    ValueTask GetCreateTableTextStringBuilder(StringBuilder sb, string database, string schema, string tableName, string overrideTableName = null, string middleCode = null, string endingCode = null, List<string> distOverride = null);
+    ValueTask<string> GetCreateTableText(string database, string schema, string tableName, string? overrideTableName = null, string? middleCode = null, string? endingCode = null, List<string>? distOverride = null);
+    ValueTask GetCreateTableTextStringBuilder(StringBuilder sb, string database, string schema, string tableName, string? overrideTableName = null, string? middleCode = null, string? endingCode = null, List<string>? distOverride = null);
     ValueTask<string> GetCreateViewText(string database, string schema, string tableName);
     ValueTask GetCreateViewTextStringBuilder(StringBuilder stringBuilder, string database, string schema, string tableName);
     IEnumerable<string> GetDatabases(string filter);

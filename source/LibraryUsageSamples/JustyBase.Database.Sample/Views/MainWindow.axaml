@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:JustyBase.Database.Sample.ViewModels"
 		xmlns:v2="using:JustyBase.Editor"
+		xmlns:local="using:JustyBase.Database.Sample"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="300"
@@ -24,7 +25,7 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-		<Grid Margin="10 5" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
+	<Grid Margin="10 5" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*,*">
 		<Grid.KeyBindings>
 			<KeyBinding
 				Command="{Binding ExportAndOpenCommand}"
@@ -32,12 +33,10 @@
 				Gesture="F5">
 			</KeyBinding>
 		</Grid.KeyBindings>
-
 			<ComboBox Grid.Row="0" Grid.Column="0"  Margin="1 1 0 0" MaxDropDownHeight="100" 
 				  SelectedItem="{Binding SelectedDatabase}"
-			  ItemsSource="{Binding DatabasesList}" BorderThickness="0" Width="130"
-				  ToolTip.Tip="NetezzaTest/OracleTest environment variables needed"
-				  />
+			      ItemsSource="{Binding DatabasesList}" BorderThickness="0" Width="130"
+				  ToolTip.Tip="NetezzaTest/OracleTest environment variables needed"/>
         <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="Auto,Auto,*,Auto">
         <Border Grid.Row="0" Margin="0 1" BorderThickness="1" CornerRadius="10" BorderBrush="Gray" Padding="5" >
             <StackPanel Orientation="Vertical">
@@ -85,6 +84,10 @@
         <Button Grid.Row="3" Margin="0 1" Command="{Binding CopyFromClipCommand}" HorizontalAlignment="Right">Copy text and exit</Button>
 			
 		</Grid>
-    </Grid>
+
+		
+		<local:SampleResultGrid Margin="0 30 0 0" Grid.Column="2" Grid.RowSpan="2"/>
+
+	</Grid>
 	
 </Window>

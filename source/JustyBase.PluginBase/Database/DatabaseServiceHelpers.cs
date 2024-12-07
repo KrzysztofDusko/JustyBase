@@ -1,4 +1,5 @@
-﻿using JustyBase.PluginCommon.Enums;
+﻿using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginDatabaseBase.Enums;
 
 namespace JustyBase.PluginDatabaseBase.Database;
@@ -124,7 +125,7 @@ public static class DatabaseServiceHelpers
     IDatabaseService // result -> Oracle/Db2/etc.
     >> SpecificDbImpelmetations = new Dictionary<DatabaseTypeEnum, Func<string, string, string, string, string, int, IDatabaseService>>();
 
-    private static readonly Lock _lockObject = new Lock();
+    private static readonly Lock _lockAddDatabaseImplementation = new Lock();
     public static void AddDatabaseImplementation(DatabaseTypeEnum databaseTypeEnum, Func<
         string,//username
         string,//password
@@ -135,7 +136,7 @@ public static class DatabaseServiceHelpers
         IDatabaseService // result -> Oracle/Db2/etc.
         > ctorOfDbService)
     {
-        lock (_lockObject)
+        lock (_lockAddDatabaseImplementation)
         {
             SpecificDbImpelmetations[databaseTypeEnum] = ctorOfDbService;
         }
@@ -154,13 +155,11 @@ public static class DatabaseServiceHelpers
     public static IDatabaseService? GetDatabaseService(IDatabaseInfo databaseInfo, string connectionName, bool forceRefresh = false, bool delayCache = false, int connectionTimeout = 0,
         Action<string>? messageAction = null, IDatabaseService? ownDatabaseService = null)
     {
+        ArgumentNullException.ThrowIfNull(connectionName);
+
         if (forceRefresh)
         {
             RemoveCachedConnection(connectionName);
-        }
-        if (connectionName is null)
-        {
-            return null;
         }
         if (_cachedDbServices.TryGetValue(connectionName, out var cachedService1))
         {
@@ -168,21 +167,16 @@ public static class DatabaseServiceHelpers
         }
         else
         {
-            if (connectionName is null || databaseInfo.LoginDataDic is null || !databaseInfo.LoginDataDic.TryGetValue(connectionName, out var loginDataModel))
+            IDatabaseService? databaseService;
+            if (ownDatabaseService is null && databaseInfo?.LoginDataDic is not null && databaseInfo.LoginDataDic.TryGetValue(connectionName, out var loginDataModel))
             {
-                return null;
-            }
+                string userName = loginDataModel.UserName;
+                string password = loginDataModel.Password;
+                string ip = loginDataModel.Server;
+                string db = loginDataModel.Database;
+                string driver = loginDataModel.Driver;
+                loginDataModel.ConnectionName = connectionName;
 
-            string userName = loginDataModel.UserName;
-            string password = loginDataModel.Password;
-            string ip = loginDataModel.Server;
-            string db = loginDataModel.Database;
-            string driver = loginDataModel.Driver;
-            loginDataModel.ConnectionName = connectionName;
-
-            IDatabaseService databaseService;
-            if (ownDatabaseService is null)
-            {
                 DatabaseTypeEnum typedDriver = StringToDatabaseTypeEnum(driver);
                 databaseInfo.LoadPluginsIfNeeded(null).Wait();
                 databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetDataDir());
@@ -192,23 +186,28 @@ public static class DatabaseServiceHelpers
                 databaseService = ownDatabaseService;
             }
 
-            databaseService.Logger = databaseInfo.GlobalLoggerObject;
-
-            _cachedDbServices[connectionName] = databaseService;
-
-            if (!_cachedDbServices.TryGetValue(connectionName, out IDatabaseService? cachedService))
+            if (databaseService is null)
             {
-                messageAction?.Invoke("cannot create connection - TO DO");
-                return null;
+                throw new NullReferenceException("databaseService should not be null");
             }
 
-            cachedService.ConnectedLevel = DatabaseConnectedLevel.Connected;
-            cachedService.Name = connectionName;
+            if (databaseInfo?.GlobalLoggerObject is not null)
+            {
+                databaseService.Logger = databaseInfo.GlobalLoggerObject;
+            }
+            else 
+            {
+                databaseService.Logger = ISimpleLogger.EmptyLogger;
+            }
+
+            _cachedDbServices[connectionName] = databaseService;
+            databaseService.ConnectedLevel = DatabaseConnectedLevel.Connected;
+            databaseService.Name = connectionName;
             if (!delayCache)
             {
                 try
                 {
-                    cachedService.CacheMainDictionary();
+                    databaseService.CacheMainDictionary();
                 }
                 catch (Exception ex)
                 {
@@ -224,14 +223,14 @@ public static class DatabaseServiceHelpers
                 {
                     try
                     {
-                        _cachedDbServices[connectionName].CacheMainDictionary();
+                        databaseService.CacheMainDictionary();
                     }
                     catch (Exception ex)
                     {
                         databaseService.Logger.TrackError(ex, isCrash: false);
                         _cachedDbServices.Remove(connectionName);
                         messageAction?.Invoke($"ERROR {ex.Message}");
-                        throw;
+                        return;
                     }
                 });
             }
@@ -261,11 +260,11 @@ public static class DatabaseServiceHelpers
     }
     public static DatabaseConnectedLevel GetDatabaseConnectedLevel(string connectionName)
     {
-        if (!_cachedDbServices.ContainsKey(connectionName))
+        if (!_cachedDbServices.TryGetValue(connectionName, out IDatabaseService? value))
         {
             return DatabaseConnectedLevel.NotConnected;
         }
-        return _cachedDbServices[connectionName].ConnectedLevel;
+        return value.ConnectedLevel;
     }
 
 }

@@ -7,13 +7,9 @@ using JustyBase.Database.Sample.ViewModels;
 using JustyBase.Editor;
 using System.Threading.Tasks;
 using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.PluginDatabaseBase;
-using JustyBase.PluginCommon.Contracts;
 using PluginDatabaseBase.Models;
 using JustyBase.Common.Helpers;
 using JustyBase.Helpers;
-using System.IO;
-using Parquet.Meta;
 
 namespace JustyBase.Database.Sample.Views;
 
@@ -25,7 +21,7 @@ public partial class MainWindow : Window
         AddHandler(DragDrop.DragOverEvent, DragOver);
         AddHandler(DragDrop.DropEvent, Drop);
         sqlCodeEditor.SyntaxHighlighting = AvaloniaEdit.Highlighting.HighlightingManager.Instance.GetDefinition("SQL");
-        sqlCodeEditor.Initialize(new TestAutocompleteData(), new TestOptions());
+        sqlCodeEditor.Initialize(new TestAutocompleteData(GetTestDatabaseService("NetezzaTest")), new TestOptions());
         this.Loaded += MainWindow_Loaded;
     }
     private void MainWindow_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -45,7 +41,7 @@ public partial class MainWindow : Window
     private void Drop(object? sender, DragEventArgs e)
     {
         e.DragEffects = e.DragEffects & (DragDropEffects.Link);
-        
+
         if (e.Data.Contains(DataFormats.Files))
         {
             if (this.DataContext is not null)
@@ -72,46 +68,20 @@ public partial class MainWindow : Window
             }
         }
     }
-}
 
-public sealed class TestAutocompleteData : ISqlAutocompleteData
-{
-    private readonly AutocompleteService _autocompleteService = new AutocompleteService();
-    private readonly IDatabaseInfo _databaseInfo = new DatabaseInfo();
-    private IDatabaseService? _databaseService;
-    private JustyBase.Services.Database.Oracle _oracle;// TODO
 
-    public async IAsyncEnumerable<CompletionDataSql> GetWordsList(string input, Dictionary<string, List<string>> aliasDbTable, Dictionary<string, List<string>> subqueryHints,
-        Dictionary<string, List<string>> withHints, Dictionary<string, List<string>> tempTables)
+    private IDatabaseService GetTestDatabaseService(string _connectionName)
     {
-        if (_oracle is not null && _databaseService is null)
-            yield break;
-
-        _oracle ??= new JustyBase.Services.Database.Oracle
-            (_databaseInfo.LoginDataDic["OracleTest"].UserName!,
-            _databaseInfo.LoginDataDic["OracleTest"].Password!,
-            port:"???",
-            _databaseInfo.LoginDataDic["OracleTest"].Server!,
-            null!, connectionTimeout:10
+        IDatabaseService _databaseService = new JustyBase.Services.Database.NetezzaOdbc
+            (LoginDataDic[_connectionName].UserName!,
+            LoginDataDic[_connectionName].Password!,
+            port: "5480",
+            LoginDataDic[_connectionName].Server!,
+            "JUST_DATA", connectionTimeout: 10
             );
-
-
-
-        _databaseService ??= await Task.Run(() => DatabaseServiceHelpers.GetDatabaseService(_databaseInfo, "OracleTest"
-            , ownDatabaseService : _oracle
-            ));
-
-        var wordsList = _autocompleteService.GetWordsList(input, aliasDbTable, subqueryHints, withHints, tempTables, _databaseService!, null);
-        foreach (var item in wordsList)
-        {
-            yield return item;
-        }
+        _databaseService.Name = _connectionName;
+        return _databaseService;
     }
-}
-
-public sealed class DatabaseInfo : IDatabaseInfo
-{
-    public ISimpleLogger GlobalLoggerObject => ISimpleLogger.EmptyLogger;
 
     public Dictionary<string, LoginDataModel> LoginDataDic { get; set; } = new Dictionary<string, LoginDataModel>()
     {
@@ -124,19 +94,47 @@ public sealed class DatabaseInfo : IDatabaseInfo
                 Server=EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("OracleTestServer")!),
                 UserName= EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("OracleTestUser")!)
             }
+        },
+            { "NetezzaTest", new LoginDataModel()
+            {
+                ConnectionName = "NetezzaTest",
+                DefaultIndex = 0,
+                Driver = "NetezzaOdbc",
+                Password = EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestPass")!),
+                Server=EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestServer")!),
+                UserName= EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestUser")!)
+            }
         }
     };
+}
 
-    public string GetDataDir()
+public sealed class TestAutocompleteData : ISqlAutocompleteData
+{
+    private readonly AutocompleteService _autocompleteService = new AutocompleteService();
+    private readonly IDatabaseService? _databaseService;
+    private readonly string _connectionName;
+    public TestAutocompleteData(IDatabaseService databaseService)
     {
-        return Path.GetTempPath();
+        _databaseService = databaseService;
+        _connectionName = databaseService.Name;
     }
 
-    private readonly string _pluginDirectory = Environment.GetEnvironmentVariable("DEBUG_PLUGIN_BASE_PATH")!;
-    public async Task LoadPluginsIfNeeded(Action? uiAction)
+    private bool _inProgress = false;
+    public async IAsyncEnumerable<CompletionDataSql> GetWordsList(string input, Dictionary<string, List<string>> aliasDbTable, Dictionary<string, List<string>> subqueryHints,
+        Dictionary<string, List<string>> withHints, Dictionary<string, List<string>> tempTables)
     {
-        PluginLoadHelper.LoadPlugins(_pluginDirectory);
-        await Task.CompletedTask;
+        if (!_inProgress && _databaseService is not null)
+        {
+            _inProgress = true;
+            _ = await Task.Run(() => DatabaseServiceHelpers.GetDatabaseService(null, _connectionName, ownDatabaseService: _databaseService));
+            _inProgress = false;
+        }
+
+        var wordsList = _autocompleteService.GetWordsList(input, aliasDbTable, subqueryHints, withHints, tempTables, _databaseService!, null);
+        foreach (var item in wordsList)
+        {
+            yield return item;
+        }
     }
 }
 
@@ -144,14 +142,17 @@ public sealed class TestOptions : ISomeEditorOptions
 {
     public Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> GetAllSnippets { get; set; } = [];
 
-    public Dictionary<string, string> FastReplaceDictionary { get; set; } = new Dictionary<string, string>() 
-    { 
+    public Dictionary<string, string> FastReplaceDictionary { get; set; } = new Dictionary<string, string>()
+    {
         { "SX", "SELECT" },
         { "FX", "FROM" },
         { "WX", "WHERE" },
+        { "sx", "select" },
+        { "fx", "from" },
+        { "wx", "where" },
     };
 
-    public List<string> TypoPatternList { get; set; } = ["SELECT","WHERE","HAVING"];
+    public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION","BETWEEN"];
 
     public Dictionary<string, string> VariablesDictStatic { get; set; } = [];
 

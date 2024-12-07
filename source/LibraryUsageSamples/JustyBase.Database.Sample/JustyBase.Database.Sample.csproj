@@ -7,6 +7,8 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PublishAot>true</PublishAot>
+		<DefineConstants>NETEZZA</DefineConstants>
+		<!--<DefineConstants>ORACLE</DefineConstants>-->
 		<!--<PublishLzmaCompressed>true</PublishLzmaCompressed>
 		<UseSystemResourceKeys>true</UseSystemResourceKeys>
 		<InvariantGlobalization>true</InvariantGlobalization>-->
@@ -26,6 +28,7 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.2.2" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.2" />
         <PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.2" />
         <!--<PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0" />-->
@@ -39,9 +42,10 @@
     </ItemGroup>
 
     <ItemGroup>			
-		<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" />			
+		<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" Condition="$(DefineConstants.Contains(ORACLE))" />
+		<ProjectReference Include="..\..\Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj" Condition="$(DefineConstants.Contains(NETEZZA))" />
 		<ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common.csproj" />			
-		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj" />		
+		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj" />			
 		<ProjectReference Include="..\..\SqlCodeEditor.Avalonia\SqlCodeEditor.Avalonia.csproj" />
 		<ProjectReference Include="..\JustyBase.Database.Sample.Lib\JustyBase.Database.Sample.Lib.csproj" />
     </ItemGroup>

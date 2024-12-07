@@ -28,7 +28,7 @@ public static class PluginLoadHelper
     }
 
     public static bool PluginWasLoaded = false;
-    private static readonly object _pluginLock = new object();
+    private static readonly Lock _pluginLock = new Lock();
 
     public static void LoadPlugins(string pluginsLocation)
     {
