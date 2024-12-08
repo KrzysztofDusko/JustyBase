@@ -1,20 +1,40 @@
-﻿using CommunityToolkit.HighPerformance;
-using K4os.Compression.LZ4.Streams;
-using System;
+﻿using K4os.Compression.LZ4.Streams;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Formats.Tar;
-using System.IO;
-using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace JustyBase.Helpers;
 
 public sealed class OtherHelpers
 {
+    public async Task DownloadAllPlugins(string pluginDirectory, List<string> pluginsList, string downloadBasePath)
+    {
+        if (Directory.Exists(pluginDirectory))
+        {
+            Directory.Delete(pluginDirectory, true);
+        }
+        Directory.CreateDirectory(pluginDirectory);
+        HttpClient httpClientToDownload = new HttpClient()
+        {
+            Timeout = TimeSpan.FromMinutes(10)
+        };
+
+        foreach (var driverName in pluginsList)
+        {
+            using var response = await httpClientToDownload.GetAsync($"{downloadBasePath}{driverName}.tar.lz4");
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            using (var source = LZ4Stream.Decode(stream))
+            using (var target = File.Create($@"{pluginDirectory}\{driverName}.tar"))
+            {
+                await source.CopyToAsync(target);
+            }
+            await TarFile.ExtractToDirectoryAsync($@"{pluginDirectory}\{driverName}.tar", pluginDirectory, true);
+            File.Delete($@"{pluginDirectory}\{driverName}.tar");
+        }
+    }
+
     public async Task DownloadFileWithReverse(string remoteFilePath, string pathToSave)
     {
         HttpClient httpClientToDownload = new HttpClient()
@@ -50,36 +70,7 @@ public sealed class OtherHelpers
             file.Write(sp);
         }
     }
-    public async Task DownloadAllPlugins(string pluginDirectory, List<string> pluginsList, string downloadBasePath)
-    {
-        if (Directory.Exists(pluginDirectory))
-        {
-            Directory.Delete(pluginDirectory, true);
-        }
-        Directory.CreateDirectory(pluginDirectory);
-        HttpClient httpClientToDownload = new HttpClient()
-        {
-            Timeout = TimeSpan.FromMinutes(10)
-        };
-
-        foreach (var driverName in pluginsList)
-        {
-            using var response = await httpClientToDownload.GetAsync($"{downloadBasePath}{driverName}.tar.lz4");
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            using (var source = LZ4Stream.Decode(stream))
-            using (var target = File.Create($@"{pluginDirectory}\{driverName}.tar"))
-            {
-                await source.CopyToAsync(target);
-            }
-            await TarFile.ExtractToDirectoryAsync($@"{pluginDirectory}\{driverName}.tar", pluginDirectory, true);
-            File.Delete($@"{pluginDirectory}\{driverName}.tar");
-        }
-    }
-    public FileVersionInfo GetCurrentCopyVersion()
-    {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        return FileVersionInfo.GetVersionInfo(assembly.Location);
-    }
+   
     public string CsvTxtPreviewer(string path)
     {
         using var binaryReader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read));

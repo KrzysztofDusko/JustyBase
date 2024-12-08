@@ -78,7 +78,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
     public Action<string> DbMessageAction { get; set; }
     //private static readonly StringPool stringPoolForSchemaGeneral = new StringPool();
     //protected static StringPool StringPoolForSchemaGeneral => stringPoolForSchemaGeneral;
-    public static string CleanSqlWord(string word, CurrentAutoCompletDatabaseMode autoCompletMode)
+    public string CleanSqlWord(string word, CurrentAutoCompletDatabaseMode autoCompletMode)
     {
         if (word is not null && (autoCompletMode & CurrentAutoCompletDatabaseMode.MakeUpperCase) != CurrentAutoCompletDatabaseMode.NotSet)
         {

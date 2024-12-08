@@ -1,4 +1,4 @@
-﻿using JustyBase.PluginDatabaseBase.AnotherContracts;
+﻿using JustyBase.Common.Contracts;
 using JustyBase.StringExtensions;
 using System.Buffers;
 using System.Text.RegularExpressions;

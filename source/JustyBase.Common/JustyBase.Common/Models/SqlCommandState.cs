@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace JustyBase.Shared.Models;
-internal enum SqlCommandState
+public enum SqlCommandState
 {
     created,
     started,

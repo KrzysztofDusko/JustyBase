@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-     <ProjectReference Include="..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj" />
+    <ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj" />
   </ItemGroup>
+
 </Project>

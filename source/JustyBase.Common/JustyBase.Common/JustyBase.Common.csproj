@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj" />
+    <ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj" />
+    <ProjectReference Include="..\JustyBase.Common.Tools\JustyBase.Common.Tools.csproj" />
   </ItemGroup>
-
 </Project>

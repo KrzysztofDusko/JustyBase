@@ -5,8 +5,4 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\JustyBase.StringExtensions\JustyBase.StringExtensions.csproj" />
-    </ItemGroup>
 </Project>

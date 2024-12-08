@@ -79,7 +79,7 @@ public interface IDatabaseService : IDatabaseWithSpecificImportService
     void CacheMainDictionary();
     void ClearCachedData();
     IDatabaseRowReader GetDatabaseRowReader(DbDataReader reader);
-
+    string CleanSqlWord(string word, CurrentAutoCompletDatabaseMode autoCompletMode);
 }
 
 

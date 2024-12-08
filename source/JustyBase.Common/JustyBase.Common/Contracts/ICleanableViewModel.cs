@@ -1,4 +1,4 @@
-﻿namespace JustyBase.Common.Helpers;
+﻿namespace JustyBase.Common.Contracts;
 
 public interface ICleanableViewModel
 {

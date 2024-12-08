@@ -1,6 +1,5 @@
 ﻿namespace JustyBase.PluginDatabaseBase.Enums;
 
-
 [Flags]
 public enum CurrentAutoCompletDatabaseMode
 {

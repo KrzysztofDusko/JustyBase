@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\JustyBase.ToolsLib\JustyBase.Tools.csproj" />
+    <ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common.Tools\JustyBase.Common.Tools.csproj" />
   </ItemGroup>
 
 </Project>

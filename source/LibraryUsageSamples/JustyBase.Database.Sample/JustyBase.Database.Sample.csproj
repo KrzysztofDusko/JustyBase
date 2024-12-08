@@ -42,9 +42,9 @@
     </ItemGroup>
 
     <ItemGroup>			
-		<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" Condition="$(DefineConstants.Contains(ORACLE))" />
+		<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" Condition="$(DefineConstants.Contains(ORACLE))" />			
+		<ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common\JustyBase.Common.csproj" />			
 		<ProjectReference Include="..\..\Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj" Condition="$(DefineConstants.Contains(NETEZZA))" />
-		<ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common.csproj" />			
 		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj" />			
 		<ProjectReference Include="..\..\SqlCodeEditor.Avalonia\SqlCodeEditor.Avalonia.csproj" />
 		<ProjectReference Include="..\JustyBase.Database.Sample.Lib\JustyBase.Database.Sample.Lib.csproj" />

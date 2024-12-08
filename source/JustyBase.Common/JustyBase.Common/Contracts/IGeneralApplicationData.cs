@@ -1,8 +1,10 @@
-﻿using JustyBase.Common.Models;
+﻿using JustyBase.Common.Contracts;
+using JustyBase.Common.Models;
 using JustyBase.Editor;
 using JustyBase.PluginDatabaseBase;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace JustyBase;
 
@@ -20,7 +22,7 @@ public interface IGeneralApplicationData : IDatabaseInfo, ISomeEditorOptions
     public static readonly string PluginsDirectory = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\JB_PLUGINS";
 
     AppOptions Config { get; set; }
-    Dictionary<string, SavedTabData> DictionaryOfDocuments { get; set; }
+    Dictionary<string, ISavedTabData> DictionaryOfDocuments { get; set; }
 
     Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> AllSnippets { get; }
 
@@ -44,4 +46,6 @@ public interface IGeneralApplicationData : IDatabaseInfo, ISomeEditorOptions
 
     protected static string NewDocumentId => $"DOC_ID_{Guid.NewGuid()}";
 
+    bool UserAcceptsLoadindExternalpluginst { get; set; }
+    FileVersionInfo GetCurrentCopyVersion();
 }

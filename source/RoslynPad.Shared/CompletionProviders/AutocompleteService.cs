@@ -229,9 +229,9 @@ public sealed class AutocompleteService
                                 (DB1, SCH1, OBJ1) = (TEMP_DB, null, parts[0]);
                             }
                             //handle "word", WORD, word, Word etc. in netezza.
-                            DB1 = DatabaseService.CleanSqlWord(DB1, databaseService.AutoCompletDatabaseMode);
-                            SCH1 = DatabaseService.CleanSqlWord(SCH1, databaseService.AutoCompletDatabaseMode);
-                            OBJ1 = DatabaseService.CleanSqlWord(OBJ1, databaseService.AutoCompletDatabaseMode);
+                            DB1 = databaseService.CleanSqlWord(DB1, databaseService.AutoCompletDatabaseMode);
+                            SCH1 = databaseService.CleanSqlWord(SCH1, databaseService.AutoCompletDatabaseMode);
+                            OBJ1 = databaseService.CleanSqlWord(OBJ1, databaseService.AutoCompletDatabaseMode);
 
                             foreach (var item in databaseService.GetColumns(DB1, SCH1, OBJ1, lastWord))
                             {

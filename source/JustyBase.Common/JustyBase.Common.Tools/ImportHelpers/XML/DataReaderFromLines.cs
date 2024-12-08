@@ -3,7 +3,6 @@ using JustyBase.PluginCommon.Enums;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
-
 namespace JustyBase.Tools.ImportHelpers.XML;
 
 public sealed class DataReaderFromLines : IDataReader
