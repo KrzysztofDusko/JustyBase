@@ -1,8 +1,8 @@
 ﻿using JustyBase.Editor;
 using JustyBase.Editor.CompletionProviders;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.PluginDatabaseBase.Enums;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommons;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,7 +34,7 @@ public sealed class AutocompleteService
         bool TYPE_SCHEMA_OPTIONAL = ((databaseService.AutoCompletDatabaseMode & CurrentAutoCompletDatabaseMode.DatabaseAndSchemaOptional) != CurrentAutoCompletDatabaseMode.NotSet);
         bool TYPE_SCHEMA_CAN_BE_NULL = ((databaseService.AutoCompletDatabaseMode & CurrentAutoCompletDatabaseMode.NullSchemaCanBeAccepted) != CurrentAutoCompletDatabaseMode.NotSet);
 
-        string TEMP_DB = null;
+        string? TEMP_DB = null;
         if (TYPE3_DB_SCHEMA_OBJECT)
         {
             TEMP_DB = databaseName;
@@ -213,8 +213,8 @@ public sealed class AutocompleteService
                     {
                         if (firstWord.Equals(alias, StringComparison.OrdinalIgnoreCase))
                         {
-                            string DB1;
-                            string SCH1;
+                            string? DB1;
+                            string? SCH1;
                             string OBJ1;
                             if (parts.Length == 3)
                             {
@@ -281,7 +281,7 @@ public sealed class AutocompleteService
             }
             if (descProposal.Length >= 2_048)
             {
-                StringBuilder sb = new StringBuilder(2_048);
+                StringBuilder sb = new(2_048);
                 sb.Append(descProposal.AsSpan()[..^3]);
                 sb.Append("...");
                 return sb.ToString();
@@ -294,9 +294,9 @@ public sealed class AutocompleteService
             foreach (var item in aliasDbTable.Keys)
             {
                 var parts = item.Split('.');
-                string partDatabase = null;
-                string partSchema = null;
-                string partObject = null;
+                string? partDatabase = null;
+                string? partSchema = null;
+                string? partObject = null;
                 if (parts.Length == 1 && TYPE_SCHEMA_OPTIONAL)
                 {
                     partDatabase = TEMP_DB;

@@ -3,17 +3,11 @@ using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
 
-namespace JustyBase.Tools.ImportHelpers;
-public sealed class DBReaderWithMessages : DbDataReader
+namespace JustyBase.Common.Tools.ImportHelpers;
+public sealed class DBReaderWithMessages(DbDataReader dataReader, Action<long>? messageAction = null) : DbDataReader
 {
-    private readonly DbDataReader _rdr;
-    private readonly Action<long>? _messageAction;
-    
-    public DBReaderWithMessages(DbDataReader dataReader, Action<long>? messageAction = null)
-    {
-        _rdr = dataReader;
-        _messageAction = messageAction;
-    }
+    private readonly DbDataReader _rdr = dataReader;
+    private readonly Action<long>? _messageAction = messageAction;
 
     public override DataTable? GetSchemaTable()
     {
@@ -43,7 +37,7 @@ public sealed class DBReaderWithMessages : DbDataReader
         return _rdr.GetByte(ordinal);
     }
 
-    public override long GetBytes(int ordinal, long dataOffset, byte[] buffer, int bufferOffset, int length)
+    public override long GetBytes(int ordinal, long dataOffset, byte[]? buffer, int bufferOffset, int length)
     {
         return _rdr.GetBytes(ordinal, dataOffset, buffer, bufferOffset, length);
     }
@@ -53,7 +47,7 @@ public sealed class DBReaderWithMessages : DbDataReader
         return _rdr.GetChar(ordinal);
     }
 
-    public override long GetChars(int ordinal, long dataOffset, char[] buffer, int bufferOffset, int length)
+    public override long GetChars(int ordinal, long dataOffset, char[]? buffer, int bufferOffset, int length)
     {
         return _rdr.GetChars(ordinal, dataOffset, buffer, bufferOffset, length);
     }

@@ -3,19 +3,14 @@ using JustyBase.PluginCommon.Enums;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 
-namespace JustyBase.Tools.ImportHelpers.XML;
+namespace JustyBase.Common.Tools.ImportHelpers.XML;
 
-public sealed class DataReaderFromLines : IDataReader
+public sealed class DataReaderFromLines(OneCellValue[][] linesX, DatabaseTypeChooser databaseTypeChooser) : IDataReader
 {
-    private readonly OneCellValue[][] _linesX;
-    private readonly DatabaseTypeChooser _databaseTypeChooser;
+    private readonly OneCellValue[][] _linesX = linesX;
+    private readonly DatabaseTypeChooser _databaseTypeChooser = databaseTypeChooser;
     private int _currentRowNum = 0;
     private OneCellValue[] CurrentRow => _linesX[_currentRowNum];
-    public DataReaderFromLines(OneCellValue[][] linesX, DatabaseTypeChooser databaseTypeChooser)
-    {
-        _linesX = linesX;
-        _databaseTypeChooser = databaseTypeChooser;
-    }
 
     public object this[int i] => _linesX[i];
 

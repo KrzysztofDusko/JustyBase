@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibraryUsageSamples", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Database.Sample", "LibraryUsageSamples\JustyBase.Database.Sample\JustyBase.Database.Sample.csproj", "{00ACAF89-9712-44B2-B2C2-E2987F585B06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Database.Sample.Lib", "LibraryUsageSamples\JustyBase.Database.Sample.Lib\JustyBase.Database.Sample.Lib.csproj", "{5E1D14D9-EB5D-459C-AB19-EFB423C48816}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C1A4567-8377-4CF9-B6E3-79D8F8F50D9D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{497C1ADB-2791-4E86-8BB6-7F0D4CC97FDD}"
@@ -31,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.PluginDatabaseBas
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RoslynPad.Shared", "RoslynPad.Shared\RoslynPad.Shared.shproj", "{C14149B4-C29B-4A46-8AF7-A30900F97F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCodeEditor.Avalonia", "SqlCodeEditor.Avalonia\SqlCodeEditor.Avalonia.csproj", "{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetezzaOdbcPlugin", "Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj", "{70BE95F8-8DD8-442F-AA0C-964243F5F85E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JustyBase.Common", "JustyBase.Common", "{00A62BB7-0958-4F1E-B54A-7BD37A003DE1}"
@@ -42,6 +38,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Common.Tools", "JustyBase.Common\JustyBase.Common.Tools\JustyBase.Common.Tools.csproj", "{7346AD0F-6734-4FEA-8586-BA76164FAA17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetezzaBase", "Plugins\NetezzaBase\NetezzaBase.csproj", "{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JustyBase.Shared.Public", "JustyBase.Shared.Public\JustyBase.Shared.Public.shproj", "{85E55D49-5EA3-46FB-840B-EDBDD923EE6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Public.Lib", "JustyBase.Public.Lib\JustyBase.Public.Lib.csproj", "{899E34C4-DB50-4DAD-ADDF-E6A4F30423F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlEditor.Avalonia", "SqlEditor.Avalonia\SqlEditor.Avalonia.csproj", "{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,10 +67,6 @@ Global
 		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00ACAF89-9712-44B2-B2C2-E2987F585B06}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E1D14D9-EB5D-459C-AB19-EFB423C48816}.Release|Any CPU.Build.0 = Release|Any CPU
 		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{788E04A6-7A7F-49BF-97D5-89A07466DA45}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,10 +79,6 @@ Global
 		{B9BD2F75-36C3-49EE-B857-E95D10ADB69F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9BD2F75-36C3-49EE-B857-E95D10ADB69F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9BD2F75-36C3-49EE-B857-E95D10ADB69F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D012B2A2-2C7C-4B1C-9F66-6A90C6EE4165}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -101,6 +95,14 @@ Global
 		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{899E34C4-DB50-4DAD-ADDF-E6A4F30423F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{899E34C4-DB50-4DAD-ADDF-E6A4F30423F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{899E34C4-DB50-4DAD-ADDF-E6A4F30423F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{899E34C4-DB50-4DAD-ADDF-E6A4F30423F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,7 +112,6 @@ Global
 		{81532EB6-1010-4BB5-A77F-977E9FEDB49C} = {39A0BE66-BF41-422A-801F-C6868FB98FA6}
 		{888BBB8E-65F0-43AB-980D-FEDC5B8FC290} = {39A0BE66-BF41-422A-801F-C6868FB98FA6}
 		{00ACAF89-9712-44B2-B2C2-E2987F585B06} = {CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}
-		{5E1D14D9-EB5D-459C-AB19-EFB423C48816} = {CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}
 		{788E04A6-7A7F-49BF-97D5-89A07466DA45} = {497C1ADB-2791-4E86-8BB6-7F0D4CC97FDD}
 		{E561C903-EC7F-46CE-B600-0E90BCF2E2CB} = {5C1A4567-8377-4CF9-B6E3-79D8F8F50D9D}
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
@@ -119,7 +120,8 @@ Global
 		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A} = {39A0BE66-BF41-422A-801F-C6868FB98FA6}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		RoslynPad.Shared\RoslynPad.Shared.projitems*{0f355169-a3f6-4c01-aacc-b1e6317ba0be}*SharedItemsImports = 5
+		JustyBase.Shared.Public\JustyBase.Shared.Public.projitems*{85e55d49-5ea3-46fb-840b-edbdd923ee6a}*SharedItemsImports = 13
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{c14149b4-c29b-4a46-8af7-a30900f97f3b}*SharedItemsImports = 13
-		RoslynPad.Shared\RoslynPad.Shared.projitems*{d012b2a2-2c7c-4b1c-9f66-6a90c6ee4165}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

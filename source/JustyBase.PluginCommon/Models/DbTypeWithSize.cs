@@ -1,6 +1,6 @@
 ﻿using JustyBase.PluginCommon.Enums;
 
-namespace JustyBase.PluginCommon;
+namespace JustyBase.PluginCommon.Models;
 
 public record DbTypeWithSize(DbSimpleType DatabaseTypeSimple)
 {

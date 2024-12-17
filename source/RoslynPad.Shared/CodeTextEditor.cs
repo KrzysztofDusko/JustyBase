@@ -1,5 +1,5 @@
 ﻿using JustyBase.Editor.CompletionProviders;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommons;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ namespace JustyBase.Editor;
 
 public partial class CodeTextEditor : TextEditor
 {
-    protected CodeEditorCompletionWindow? _completionWindow;
+    protected CompletionWindow? _completionWindow;
     private OverloadInsightWindow? _insightWindow;
     private ToolTip? _toolTip;
 
@@ -67,6 +67,7 @@ public partial class CodeTextEditor : TextEditor
         _toolTip?.Close(this);
     }
 
+#if !AVALONIA
     private void OnMouseHoverStopped(object? sender, MouseEventArgs e)
     {
         if (_toolTip != null)
@@ -75,11 +76,11 @@ public partial class CodeTextEditor : TextEditor
             e.Handled = true;
         }
     }
+#endif
+
+#if !AVALONIA
     private async void OnMouseHover(object? sender, MouseEventArgs e)
     {
-#if AVALONIA
-        return;
-#endif
         TextViewPosition? position;
         try
         {
@@ -144,7 +145,7 @@ public partial class CodeTextEditor : TextEditor
 
         AfterToolTipOpen();
     }
-
+#endif
     partial void InitializeToolTip();
     partial void AfterToolTipOpen();
 
@@ -190,18 +191,14 @@ public partial class CodeTextEditor : TextEditor
             return;
         }
         var completionChar = triggerMode == TriggerMode.Text ? Document.GetCharAt(offset - 1) : (char?)null;
-        //if (completionChar is not null && Char.IsWhiteSpace((char)completionChar))
-        //{
-        //    return;
-        //}
 
         CompletionResult results = await CompletionProvider.GetCompletionData(offset, completionChar).ConfigureAwait(true);
-#if AVALONIA
-        if (_completionWindow is not null && results is not null && results.CompletionData?.Count == 0)
+
+        if (results?.CompletionData?.Count == 0)
         {
-            _completionWindow.Close();
+            _completionWindow?.Close();
         }
-#endif
+
         if (results?.OverloadProvider != null)
         {
             results.OverloadProvider.Refresh();
@@ -230,58 +227,51 @@ public partial class CodeTextEditor : TextEditor
         {
             _insightWindow?.Close();
 
-            // Open code completion after the user has pressed dot:
-            _completionWindow = new CodeEditorCompletionWindow(TextArea)
+//#if AVALONIA
+            _completionWindow = new CompletionWindow(TextArea)
             {
-                MinWidth = 300,
-                UseHardSelection = results.UseHardSelection,
-#if AVALONIA
-#else
-                CloseWhenCaretAtBeginning = triggerMode == TriggerMode.Completion || triggerMode == TriggerMode.Text,
-#endif
+                CloseWhenCaretAtBeginning = triggerMode == TriggerMode.Completion || triggerMode == TriggerMode.Text
             };
-            //_completionWindow.Background = Brushes.Red;
-            //_completionWindow.Foreground = Brushes.Yellow;
-            //CompletionBackground = Brushes.Red;
+
+            _completionWindow.Initialized += (o, args) => 
+            {
+                var cw = (o as CompletionWindow);
+                if (cw is not null)
+                {
+                    cw.CompletionList.BorderThickness = new Thickness(1);
+                }
+            };
+            _completionWindow.Loaded += async (o, args) =>
+            {
+                await Task.Delay(10);
+                var cw = (o as CompletionWindow);
+                if (cw is not null)
+                {
+                    cw.CompletionList.SelectedItem = cw.CompletionList.CompletionData.FirstOrDefault();
+                }
+            };
             InitializeCompletionWindow();
 
-            if (completionChar != null && IsLetterDigitOrAt(completionChar.Value))
+            if (completionChar is not null && IsLetterDigitOrAt(completionChar.Value))
             {
-#if AVALONIA
                 _completionWindow.CloseWhenCaretAtBeginning = true;
-#endif
-                int maxToGoBack = 8;
-                do
-                {
-                    maxToGoBack--;
-                    _completionWindow.StartOffset -= 1;
-                } while (maxToGoBack > 0 && _completionWindow.StartOffset > 0 && IsLetterDigitOrAt(Document.GetCharAt(_completionWindow.StartOffset)));
-                if (_completionWindow.StartOffset > 0)
-                {
-                    _completionWindow.StartOffset++;
-                }
-            }
-            else if (triggerMode == TriggerMode.Completion) // https://github.com/KrzysztofDusko/JustyBase/issues/268
-            {
-                int maxToGoBack = 8;
-                do
-                {
-                    maxToGoBack--;
-                    _completionWindow.StartOffset -= 1;
-                } while (maxToGoBack > 0 && _completionWindow.StartOffset > 0 && IsLetterDigitOrAt(Document.GetCharAt(_completionWindow.StartOffset)));
-                if (_completionWindow.StartOffset > 0)
-                {
-                    _completionWindow.StartOffset++;
-                }
             }
 
-            //            if (completionChar != null && char.IsLetterOrDigit(completionChar.Value))
-            //            {
-            //                _completionWindow.StartOffset -= 1;
-            //#if AVALONIA
-            //                _completionWindow.CloseWhenCaretAtBeginning = true;
-            //#endif
-            //            }
+            if (triggerMode == TriggerMode.Completion || completionChar is not null && IsLetterDigitOrAt(completionChar.Value)) // https://github.com/KrzysztofDusko/JustyBase/issues/268
+            {
+                int maxToGoBack = 32;
+                var tmpStartOffset = _completionWindow.StartOffset;
+                do
+                {
+                    maxToGoBack--;
+                    tmpStartOffset -= 1;
+                } while (maxToGoBack > 0 && tmpStartOffset > 0 && IsLetterDigitOrAt(Document.GetCharAt(tmpStartOffset)));
+                if (tmpStartOffset > 0)
+                {
+                    tmpStartOffset++;
+                }
+                _completionWindow.StartOffset = tmpStartOffset;
+            }
 
             var data = _completionWindow.CompletionList.CompletionData;
             ICompletionDataEx? selected = null;
@@ -304,10 +294,7 @@ public partial class CodeTextEditor : TextEditor
                 // TODO-AV: Fix this in AvaloniaEdit
             }
 
-            _completionWindow.Closed += (o, args) =>
-            {
-                _completionWindow = null;
-            };
+            _completionWindow.Closed += (o, args) => _completionWindow = null;
             _completionWindow.Show();
         }
     }
@@ -317,14 +304,14 @@ public partial class CodeTextEditor : TextEditor
     /// </summary>
     /// <param name="c">The charcater to check</param>
     /// <returns><c>true</c> if <paramref name="c"/> is a well-known identifier.</returns>
-    private bool IsCharIdentifier(char c)
+    private static bool IsCharIdentifier(char c)
     {
         return c == '_' || c == '(' || char.IsLetterOrDigit(c);
     }
 
-    private bool IsLetterDigitOrAt(char c)
+    private static bool IsLetterDigitOrAt(char c)
     {
-        return c == '_' || char.IsLetterOrDigit(c) || c == '@';
+        return c == '_' || c == '@' || char.IsLetterOrDigit(c);
     }
 
 
@@ -334,8 +321,7 @@ public partial class CodeTextEditor : TextEditor
     public void CleanSqlCreator()
     {
         _cleanSqlCode = Document.Text.CreateCleanSql();
-    }
-    
+    }    
 
     private void OnTextEntering(object? sender, TextCompositionEventArgs args)
     {
@@ -378,8 +364,10 @@ public partial class CodeTextEditor : TextEditor
     {
         if (this.SyntaxHighlighting?.Name == "GeneralSql" && _sqlCompletionTimer is null)
         {
-            _sqlCompletionTimer = new();
-            _sqlCompletionTimer.Interval = TimeSpan.FromMilliseconds(50);
+            _sqlCompletionTimer = new()
+            {
+                Interval = TimeSpan.FromMilliseconds(50)
+            };
             _sqlCompletionTimer.Tick += (_, _) =>
             {
                 _sqlCompletionTimer.Stop();
@@ -401,7 +389,7 @@ public partial class CodeTextEditor : TextEditor
 
     partial void InitializeCompletionWindow();
 
-    #endregion
+#endregion
 
 
 }

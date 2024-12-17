@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JustyBase.Editor;
 using System.Text.RegularExpressions;
 using System.Linq;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommons;
 
 namespace JustyBase.Helpers;
 

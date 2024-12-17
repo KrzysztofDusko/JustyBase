@@ -29,7 +29,7 @@ public sealed class SqlFoldingStrategy
     /// </summary>
     public IEnumerable<NewFolding> CreateNewFoldings(ITextSource document)
     {
-        List<NewFolding> newFoldings = new List<NewFolding>();
+        List<NewFolding> newFoldings = [];
 
         Stack<(int, string)> startOffsets = new();
         Span<char> charList = stackalloc char[128];

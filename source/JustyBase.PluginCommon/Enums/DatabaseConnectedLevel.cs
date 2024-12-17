@@ -1,5 +1,4 @@
-
-namespace JustyBase.PluginDatabaseBase.Enums;
+namespace JustyBase.PluginCommon.Enums;
 public enum DatabaseConnectedLevel
 {
     NotConnected,

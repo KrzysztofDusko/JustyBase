@@ -1,5 +1,7 @@
 ﻿using JustyBase.Helpers;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommons;
+
 
 //using JustyBase.PluginDatabaseBase.Extensions;
 
@@ -866,7 +868,7 @@ public partial class SqlCompletionProvider : ICodeEditorCompletionProvider
 
     private static Dictionary<string, List<string>> ExtractElements(List<string> chunks)
     {
-        Dictionary<string, List<string>> aliasDatabaseTable = new Dictionary<string, List<string>>();
+        Dictionary<string, List<string>> aliasDatabaseTable = [];
         for (int i = 0; i < chunks.Count; i++)
         {
             string tmp = chunks[i];
@@ -904,7 +906,7 @@ public partial class SqlCompletionProvider : ICodeEditorCompletionProvider
 
             if (!aliasDatabaseTable.TryGetValue(tableName, out List<string>? tmpVal1))
             {
-                tmpVal1 = new List<string>();
+                tmpVal1 = [];
                 aliasDatabaseTable.Add(tableName, tmpVal1);
             }
 
@@ -943,7 +945,7 @@ public partial class SqlCompletionProvider : ICodeEditorCompletionProvider
     {
         foreach (string accualWithTable in textIncludingWithsAndTables.MySplit2(separator))
         {
-            Match matchWithTable = null;
+            Match matchWithTable;
             if (!isTable)//with
             {
                 matchWithTable = rxWith.Match(accualWithTable);

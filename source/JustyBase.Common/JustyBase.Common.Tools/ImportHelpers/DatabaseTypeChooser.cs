@@ -1,11 +1,11 @@
-﻿using JustyBase.PluginCommon;
-using JustyBase.PluginCommon.Contracts;
+﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginCommons;
 using SpreadSheetTasks;
 using System.Diagnostics;
 
-namespace JustyBase.Tools.ImportHelpers;
+namespace JustyBase.Common.Tools.ImportHelpers;
 
 public sealed class DatabaseTypeChooser
 {
@@ -40,16 +40,16 @@ public sealed class DatabaseTypeChooser
     {
         if (NormalizedColumnHeaderNames is null)
             throw new NullReferenceException("ColumnHeadersNames should be not null");
-        
+
         if (OriginalColumnHeaderNames is null)
             throw new NullReferenceException("_originalColumnHeadersNames should be not null");
-        
+
         if (ColumnTypesBestMatch is null)
             throw new NullReferenceException("ColumnTypesBestMatch should be not null");
-        
+
         if (_innerTypeArray is null)
             throw new NullReferenceException("_innerTypeDictionaryHelper should be not null");
-        
+
         for (int i = 0; i < _fieldCount; i++)
         {
             if (OriginalColumnHeaderNames[i].EndsWith("_#TEXT"))
@@ -83,7 +83,7 @@ public sealed class DatabaseTypeChooser
 
             var typesCountLevel1 = _innerTypeArray[i];
 
-            Dictionary<DbSimpleType, Trio> dc = new Dictionary<DbSimpleType, Trio>();
+            Dictionary<DbSimpleType, Trio> dc = [];
             for (int j = 0; j < typesCountLevel1.Length; j++)
             {
                 dc[(DbSimpleType)j] = typesCountLevel1[j];
@@ -98,14 +98,14 @@ public sealed class DatabaseTypeChooser
             }
 
             // choose best suited type
-            var bestChoice = bestChoiceTemp.OrderByDescending(arg => (arg.Value).HowManyTimes).FirstOrDefault();
+            var bestChoice = bestChoiceTemp.OrderByDescending(arg => arg.Value.HowManyTimes).FirstOrDefault();
             bool containNumeric = typesCountLevel1[(int)DbSimpleType.Numeric].HowManyTimes > 0;
             bool containNvarchar = typesCountLevel1[(int)DbSimpleType.Nvarchar].HowManyTimes > 0;
             bool containInteger = typesCountLevel1[(int)DbSimpleType.Integer].HowManyTimes > 0;
             bool containTimestamp = typesCountLevel1[(int)DbSimpleType.TimeStamp].HowManyTimes > 0;
             bool containBoolean = typesCountLevel1[(int)DbSimpleType.Boolean].HowManyTimes > 0;
 
-            bool isTypeMix = ((containNumeric ? 1 : 0) + (containInteger ? 1 : 0) + (containTimestamp ? 1 : 0) + (containBoolean ? 1 : 0)) > 1;
+            bool isTypeMix = (containNumeric ? 1 : 0) + (containInteger ? 1 : 0) + (containTimestamp ? 1 : 0) + (containBoolean ? 1 : 0) > 1;
 
             if (containNvarchar)
             {
@@ -133,7 +133,7 @@ public sealed class DatabaseTypeChooser
                     proposedNumericLength = 20;
                 }
 
-                ColumnTypesBestMatch[i] = new DbTypeWithSize(DbSimpleType.Nvarchar) { TextLength = (proposedNumericLength == 1 ? 1 : proposedNumericLength + textMargin) };
+                ColumnTypesBestMatch[i] = new DbTypeWithSize(DbSimpleType.Nvarchar) { TextLength = proposedNumericLength == 1 ? 1 : proposedNumericLength + textMargin };
             }
             else if (isTypeMix)
             {
@@ -159,8 +159,8 @@ public sealed class DatabaseTypeChooser
                 {
                     a = b + 16;
                 }
-                int precision = (a > 38 ? 38 : a);
-                int scale = (b > ImportEssentials.NumericPrecision ? ImportEssentials.NumericPrecision : b);
+                int precision = a > 38 ? 38 : a;
+                int scale = b > ImportEssentials.NumericPrecision ? ImportEssentials.NumericPrecision : b;
                 ColumnTypesBestMatch[i] = new DbTypeWithSize(DbSimpleType.Numeric) { NumericPrecision = precision, NumericScale = scale };
             }
             else
@@ -271,7 +271,7 @@ public sealed class DatabaseTypeChooser
     }
 
     public long RowsCount = -1;
-    public List<string[]> PreviewRows { get; set; } = new List<string[]>();
+    public List<string[]> PreviewRows { get; set; } = [];
     public void ExcelTypeDetection(ExcelReaderAbstract excelDataReader, string sheetName, Action<string>? messageAction = null, long timeoutInSec = -1)
     {
         excelDataReader.ActualSheetName = sheetName;
@@ -296,7 +296,7 @@ public sealed class DatabaseTypeChooser
             OriginalColumnHeaderNames[i] = excelDataReader.GetName(i);
             NormalizedColumnHeaderNames[i] = OriginalColumnHeaderNames[i].NormalizeDbColumnName();
         }
-        
+
         var timestampBeforeLongLoop = Stopwatch.GetTimestamp();
         Stopwatch messageStopwatch = Stopwatch.StartNew();
         bool analyseIncomplete = false;

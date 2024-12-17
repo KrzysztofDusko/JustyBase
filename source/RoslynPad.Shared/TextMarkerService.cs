@@ -38,10 +38,10 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
 
     public TextMarkerService(CodeTextEditor editor)
     {
-        if (editor == null) throw new ArgumentNullException(nameof(editor));
+        ArgumentNullException.ThrowIfNull(editor);
         _document = editor.Document;
         _markers = new TextSegmentCollection<TextMarker>(_document);
-        _textViews = new List<TextView>();
+        _textViews = [];
         editor.ToolTipRequest += EditorOnToolTipRequest;
     }
 
@@ -92,7 +92,7 @@ public sealed class TextMarkerService : DocumentColorizingTransformer, IBackgrou
     public IEnumerable<TextMarker> GetMarkersAtOffset(int offset)
     {
         if (_markers == null)
-            return Enumerable.Empty<TextMarker>();
+            return [];
         return _markers.FindSegmentsContaining(offset);
     }
 

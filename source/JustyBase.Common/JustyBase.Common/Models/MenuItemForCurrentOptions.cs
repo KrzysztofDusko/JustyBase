@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Windows.Input;
 
-namespace JustyBase.Shared.Models;
+namespace JustyBase.Common.Models;
 
 public sealed class MenuItemForCurrentOptions : ObservableObject
 {

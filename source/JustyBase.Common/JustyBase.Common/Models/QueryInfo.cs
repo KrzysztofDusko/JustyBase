@@ -1,8 +1,7 @@
-﻿using JustyBase.Shared.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Common;
 
-namespace JustyBase.Models.Tools;
+namespace JustyBase.Common.Models;
 public sealed class QueryInfo
 {
     public bool FullFinish { get; set; }

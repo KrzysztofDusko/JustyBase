@@ -1,6 +1,5 @@
 ﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Enums;
 
 namespace JustyBase.PluginDatabaseBase.Database;
 
@@ -11,7 +10,7 @@ public static class DatabaseServiceHelpers
     static DatabaseServiceHelpers()
     {
         var enumValues = Enum.GetValues<TypeInDatabaseEnum>();
-        int enaumElements = enumValues.Count();
+        int enaumElements = enumValues.Length;
         _typeInDatabaseToNameInSchema = new string[enaumElements];
         foreach (TypeInDatabaseEnum item in Enum.GetValues<TypeInDatabaseEnum>())
         {
@@ -123,7 +122,7 @@ public static class DatabaseServiceHelpers
     string,//db
     int, // connectionTimeout
     IDatabaseService // result -> Oracle/Db2/etc.
-    >> SpecificDbImpelmetations = new Dictionary<DatabaseTypeEnum, Func<string, string, string, string, string, int, IDatabaseService>>();
+    >> SpecificDbImpelmetations = [];
 
     private static readonly Lock _lockAddDatabaseImplementation = new Lock();
     public static void AddDatabaseImplementation(DatabaseTypeEnum databaseTypeEnum, Func<
@@ -170,10 +169,10 @@ public static class DatabaseServiceHelpers
             IDatabaseService? databaseService;
             if (ownDatabaseService is null && databaseInfo?.LoginDataDic is not null && databaseInfo.LoginDataDic.TryGetValue(connectionName, out var loginDataModel))
             {
-                string userName = loginDataModel.UserName;
-                string password = loginDataModel.Password;
-                string ip = loginDataModel.Server;
-                string db = loginDataModel.Database;
+                string? userName = loginDataModel.UserName;
+                string? password = loginDataModel.Password;
+                string? ip = loginDataModel.Server;
+                string? db = loginDataModel.Database;
                 string driver = loginDataModel.Driver;
                 loginDataModel.ConnectionName = connectionName;
 

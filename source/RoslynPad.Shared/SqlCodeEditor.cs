@@ -4,7 +4,8 @@ using JustyBase.Helpers;
 using JustyBase.Editor.Folding;
 using System.Threading.Tasks;
 using JustyBase.Editor.CompletionProviders;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommons;
 
 
 namespace JustyBase.Editor;

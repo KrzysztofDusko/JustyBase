@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using JustyBase.PluginCommon.Enums;
 
-namespace JustyBase.Tools;
+namespace JustyBase.Common.Tools;
 
 public sealed class AdvancedExportOptions
 {
@@ -64,7 +64,7 @@ public sealed class AdvancedExportOptions
                     }
                     if (optionName.Equals("header", StringComparison.OrdinalIgnoreCase))
                     {
-                        opt.Header = optionValue.Trim() == "true" ? true : false;
+                        opt.Header = optionValue.Trim() == "true";
                     }
                     if (optionName.Equals("encoding", StringComparison.OrdinalIgnoreCase))
                     {

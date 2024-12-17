@@ -1,4 +1,4 @@
-﻿namespace JustyBase.PluginDatabaseBase.Models;
+﻿namespace JustyBase.PluginCommon.Models;
 
 public record DatabaseColumn
 {

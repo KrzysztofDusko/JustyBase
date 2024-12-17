@@ -1,13 +1,12 @@
-using JustyBase.PluginCommon;
+using JustyBase.Common.Tools.ImportHelpers.XML;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
-using JustyBase.Tools.ImportHelpers;
-using JustyBase.Tools.ImportHelpers.XML;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginCommons;
 using System.Data;
 using System.Globalization;
 
-namespace JustyBase.Tools.Import;
+namespace JustyBase.Common.Tools.ImportHelpers;
 public class DbImportJob : IDbImportJob
 {
     public DbImportJob(IDataReader rdr, DatabaseTypeChooser typeChooser)

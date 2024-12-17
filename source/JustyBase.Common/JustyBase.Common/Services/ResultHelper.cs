@@ -1,48 +1,54 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Threading.Tasks;
 using JustyBase.Common.Contracts;
+using JustyBase.Common.Tools;
+using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
-using JustyBase.Tools;
+using JustyBase.PluginCommons;
 using SpreadSheetTasks;
 using Sylvan.Data.Csv;
 
-namespace JustyBase.Services;
+namespace JustyBase.Common.Services;
 public sealed class ResultHelper
 {
-    private readonly IGeneralApplicationData _generalApplicationData;
-    private readonly IMessageForUserTools  _messageForUserTools;
-    private readonly char _csvColumnSeparator;
-    private readonly string _csvRowSeparator;
-    private readonly Encoding _csvEncoding;
+    private readonly IGeneralApplicationData? _generalApplicationData;
+    private readonly IMessageForUserTools _messageForUserTools;
+    private readonly ISimpleLogger _simpleLogger;
+    private readonly char _csvColumnSeparator = ';';
+    private readonly string _csvRowSeparator = "\n";
+    private readonly Encoding _csvEncoding = Encoding.UTF8; // ???
 
-    public ResultHelper(IGeneralApplicationData generalApplicationData, IMessageForUserTools messageForUserTools)
+    public ResultHelper(IGeneralApplicationData? generalApplicationData, IMessageForUserTools messageForUserTools, ISimpleLogger simpleLogger)
     {
         _generalApplicationData = generalApplicationData;
         _messageForUserTools = messageForUserTools;
-        _csvColumnSeparator = _generalApplicationData.Config.SepInExportedCsv[0];
-        _csvRowSeparator = _generalApplicationData.Config.SepRowsInExportedCsv switch
+        _simpleLogger = simpleLogger;
+        if (_generalApplicationData is not null)
         {
-            "windows" => "\r\n",
-            _ => "\n"
-        };
-        try
-        {
-            _csvEncoding = AdvancedExportOptions.ParseEnconding(_generalApplicationData.Config.EncondingName);
+            _csvColumnSeparator = _generalApplicationData.Config.SepInExportedCsv[0];
+            _csvRowSeparator = _generalApplicationData.Config.SepRowsInExportedCsv switch
+            {
+                "windows" => "\r\n",
+                _ => "\n"
+            };
         }
-        catch (Exception ex1)
+
+        if (_generalApplicationData is not null)
         {
-            _generalApplicationData.GlobalLoggerObject.TrackError(ex1, isCrash: false);
-            _generalApplicationData.Config.EncondingName = "UTF-8";
-            _generalApplicationData.SaveConfig();
-            _csvEncoding = AdvancedExportOptions.ParseEnconding(_generalApplicationData.Config.EncondingName);
-            _messageForUserTools.ShowSimpleMessageBoxInstance(ex1);
-        };
+            try
+            {
+                _csvEncoding = AdvancedExportOptions.ParseEnconding(_generalApplicationData.Config.EncondingName);
+            }
+            catch (Exception ex1)
+            {
+                _simpleLogger.TrackError(ex1, isCrash: false);
+                _generalApplicationData.Config.EncondingName = "UTF-8";
+                _generalApplicationData.SaveConfig();
+                _csvEncoding = AdvancedExportOptions.ParseEnconding(_generalApplicationData.Config.EncondingName);
+                _messageForUserTools.ShowSimpleMessageBoxInstance(ex1);
+            };
+        }
     }
     public void CreateCsvFile(TextWriter stringWriter, DbDataReader rdr, bool headers)
     {
@@ -53,13 +59,10 @@ public sealed class ResultHelper
             WriteHeaders = headers
         });
         csvWriter.Write(rdr);
-
-        //var csvWriter = new CsvWriter(stringWriter, CsvRowSeparator, CsvColumnSeparator, CsvEncoding, headers);
-        //csvWriter.Write(rdr);
     }
-    private string SheetName => _generalApplicationData.Config.DefaultXlsxSheetName;
-    public string DefaultExcelExtension => _generalApplicationData.Config.UseXlsb == true ? ".xlsb" : ".xlsx";
-    public async Task CreateExcelFile(string filePathToExport, DbDataReader rdr, string SQL)
+    private string SheetName => _generalApplicationData?.Config?.DefaultXlsxSheetName ?? "Sheet";
+    public string DefaultExcelExtension => _generalApplicationData?.Config?.UseXlsb == false ? ".xlsx" : ".xlsb";
+    public async Task CreateExcelFileAsync(string filePathToExport, DbDataReader rdr, string SQL)
     {
         bool IsXlsb = filePathToExport.EndsWith(".xlsb", StringComparison.OrdinalIgnoreCase);
         bool IsXlsx = filePathToExport.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase);
@@ -104,12 +107,12 @@ public sealed class ResultHelper
             {
                 await Task.Run(() =>
                 {
-                    using var  helperStream = new FileStream(filePathToExport, FileMode.Create, FileAccess.Write, FileShare.None);
-                    using var archive = new ZipArchive(helperStream, ZipArchiveMode.Create,true);
+                    using var helperStream = new FileStream(filePathToExport, FileMode.Create, FileAccess.Write, FileShare.None);
+                    using var archive = new ZipArchive(helperStream, ZipArchiveMode.Create, true);
                     var entry = archive.CreateEntry(Path.GetFileName(filePathToExport[..^4]));
                     Stream openedEntry = entry.Open();
-                    using var streamWriter = new StreamWriter(openedEntry);
-                    CreateCsvFile(streamWriter, rdr,true);
+                    using var streamWriter = new StreamWriter(openedEntry,_csvEncoding);
+                    CreateCsvFile(streamWriter, rdr, true);
                 });
             }
             else if (IsParquet)
@@ -120,7 +123,7 @@ public sealed class ResultHelper
             }
             else
             {
-                await Task.Run(() => 
+                await Task.Run(() =>
                 {
                     using var fileStream = File.Open(filePathToExport, FileMode.Create, FileAccess.Write, FileShare.None);
                     Stream helperStream = csvCompression switch
@@ -131,27 +134,27 @@ public sealed class ResultHelper
                         CompressionEnum.Zstd => new ZstdSharp.CompressionStream(fileStream),
                         _ => throw new NotImplementedException(),
                     };
-                    using var streamWriter = new StreamWriter(helperStream);
+                    using var streamWriter = new StreamWriter(helperStream, _csvEncoding);
                     CreateCsvFile(streamWriter, rdr, true);
                 });
             }
         }
         catch (Exception ex)
         {
-            _generalApplicationData.GlobalLoggerObject.TrackError(ex, isCrash: false);
+            _simpleLogger.TrackError(ex, isCrash: false);
             _messageForUserTools.ShowSimpleMessageBoxInstance("File name is not valid ? " + "\n" + ex.Message);
             return;
         }
     }
 
-    public async Task CreateXlsbOrXlsxFile(string filePathToExport, List<(DbDataReader,string)> listOfResults)
+    public async Task CreateXlsbOrXlsxFile(string filePathToExport, List<(DbDataReader, string)> listOfResults)
     {
         bool IsXlsb = filePathToExport.EndsWith(".xlsb", StringComparison.OrdinalIgnoreCase);
         bool IsXlsx = filePathToExport.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase);
 
         try
         {
-            new FileInfo(filePathToExport);
+            _ = new FileInfo(filePathToExport);
         }
         catch (Exception ex)
         {
@@ -173,7 +176,7 @@ public sealed class ResultHelper
                     foreach (var (rdr, SQL) in listOfResults)
                     {
                         excelFile.AddSheet($"{SheetName}_{i1}");
-                        excelFile.WriteSheet(rdr,doAutofilter: true);
+                        excelFile.WriteSheet(rdr, doAutofilter: true);
                         excelFile.AddSheet($"SQL_{i1}", hidden: true);
                         excelFile.WriteSheet(SQL.GetSqLParts());
                         i1++;
@@ -187,7 +190,7 @@ public sealed class ResultHelper
         }
         catch (Exception ex)
         {
-            _generalApplicationData.GlobalLoggerObject.TrackError(ex, isCrash: false);
+            _simpleLogger.TrackError(ex, isCrash: false);
             _messageForUserTools.ShowSimpleMessageBoxInstance("File name is not valid ? " + "\n" + ex.Message);
             return;
         }

@@ -1,5 +1,4 @@
-﻿
-namespace JustyBase.PluginDatabaseBase.Database;
+﻿namespace JustyBase.PluginDatabaseBase.Models;
 public struct ColumnInterval
 {
     public int FirstIndex;

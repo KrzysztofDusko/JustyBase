@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace JustyBase.Shared.Models;
+namespace JustyBase.Common.Models;
 public enum SqlCommandState
 {
     created,

@@ -1,6 +1,6 @@
 ﻿using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
-using JustyBase.Tools.ImportHelpers;
+using JustyBase.PluginCommons;
+using JustyBase.Common.Tools.ImportHelpers;
 using K4os.Compression.LZ4.Streams;
 using SpreadSheetTasks;
 using Sylvan.Data.Csv;
@@ -8,7 +8,7 @@ using System.Data.Common;
 using System.IO.Compression;
 using System.Text;
 
-namespace JustyBase.Tools;
+namespace JustyBase.Common.Tools;
 
 public static class ExportDbReaderExtensions
 {
@@ -16,7 +16,7 @@ public static class ExportDbReaderExtensions
         string? docPropertyProgramName, Action<int>? progressAction)
     {
         ExcelWriter excelFile;
-        if (filePathToExport.EndsWith(".xlsx",StringComparison.OrdinalIgnoreCase))
+        if (filePathToExport.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
         {
             excelFile = new XlsxWriter(filePathToExport)
             {
@@ -56,10 +56,10 @@ public static class ExportDbReaderExtensions
         {
             excelFile.Dispose();
         }
-    
+
     }
 
-    public static string HandleCsvOrParquetOutput(this DbDataReader rdr,string filePathToExport, AdvancedExportOptions? opt,Action<long>? progressAction)
+    public static string HandleCsvOrParquetOutput(this DbDataReader rdr, string filePathToExport, AdvancedExportOptions? opt, Action<long>? progressAction)
     {
         string finalFilePath = filePathToExport;
         int resultNumber = 1;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace JustyBase.Models.Tools;
+namespace JustyBase.Common.Models;
 
 public enum LogMessageType
 {

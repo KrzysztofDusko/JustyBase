@@ -1,16 +1,15 @@
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
-using JustyBase.Tools.Import;
+using JustyBase.PluginCommons;
 using System.Data;
 using System.Globalization;
 using System.Xml;
 
-namespace JustyBase.Tools.ImportHelpers.XML;
+namespace JustyBase.Common.Tools.ImportHelpers.XML;
 
 public sealed class DbXMLImportJob : DbImportJob, IDbXMLImportJob
 {
-    private OneCellValue[] _currentRow = Array.Empty<OneCellValue>();
+    private OneCellValue[] _currentRow = [];
 
     public static string GetValueStringRepresentationWithType(out DbSimpleType proposedDbType, ReadOnlySpan<char> stringValue, bool dataTypeAdnotation = true, string textQualifier = "'")
     {
@@ -270,7 +269,7 @@ public sealed class DbXMLImportJob : DbImportJob, IDbXMLImportJob
         });
 
         _databaseTypeChoser.NormalizedColumnHeaderNames = _columnHeadersNames;
-        if (_columnHeadersNames is not string[])
+        if (_columnHeadersNames is null)
             throw new Exception("_columnHeadersNames is not string[]");
         _databaseTypeChoser.OriginalColumnHeaderNames = (string[])_columnHeadersNames.Clone();
         _databaseTypeChoser.ChooseTypes();

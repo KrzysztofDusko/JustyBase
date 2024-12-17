@@ -5,20 +5,16 @@ using System.Buffers;
 using System.IO.Compression;
 using System.Text;
 
-namespace JustyBase.Tools.ImportHelpers;
+namespace JustyBase.Common.Tools.ImportHelpers;
 
-public sealed class CsvReader : ExcelReaderAbstract
+public sealed class CsvReader(CompressionEnum csvCompression = CompressionEnum.None) : ExcelReaderAbstract
 {
     public string FilePath { get; set; }
 
     private CsvDataReader _csvReader;
     private StreamReader _streamReader;
-    private readonly CompressionEnum _csvCompression = CompressionEnum.None;
+    private readonly CompressionEnum _csvCompression = csvCompression;
     public CompressionEnum Compression => _csvCompression;
-    public CsvReader(CompressionEnum csvCompression = CompressionEnum.None)
-    {
-        _csvCompression = csvCompression;
-    }
 
     private FileStream _originalFileStream;
     public override void Open(string path, bool readSharedStrings = true, bool updateMode = false, Encoding? encoding = null)
@@ -105,19 +101,19 @@ public sealed class CsvReader : ExcelReaderAbstract
             innerRow[i].type = ExcelDataType.String;
             innerRow[i].strValue = strVal.ToString();
         }
-        else if ((strVal[0] == '-' || Char.IsDigit(strVal[0])) && strVal.Length < 40 && strVal.ContainsAny(_searchValues)
+        else if ((strVal[0] == '-' || char.IsDigit(strVal[0])) && strVal.Length < 40 && strVal.ContainsAny(_searchValues)
                 && (
-                    decimal.TryParse(strVal, out decimal decimalRes) || 
-                    decimal.TryParse(strVal, System.Globalization.NumberStyles.Any, ExcelReaderAbstract.invariantCultureInfo, out decimalRes)
+                    decimal.TryParse(strVal, out decimal decimalRes) ||
+                    decimal.TryParse(strVal, System.Globalization.NumberStyles.Any, invariantCultureInfo, out decimalRes)
                 )
             )
         {
             innerRow[i].type = ExcelDataType.Double;
             innerRow[i].doubleValue = (double)decimalRes;//forLengthDetection in FullScanExcelReader
-            _isDecimalArray[i] = true;
-            _decimalVals[i] = decimalRes;
+            _isDecimalArray![i] = true; // Open must be called -> this is not null
+            _decimalVals![i] = decimalRes;
         }
-        else if (strVal.Length < 20 && strVal[0] != '0' && Int64.TryParse(strVal, out Int64 int64Val))
+        else if (strVal.Length < 20 && strVal[0] != '0' && long.TryParse(strVal, out long int64Val))
         {
             innerRow[i].type = ExcelDataType.Int64;
             innerRow[i].int64Value = int64Val;
@@ -156,8 +152,8 @@ public sealed class CsvReader : ExcelReaderAbstract
     {
         return _csvReader.GetFieldSpan(i).Length;
     }
-    public decimal GetDecimal(int i) => _decimalVals[i];
-    public bool IsDecimal(int i) => _isDecimalArray[i] == true;
+    public decimal GetDecimal(int i) => _decimalVals![i];
+    public bool IsDecimal(int i) => _isDecimalArray![i] == true;
     public override void Dispose()
     {
         _csvReader?.Dispose();

@@ -1,3 +1,4 @@
+using JustyBase.PluginDatabaseBase.Models;
 using System.Data.Common;
 
 namespace JustyBase.PluginDatabaseBase.Database;

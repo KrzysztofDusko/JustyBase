@@ -1,14 +1,12 @@
-﻿using JustyBase.Common.Contracts;
-using JustyBase.Common.Models;
-using JustyBase.Editor;
-using JustyBase.PluginDatabaseBase;
+﻿using JustyBase.Common.Models;
+using JustyBase.PluginCommon.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace JustyBase;
+namespace JustyBase.Common.Contracts;
 
-public interface IGeneralApplicationData : IDatabaseInfo, ISomeEditorOptions
+public interface IGeneralApplicationData : IDatabaseInfo, ISomeEditorOptions, IRuntimeDocumentsContainer
 {
     public static readonly string ConfigDirectoryEvo = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\JustDataEvo";
     public static readonly string ColorsPath = $"{ConfigDirectoryEvo}\\colors.json";
@@ -22,30 +20,22 @@ public interface IGeneralApplicationData : IDatabaseInfo, ISomeEditorOptions
     public static readonly string PluginsDirectory = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\JB_PLUGINS";
 
     AppOptions Config { get; set; }
-    Dictionary<string, ISavedTabData> DictionaryOfDocuments { get; set; }
-
-    Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> AllSnippets { get; }
 
     string SelectedTabIdFromStart { get; set; }
-    string AddNewDocument(string title);
+    
     bool AddToOrEditLoginData(string name, string database, string driver, string password, string userName, string server);
     void ClearTempSippetsObjects();
     bool DeleteFromLoginData(string name);
-    bool IsFileAlreadyOpened(string path);
     void SaveConfig();
     void SaveCredentials();
-    void SaveStartupSqlAndFiles(string[] tabsNames, string? selectedTabId = null);
-    void SaveStartupSqlAndFilesSpecific(ManySQL mn, string[] tabsNames);
 
-    string DownloadPluginsBasePath { get;}
+    string DownloadPluginsBasePath { get; }
 
     public static readonly List<string> ADDITIONAL_EXTENSIONS =
     [
         ".xlsb",".xlsx",".xls",".xlsm",".accdb",".mdb",".csv"
     ];
 
-    protected static string NewDocumentId => $"DOC_ID_{Guid.NewGuid()}";
+    string GetCurrentCopyVersion();
 
-    bool UserAcceptsLoadindExternalpluginst { get; set; }
-    FileVersionInfo GetCurrentCopyVersion();
 }

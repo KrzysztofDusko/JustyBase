@@ -1,10 +1,11 @@
-﻿using JustyBase.Tools.Models;
+﻿using JustyBase.Common.Contracts;
+using JustyBase.Common.Models;
 
 namespace JustyBase.Common.Services;
 
-public sealed class HistoryService
+public sealed class HistoryService(IGeneralApplicationData generalApplicationData)
 {
-    private readonly IGeneralApplicationData _generalApplicationData;
+    private readonly IGeneralApplicationData _generalApplicationData = generalApplicationData;
 
     private List<HistoryEntry>? _historyEntries = null;
     public List<HistoryEntry>? HistoryItemsCollection
@@ -19,11 +20,6 @@ public sealed class HistoryService
         }
     }
 
-    public HistoryService(IGeneralApplicationData generalApplicationData)
-    {
-        _generalApplicationData = generalApplicationData;
-    }
-
     private bool Loaded => _historyEntries is not null;
     private readonly Lock _sync = new();
     private void LoadFromFileToList()
@@ -34,7 +30,7 @@ public sealed class HistoryService
             {
                 return;
             }
-            _historyEntries = new List<HistoryEntry>();
+            _historyEntries = [];
 
             using var fs = new FileStream(IGeneralApplicationData.HistoryDatFilePath, FileMode.OpenOrCreate, FileAccess.Read);
             using (ZstdSharp.DecompressionStream decompressionStream = new ZstdSharp.DecompressionStream(fs, leaveOpen: false))

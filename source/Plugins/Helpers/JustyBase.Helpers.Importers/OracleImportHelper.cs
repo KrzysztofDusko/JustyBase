@@ -14,13 +14,13 @@ public sealed class OracleImportHelper
             if (!tableExists)
             {
                 string[] headers = importJob.ReturnHeadersWithDataTypes(DatabaseTypeEnum.Oracle);
-                string SQL = $"CREATE TABLE {tableName} ({String.Join(',', headers)})";
+                string SQL = $"CREATE TABLE {tableName} ({string.Join(',', headers)})";
                 using DbCommand cmd = oracleConnection.CreateCommand();
                 cmd.CommandText = SQL;
                 cmd.ExecuteNonQuery();
             }
 
-            using OracleBulkCopy cpy = new OracleBulkCopy(oracleConnection);
+            using OracleBulkCopy cpy = new(oracleConnection);
             cpy.BulkCopyTimeout = 3_600;
             cpy.NotifyAfter = 10_000;
             cpy.OracleRowsCopied += (o, e) => progress?.Invoke($"Copied {e.RowsCopied:N0}");

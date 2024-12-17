@@ -9,8 +9,8 @@ public partial class CodeTextEditor
 
     partial void Initialize()
     {
-        PointerHover += OnMouseHover;
-        PointerHoverStopped += OnMouseHoverStopped;
+        //PointerHover += OnMouseHover;
+        //PointerHoverStopped += OnMouseHoverStopped;
     }
 
     partial void InitializeToolTip()

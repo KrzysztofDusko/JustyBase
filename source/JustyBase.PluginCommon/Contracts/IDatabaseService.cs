@@ -1,12 +1,10 @@
-using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Enums;
-using JustyBase.PluginDatabaseBase.Models;
+using JustyBase.PluginCommon.Models;
 using System.Data.Common;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JustyBase.PluginDatabaseBase.Database;
+namespace JustyBase.PluginCommon.Contracts;
 public interface IDatabaseService : IDatabaseWithSpecificImportService
 {
     public const DatabaseTypeEnum WHO_I_AM_CONST = DatabaseTypeEnum.NotSupportedDatabase;
@@ -29,7 +27,7 @@ public interface IDatabaseService : IDatabaseWithSpecificImportService
     IEnumerable<(DatabaseObject dbObject, string schema)> FindDbObject(string database, string schema, string name, bool cleanNames);
     string GetAddComment(string table, string database, string schema);
     string GetCheckDistributeText(string database, string schema, string tableName);
-    IEnumerable<DatabaseColumn> GetColumns(string database, string schema, string table, string filter);
+    IEnumerable<DatabaseColumn> GetColumns(string? database, string? schema, string? table, string filter);
     IEnumerable<(DatabaseColumn, DatabaseObject)> GetColumnsFromAllTablesAndSchemas(string database, string schema);
     DbConnection GetConnection(string? databaseName, bool pooling = true, bool forSchema = false);
     ValueTask<string> GetCreateExternalText(string database, string schema, string tableName);
@@ -79,7 +77,7 @@ public interface IDatabaseService : IDatabaseWithSpecificImportService
     void CacheMainDictionary();
     void ClearCachedData();
     IDatabaseRowReader GetDatabaseRowReader(DbDataReader reader);
-    string CleanSqlWord(string word, CurrentAutoCompletDatabaseMode autoCompletMode);
+    string CleanSqlWord(string? word, CurrentAutoCompletDatabaseMode autoCompletMode);
 }
 
 

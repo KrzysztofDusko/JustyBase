@@ -2,7 +2,7 @@ using JustyBase.PluginCommon.Enums;
 using SpreadSheetTasks;
 using System.Data;
 
-namespace JustyBase.Tools.ImportHelpers;
+namespace JustyBase.Common.Tools.ImportHelpers;
 
 public sealed class DataReaderFromExcelReaderAbstract : IDataReader
 {
@@ -134,7 +134,7 @@ public sealed class DataReaderFromExcelReaderAbstract : IDataReader
 
     public short GetInt16(int i)
     {
-        return (Int16)_excelAbstractReader.GetInt32(i);
+        return (short)_excelAbstractReader.GetInt32(i);
     }
 
     public int GetInt32(int i)

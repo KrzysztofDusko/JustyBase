@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace JustyBase.StringExtensions;
+namespace JustyBase.PluginCommons;
 
 public static partial class StringExtension
 {
@@ -151,7 +151,7 @@ public static partial class StringExtension
     public static List<Range> ClipboardTextToLinesArray(ReadOnlySpan<char> clip)
     {
         char sepInClipboard = '\t';
-        List<int> l1 = new List<int>();
+        List<int> l1 = [];
 
         int n = clip.Length;
         for (int i = 1; i < n - 1; i++)

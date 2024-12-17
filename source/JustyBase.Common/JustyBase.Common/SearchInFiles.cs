@@ -1,9 +1,9 @@
 ﻿using JustyBase.Common.Contracts;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommons;
 using System.Buffers;
 using System.Text.RegularExpressions;
 
-namespace JustyBase.Tools.Helpers;
+namespace JustyBase.Common;
 
 public sealed class SearchInFiles : ISearchInFiles
 {
@@ -37,8 +37,8 @@ public sealed class SearchInFiles : ISearchInFiles
             }
             else
             {
-                buffer.Slice(BUFFER_SIZE - _toSearchLen).CopyTo(buffer.Slice(0, _toSearchLen)); 
-                readed = fs.Read(buffer.Slice(_toSearchLen));
+                buffer[(BUFFER_SIZE - _toSearchLen)..].CopyTo(buffer[.._toSearchLen]);
+                readed = fs.Read(buffer[_toSearchLen..]);
                 r = new ReadOnlySpan<char>(borrowed, 0, readed + _toSearchLen).IndexOf(toSearch, StringComparison.OrdinalIgnoreCase);
                 if (r != -1)
                 {

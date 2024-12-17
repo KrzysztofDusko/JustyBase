@@ -1,7 +1,5 @@
 ﻿using System;
 using JustyBase.Editor.CompletionProviders;
-using JustyBase.Helpers;
-using System.Runtime.CompilerServices;
 
 namespace JustyBase.Editor;
 public sealed class CompletionDataSql(string text, string desc, bool isSelected, Glyph glyph, SnippetManager snippetManager) 
@@ -27,7 +25,7 @@ public sealed class CompletionDataSql(string text, string desc, bool isSelected,
 
     public CommonImage Image => _glyph.ToImageSource();
 
-    [SkipLocalsInit]
+    //[SkipLocalsInit]
     public void Complete(TextArea textArea, ISegment completionSegment, EventArgs e)
     {
         if (_glyph == Glyph.Snippet && CompleteSnippet(textArea, completionSegment, e))
@@ -45,8 +43,8 @@ public sealed class CompletionDataSql(string text, string desc, bool isSelected,
             return;
         }
 
-
-        //fix of SYS -> SYSYSTEM instead of SYSTEM (this should be done better...)
+        //??
+        /*
         if (Text.Length >= completionSegment.Length && completionSegment.Length > 0)
         {
             int start = completionSegment.Offset;
@@ -91,7 +89,7 @@ public sealed class CompletionDataSql(string text, string desc, bool isSelected,
                 completionSegment = new AnchorSegment(textArea.Document, completionSegment.Offset - len, completionSegment.Length + len);
             }
         }
-
+        */
         textArea.Document.Replace(completionSegment, Text);
     }
 

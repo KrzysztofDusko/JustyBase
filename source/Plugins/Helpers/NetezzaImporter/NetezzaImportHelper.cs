@@ -7,7 +7,7 @@ using System.IO.Pipes;
 using System.Text;
 using System.Buffers;
 
-namespace JustyBase.Helpers.Importers;
+namespace JustyBase.Helpers.NetezzaImporter;
 
 public static class NetezzaImportHelper
 {
@@ -26,11 +26,11 @@ public static class NetezzaImportHelper
 
     private const int _DEFAULT_COMMAND_TIMEOUT = 3_600;
 
-    public static async Task NetezzaImportExecute(DbConnection conn, string tempDataDirectory, IDbImportJob importJob, 
+    public static async Task NetezzaImportExecute(DbConnection conn, string tempDataDirectory, IDbImportJob importJob,
         string tableName, Action<string>? progress, string remotesource = "DOTNET")
     {
         string serverName = $"JDE_{Path.GetRandomFileName()}";
-        
+
         var headersWithDataType = importJob.ReturnHeadersWithDataTypes(DatabaseTypeEnum.NetezzaSQL);
 
         bool isLineReader = importJob is IDbXMLImportJob;
@@ -43,19 +43,19 @@ public static class NetezzaImportHelper
             try
             {
                 using var cmd = conn.CreateCommand();
-                
+
                 cmd.CommandText = cmd.CommandText =
                 $"""
-                 CREATE TABLE {tableName} ({String.Join(',', headersWithDataType)})
+                 CREATE TABLE {tableName} ({string.Join(',', headersWithDataType)})
                  DISTRIBUTE ON RANDOM;
                  """;
 
                 cmd.ExecuteNonQuery();
 
                 progress?.Invoke($" {tableName} created");
-                cmd.CommandText = @$"INSERT INTO {tableName} SELECT * FROM EXTERNAL '\\.\pipe\{serverName}' ({String.Join(',', headersWithDataType)}) ";
-                string sep2 = (_columnSeparator == '\t' ? "\\t" : _columnSeparator.ToString());
-                cmd.CommandText += 
+                cmd.CommandText = @$"INSERT INTO {tableName} SELECT * FROM EXTERNAL '\\.\pipe\{serverName}' ({string.Join(',', headersWithDataType)}) ";
+                string sep2 = _columnSeparator == '\t' ? "\\t" : _columnSeparator.ToString();
+                cmd.CommandText +=
                 $"""
                  USING(
                     REMOTESOURCE '{remotesource}'
@@ -93,7 +93,7 @@ public static class NetezzaImportHelper
         {
             var server = new NamedPipeServerStream(serverName);
             server.WaitForConnection();
-            StreamWriter writer = new StreamWriter(server, Encoding.UTF8, 65_536);
+            StreamWriter writer = new(server, Encoding.UTF8, 65_536);
 
             object[] row = new object[rdr.FieldCount];
             TypeCode[]? dataTypesCodes = null;
@@ -108,7 +108,7 @@ public static class NetezzaImportHelper
                 }
             }
 
-            writer.Write(String.Join(_columnSeparator, row));
+            writer.Write(string.Join(_columnSeparator, row));
             writer.Write('\n');
             writer.Flush();
 
@@ -130,7 +130,7 @@ public static class NetezzaImportHelper
                                 case TypeCode.DBNull:
                                     break;
                                 case TypeCode.Boolean:
-                                    var val1 = (rdr.GetBoolean(i) == true) ? 1 : 0;
+                                    var val1 = rdr.GetBoolean(i) == true ? 1 : 0;
                                     writer.Write(val1);
                                     break;
                                 case TypeCode.Char:
@@ -145,19 +145,19 @@ public static class NetezzaImportHelper
                                     writer.Write(rdr.GetInt64(i));
                                     break;
                                 case TypeCode.Single:
-                                    _ = (rdr.GetFloat(i)).TryFormat(spanBuffer, out int written, "F6", ImportEssentials.NUMBER_WITH_DOT_FORMAT);
+                                    _ = rdr.GetFloat(i).TryFormat(spanBuffer, out int written, "F6", ImportEssentials.NUMBER_WITH_DOT_FORMAT);
                                     writer.Write(spanBuffer[..written]);
                                     break;
                                 case TypeCode.Double:
-                                    _ = (rdr.GetDouble(i)).TryFormat(spanBuffer, out int written2, "F6", ImportEssentials.NUMBER_WITH_DOT_FORMAT);
+                                    _ = rdr.GetDouble(i).TryFormat(spanBuffer, out int written2, "F6", ImportEssentials.NUMBER_WITH_DOT_FORMAT);
                                     writer.Write(spanBuffer[..written2]);
                                     break;
                                 case TypeCode.Decimal:
-                                    _ = (rdr.GetDecimal(i)).TryFormat(spanBuffer, out int written3, "F6", ImportEssentials.NUMBER_WITH_DOT_FORMAT);
+                                    _ = rdr.GetDecimal(i).TryFormat(spanBuffer, out int written3, "F6", ImportEssentials.NUMBER_WITH_DOT_FORMAT);
                                     writer.Write(spanBuffer[..written3]);
                                     break;
                                 case TypeCode.DateTime:
-                                    _ = (rdr.GetDateTime(i)).TryFormat(spanBuffer, out int written4, "yyyy-MM-dd HH:mm:ss");
+                                    _ = rdr.GetDateTime(i).TryFormat(spanBuffer, out int written4, "yyyy-MM-dd HH:mm:ss");
                                     writer.Write(spanBuffer[..written4]);
                                     break;
                                 case TypeCode.String:
@@ -190,7 +190,7 @@ public static class NetezzaImportHelper
                 {
                     if (rowsCount > 0)
                     {
-                        messageAction?.Invoke($"{((double)progressLineNumber / rowsCount):P1} rows loaded");
+                        messageAction?.Invoke($"{(double)progressLineNumber / rowsCount:P1} rows loaded");
                     }
                     else
                     {
@@ -224,7 +224,7 @@ public static class NetezzaImportHelper
         {
             return val;
         }
-        
+
         if (val.Contains(_deafultEscapeCharInExternal))
         {
             val = val.Replace(_deafultEscapeCharInExternalSTRING, _escapedEscapeChar);

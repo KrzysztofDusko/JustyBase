@@ -1,7 +1,6 @@
-﻿using JustyBase.PluginCommon.Contracts;
-using PluginDatabaseBase.Models;
+﻿using JustyBase.PluginCommon.Models;
 
-namespace JustyBase.PluginDatabaseBase;
+namespace JustyBase.PluginCommon.Contracts;
 
 public interface IDatabaseInfo
 {

@@ -1,4 +1,5 @@
 using CommunityToolkit.HighPerformance.Buffers;
+using JustyBase.PluginCommon.Contracts;
 using System.Data.Common;
 
 namespace JustyBase.PluginDatabaseBase.Database;

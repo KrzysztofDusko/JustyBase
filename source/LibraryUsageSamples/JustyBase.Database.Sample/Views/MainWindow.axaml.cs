@@ -7,9 +7,11 @@ using JustyBase.Database.Sample.ViewModels;
 using JustyBase.Editor;
 using System.Threading.Tasks;
 using JustyBase.PluginDatabaseBase.Database;
-using PluginDatabaseBase.Models;
 using JustyBase.Common.Helpers;
 using JustyBase.Helpers;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Models;
+using JustyBase.Common.Contracts;
 
 namespace JustyBase.Database.Sample.Views;
 
@@ -21,18 +23,19 @@ public partial class MainWindow : Window
         AddHandler(DragDrop.DragOverEvent, DragOver);
         AddHandler(DragDrop.DropEvent, Drop);
         sqlCodeEditor.SyntaxHighlighting = AvaloniaEdit.Highlighting.HighlightingManager.Instance.GetDefinition("SQL");
-        sqlCodeEditor.Initialize(new TestAutocompleteData(GetTestDatabaseService("NetezzaTest")), new TestOptions());
         this.Loaded += MainWindow_Loaded;
     }
+
     private void MainWindow_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        sqlCodeEditor.Initialize(new TestAutocompleteData((this.DataContext as MainWindowViewModel).GetTestDatabaseService("NetezzaTest")), new TestOptions());
         sqlCodeEditor.FoldingSetup();
         sqlCodeEditor.ForceUpdateFoldings();
         sqlCodeEditor.CollapseFoldings();
     }
     private void DragOver(object? sender, DragEventArgs e)
     {
-        e.DragEffects = e.DragEffects & (DragDropEffects.Link);
+        e.DragEffects &= (DragDropEffects.Link);
         if (!e.Data.Contains(DataFormats.Files))
         {
             e.DragEffects = DragDropEffects.None;
@@ -40,7 +43,7 @@ public partial class MainWindow : Window
     }
     private void Drop(object? sender, DragEventArgs e)
     {
-        e.DragEffects = e.DragEffects & (DragDropEffects.Link);
+        e.DragEffects &= (DragDropEffects.Link);
 
         if (e.Data.Contains(DataFormats.Files))
         {
@@ -70,55 +73,15 @@ public partial class MainWindow : Window
     }
 
 
-    private IDatabaseService GetTestDatabaseService(string _connectionName)
-    {
-        IDatabaseService _databaseService = new JustyBase.Services.Database.NetezzaOdbc
-            (LoginDataDic[_connectionName].UserName!,
-            LoginDataDic[_connectionName].Password!,
-            port: "5480",
-            LoginDataDic[_connectionName].Server!,
-            "JUST_DATA", connectionTimeout: 10
-            );
-        _databaseService.Name = _connectionName;
-        return _databaseService;
-    }
 
-    public Dictionary<string, LoginDataModel> LoginDataDic { get; set; } = new Dictionary<string, LoginDataModel>()
-    {
-        { "OracleTest", new LoginDataModel()
-            {
-                ConnectionName = "OracleTest",
-                DefaultIndex = 0,
-                Driver = "Oracle",
-                Password = EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("OracleTestPass")!),
-                Server=EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("OracleTestServer")!),
-                UserName= EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("OracleTestUser")!)
-            }
-        },
-            { "NetezzaTest", new LoginDataModel()
-            {
-                ConnectionName = "NetezzaTest",
-                DefaultIndex = 0,
-                Driver = "NetezzaOdbc",
-                Password = EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestPass")!),
-                Server=EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestServer")!),
-                UserName= EncryptionHelper.Decrypt(Environment.GetEnvironmentVariable("NetezzaTestUser")!)
-            }
-        }
-    };
+
 }
 
-public sealed class TestAutocompleteData : ISqlAutocompleteData
+public sealed class TestAutocompleteData(IDatabaseService databaseService) : ISqlAutocompleteData
 {
     private readonly AutocompleteService _autocompleteService = new AutocompleteService();
-    private readonly IDatabaseService? _databaseService;
-    private readonly string _connectionName;
-    public TestAutocompleteData(IDatabaseService databaseService)
-    {
-        _databaseService = databaseService;
-        _connectionName = databaseService.Name;
-    }
-
+    private readonly IDatabaseService? _databaseService = databaseService;
+    private readonly string _connectionName = databaseService.Name;
     private bool _inProgress = false;
     public async IAsyncEnumerable<CompletionDataSql> GetWordsList(string input, Dictionary<string, List<string>> aliasDbTable, Dictionary<string, List<string>> subqueryHints,
         Dictionary<string, List<string>> withHints, Dictionary<string, List<string>> tempTables)

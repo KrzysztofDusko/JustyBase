@@ -1,5 +1,5 @@
-﻿using JustyBase.Database.Sample.Contracts;
-using JustyBase.Database.Sample.Services;
+﻿using JustyBase.Common.Contracts;
+using JustyBase.Common.Helpers;
 using JustyBase.Database.Sample.ViewModels;
 using JustyBase.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,8 +10,8 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection)
     {
+        collection.AddSingleton<IEncryptionHelper, WindowsEncryptionHelper>();
         collection.AddSingleton<IAvaloniaSpecificHelpers, AvaloniaSpecificHelpers>();
-        collection.AddSingleton<IDatabaseHelperService, DatabaseHelperService>();
         collection.AddTransient<MainWindowViewModel>();
     }
 }

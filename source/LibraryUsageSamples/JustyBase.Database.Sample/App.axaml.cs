@@ -21,7 +21,7 @@ public class App : Application
         {
             using (var reader = new System.Xml.XmlTextReader(stream))
             {
-                AvaloniaEdit.Highlighting.HighlightingManager.Instance.RegisterHighlighting("SQL", Array.Empty<string>(),
+                AvaloniaEdit.Highlighting.HighlightingManager.Instance.RegisterHighlighting("SQL", [],
                     AvaloniaEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
                         AvaloniaEdit.Highlighting.HighlightingManager.Instance));
             }

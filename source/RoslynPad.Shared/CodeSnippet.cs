@@ -51,7 +51,7 @@ public sealed partial class CodeSnippet(string name, string description, string 
 
     public static Snippet CreateAvalonEditSnippet(string snippetText)
     {
-        if (snippetText == null) throw new ArgumentNullException(nameof(snippetText));
+        ArgumentNullException.ThrowIfNull(snippetText);
         var replaceableElements = new Dictionary<string, SnippetReplaceableTextElement>(StringComparer.OrdinalIgnoreCase);
         foreach (var match in s_pattern.Matches(snippetText).OfType<Match>())
         {
@@ -151,9 +151,10 @@ public sealed partial class CodeSnippet(string name, string description, string 
         return null;
     }
 
+    private static readonly char[] _newLiness = ['\r', '\n'];
     private static string GetWhitespaceBefore(string snippetText, int offset)
     {
-        var start = snippetText.LastIndexOfAny(new[] { '\r', '\n' }, offset) + 1;
+        var start = snippetText.LastIndexOfAny(_newLiness, offset) + 1;
         return snippetText.Substring(start, offset - start);
     }
 
@@ -176,7 +177,7 @@ public sealed partial class CodeSnippet(string name, string description, string 
     {
         if (string.IsNullOrEmpty(fieldName))
             return fieldName;
-        if (fieldName.StartsWith("_") && fieldName.Length > 1)
+        if (fieldName.StartsWith('_') && fieldName.Length > 1)
             return char.ToUpper(fieldName[1]) + fieldName.Substring(2);
         if (fieldName.StartsWith("m_") && fieldName.Length > 2)
             return char.ToUpper(fieldName[2]) + fieldName.Substring(3);
@@ -187,7 +188,7 @@ public sealed partial class CodeSnippet(string name, string description, string 
     {
         if (string.IsNullOrEmpty(fieldName))
             return fieldName;
-        if (fieldName.StartsWith("_") && fieldName.Length > 1)
+        if (fieldName.StartsWith('_') && fieldName.Length > 1)
             return char.ToLower(fieldName[1]) + fieldName.Substring(2);
         if (fieldName.StartsWith("m_") && fieldName.Length > 2)
             return char.ToLower(fieldName[2]) + fieldName.Substring(3);

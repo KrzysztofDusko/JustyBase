@@ -1,4 +1,5 @@
 ﻿using Avalonia.Input.Platform;
+using JustyBase.PluginCommon.Contracts;
 using System.Threading.Tasks;
 
 namespace JustyBase.Services;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace JustyBase.Tools.Models;
+namespace JustyBase.Common.Models;
 
 public sealed class SnippetModel
 {

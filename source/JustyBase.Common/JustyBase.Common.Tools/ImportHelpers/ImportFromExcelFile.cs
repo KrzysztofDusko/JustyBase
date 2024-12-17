@@ -1,23 +1,17 @@
 ﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
-using JustyBase.Tools.Import;
+using JustyBase.PluginCommons;
 using SpreadSheetTasks;
 using System.Text;
 
-namespace JustyBase.Tools.ImportHelpers;
+namespace JustyBase.Common.Tools.ImportHelpers;
 
-public sealed class ImportFromExcelFile
+public sealed class ImportFromExcelFile(Action<string>? exceptionMessageAction, ISimpleLogger? logToWeb)
 {
-    private readonly Action<string>? _exceptionMessageAction;
-    private readonly ISimpleLogger? _logToWeb;
-    public ImportFromExcelFile(Action<string>? exceptionMessageAction, ISimpleLogger? logToWeb)
-    {
-        _exceptionMessageAction = exceptionMessageAction;
-        _logToWeb = logToWeb;
-    }
+    private readonly Action<string>? _exceptionMessageAction = exceptionMessageAction;
+    private readonly ISimpleLogger? _logToWeb = logToWeb;
 
-    public Action<string>? StandardMessageAction {  get; set; }
+    public Action<string>? StandardMessageAction { get; set; }
 
     public List<string> SheetNamesToImport { get; set; }
 
@@ -52,7 +46,7 @@ public sealed class ImportFromExcelFile
         try
         {
             _excelReader.Open(FilePath, true, encoding: encoding);
-            SheetNamesToImport = _excelReader.GetScheetNames().ToList<string>();
+            SheetNamesToImport = _excelReader.GetScheetNames().ToList();
             return true;
         }
         catch (Exception ex)
@@ -80,13 +74,13 @@ public sealed class ImportFromExcelFile
     public bool TreatAllColumnsAsText { get; set; } = false;
     public async IAsyncEnumerable<DbImportJob> ReadFileAndReturnSingleImportJobs()
     {
-        var tabsToImport = this.SheetNamesToImport;
-        var progressMessage = this.StandardMessageAction;
+        var tabsToImport = SheetNamesToImport;
+        var progressMessage = StandardMessageAction;
         try
         {
             foreach (var sheetName in _excelReader.GetScheetNames().Where(x => tabsToImport.Contains(x)))
             {
-                _excelReader.TreatAllColumnsAsText = this.TreatAllColumnsAsText;
+                _excelReader.TreatAllColumnsAsText = TreatAllColumnsAsText;
                 _excelReader.ActualSheetName = sheetName;
                 DatabaseTypeChooser databaseTypeChooser = new DatabaseTypeChooser();
                 StandardMessageAction?.Invoke("data scan started");
@@ -101,8 +95,10 @@ public sealed class ImportFromExcelFile
                     string path = csvReader.FilePath;
                     var compression = csvReader.Compression;
                     _excelReader.Dispose();
-                    _excelReader = new CsvReader(compression);
-                    _excelReader.TreatAllColumnsAsText = this.TreatAllColumnsAsText;
+                    _excelReader = new CsvReader(compression)
+                    {
+                        TreatAllColumnsAsText = TreatAllColumnsAsText
+                    };
                     _excelReader.Open(path);
                 }
 
@@ -115,7 +111,7 @@ public sealed class ImportFromExcelFile
         }
     }
 
-    public async IAsyncEnumerable<ImportStepHelper> ImportFromFileStepByStep(DatabaseTypeEnum databaseTypeEnum,IDatabaseWithSpecificImportService databaseService, string schemaName, string databasaTableName,
+    public async IAsyncEnumerable<ImportStepHelper> ImportFromFileStepByStep(DatabaseTypeEnum databaseTypeEnum, IDatabaseWithSpecificImportService databaseService, string schemaName, string databasaTableName,
         Action<string, string>? adColumnInfo = null, Action<List<string[]>>? previewAction = null)
     {
         var importJobs = ReadFileAndReturnSingleImportJobs();
@@ -131,11 +127,11 @@ public sealed class ImportFromExcelFile
                 adColumnInfo?.Invoke(importJob.ColumnHeadersNames[j], importJob.ColumnTypesBestMatch[j].ToString());
             }
             previewAction?.Invoke(importJob.PreviewRows);
-            yield return (new ImportStepHelper()
+            yield return new ImportStepHelper()
             {
                 Func = () => databaseService.DbSpecificImportPart(importJob, $"{name}", StandardMessageAction),
                 ImportJob = importJob
-            });
+            };
             i++;
         }
         yield break;

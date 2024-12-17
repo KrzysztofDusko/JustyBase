@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
@@ -9,21 +12,27 @@ using Avalonia.Threading;
 using AvaloniaEdit.Document;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using JustyBase.Database.Sample.Contracts;
-using JustyBase.PluginCommon.Enums;
+using JustyBase.Common.Contracts;
+using JustyBase.Common.Tools;
+using JustyBase.Common.Tools.ImportHelpers;
+using JustyBase.Common.Tools.ImportHelpers.XML;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommons;
 using JustyBase.Services;
+using NetezzaOdbcPlugin;
 
 namespace JustyBase.Database.Sample.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IAvaloniaSpecificHelpers _avaloniaSpecificHelpers;
-    private readonly IDatabaseHelperService _databaseHelperService;
+    private readonly IDatabaseService _netezzaOdbc;
 
-    [ObservableProperty] private bool _csvSelected;
+    [ObservableProperty]
+    public partial bool CsvSelected { get; set; }
 
     //[ObservableProperty]
-    private string _info = "";
+    //private readonly string _info = "";
 
     public string Info
     {
@@ -35,58 +44,46 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    [ObservableProperty] private TextDocument _document = new TextDocument();
+    [ObservableProperty]
+    public partial TextDocument Document { get; set; } = new TextDocument();
 
-    [ObservableProperty] private string _selectedMode = "plain";
+    [ObservableProperty]
+    public partial string SelectedMode { get; set; } = "plain";
 
-    [ObservableProperty] private bool _xlsbSelected = true;
+    [ObservableProperty]
+    public partial bool XlsbSelected { get; set; } = true;
 
-    [ObservableProperty] private bool _xlsxSelected;
+    [ObservableProperty]
+    public partial bool XlsxSelected { get; set; }
 
-    
     public ObservableCollection<string> DatabasesList =>
     [
         "Oracle", "NetezzaOdbc"
     ];
 
-    //private string _selectedDatabase = "Oracle";
-    private string _selectedDatabase = "NetezzaOdbc";
+    [ObservableProperty]
+    public partial string SelectedDatabase { get; set; } = "NetezzaOdbc";
 
-    public string SelectedDatabase
+    public MainWindowViewModel(IAvaloniaSpecificHelpers avaloniaSpecificHelpers)
     {
-        get => _selectedDatabase;
-        set
-        {
-            SetProperty(ref _selectedDatabase, value);
-            _databaseHelperService.DatabaseType = _selectedDatabase == "Oracle" ? DatabaseTypeEnum.Oracle : DatabaseTypeEnum.NetezzaSQLOdbc;
-        }
-    }
-
-    public MainWindowViewModel(IDatabaseHelperService databaseHelperService,
-        IAvaloniaSpecificHelpers avaloniaSpecificHelpers)
-    {
-        _databaseHelperService = databaseHelperService;
-        _databaseHelperService.MessageAction = messageText =>
-        {
-            Info += $"{messageText}\n";
-        };
-        _databaseHelperService.DatabaseType = SelectedDatabase == "Oracle" ? DatabaseTypeEnum.Oracle : DatabaseTypeEnum.NetezzaSQLOdbc;
         _avaloniaSpecificHelpers = avaloniaSpecificHelpers;
+        string NetezzaTest = Environment.GetEnvironmentVariable("NetezzaTest");
+        if (NetezzaTest is null)
+        {
+            throw new ArgumentNullException(nameof(NetezzaTest));
+        }
+        _netezzaOdbc = NetezzaOdbc.FromOdbc(NetezzaTest, 10);
+        _netezzaOdbc.Name = "NetezzaTest";
     }
 
-    //public MainWindowViewModel() : this(new DatabaseHelperService(), new AvaloniaSpecificHelpers())
-    //{
-        
-    //}
-
-    public List<string> CsvCompresionModes { get; } = new()
-    {
+    public List<string> CsvCompresionModes { get; } =
+    [
         "plain",
         "zst",
         "zip",
         "brotli",
         "gzip"
-    };
+    ];
 
     [RelayCommand]
     private async Task CopyFromClip()
@@ -104,12 +101,32 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async Task ImportFromPath(string path)
     {
-        await _databaseHelperService.PerformImportFromFileAsync(path);
+        var _currentImport = new ImportFromExcelFile(x => Info+=x, ISimpleLogger.EmptyLogger)
+        {
+            FilePath = path
+        };
+
+        if (!_currentImport.InitImport(encoding: Encoding.UTF8))
+        {
+            Info += $"IMPORT FAILED";
+            return;
+        }
+        string res = "";
+        string randomName = StringExtension.RandomSuffix("IMP_");
+        try
+        {
+            await _currentImport.ImportFromFileAllSteps(_netezzaOdbc.DatabaseType, _netezzaOdbc, "", randomName);
+            res = randomName;
+        }
+        catch (Exception ex)
+        {
+            Info += ex.Message;
+        }
     }
 
     private async ValueTask<string> GetSql()
     {
-        string sql = Document.Text;
+        string? sql = Document.Text;
         if (!sql.Contains("FROM", StringComparison.OrdinalIgnoreCase) && !sql.Contains("SELECT", StringComparison.OrdinalIgnoreCase))
         {
             var clipboard = _avaloniaSpecificHelpers.GetClipboard();
@@ -120,11 +137,11 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             sql = await clipboard.GetTextAsync();
         }
-        return sql;
+        return sql??"";
     }
 
     [RelayCommand]
-    private async Task Import()
+    private async Task ImportAsync()
     {
         try
         {
@@ -141,10 +158,13 @@ public partial class MainWindowViewModel : ViewModelBase
                 var xmlData = await clipboard.GetDataAsync("XML Spreadsheet");
                 if (xmlData is byte[] xmlBytes)
                 {
-                    Info += "--> ";
-                    var res = await _databaseHelperService.PerformImportFromXmlExcelBytesAsync(xmlBytes);
+                    Info += "-->\n";
+                    _netezzaOdbc.TempDataDirectory = Path.GetTempPath();
+                    var res = await _netezzaOdbc.PerformImportFromXmlAsync(new DbXMLImportJob(), xmlBytes,
+                        (s) => Info += s);
                     Info += res;
                     Info += " <--\n";
+
                 }
             }
             else if (formats.Contains("Files"))
@@ -163,6 +183,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             Info += "[END]\n";
         }
+        Info += "[FINISHED]\n";
     }
 
     [RelayCommand]
@@ -233,7 +254,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
             Info += "opening\n";
             if (filePath is not null)
-                await _databaseHelperService.OpenWithDefaultProgramAsync(filePath);
+                await OpenWithDefaultProgramAsync(filePath);
         }
 
         catch (Exception ex)
@@ -245,37 +266,37 @@ public partial class MainWindowViewModel : ViewModelBase
             Info += "[END]\n";
         }
     }
-
-    private ExportEnum GetExportEnum()
+    public async Task OpenWithDefaultProgramAsync(string path)
     {
-        if (XlsxSelected) return ExportEnum.xlsx;
-        if (CsvSelected) return ExportEnum.csv;
-        return ExportEnum.xlsb;
-    }
-
-    private CompressionEnum GetCsvCompressionEnum()
-    {
-        return SelectedMode switch
+        await Task.Run(() =>
         {
-            "zst" => CompressionEnum.Zstd,
-            "brotli" => CompressionEnum.Brotli,
-            "zip" => CompressionEnum.Zip,
-            "gzip" => CompressionEnum.Gzip,
-            _ => CompressionEnum.None
-        };
+            using var fileopener = new Process();
+            fileopener.StartInfo.FileName = "explorer";
+            fileopener.StartInfo.Arguments = "\"" + path + "\"";
+            fileopener.Start();
+        });
     }
 
     private async Task<string?> ExportRaw(string sql)
     {
-        try
+        var filePath = Path.Combine(Path.GetTempPath(), StringExtension.RandomSuffix("exported") + ".xlsb");
+        await Task.Run(() =>
         {
-            return await _databaseHelperService.PerformExportToFile(sql, GetExportEnum(), GetCsvCompressionEnum());
-        }
-        catch (Exception ex)
-        {
-            Info += $"[ERROR]\n{ex.Message}\n*********\n{ex.StackTrace}\n";
-        }
+            var con = _netezzaOdbc.GetConnection(null, pooling: false);
+            con.Open();
+            var cmd = con.CreateCommand();
+            cmd.CommandText = sql;
+            var rdr = cmd.ExecuteReader();
+            rdr.HandleExcelOutput(filePath, sql, null, x => Info += x);
+        });
 
-        return null;
+        return filePath;
     }
+
+
+    public IDatabaseService GetTestDatabaseService(string _connectionName)
+    {
+        return _netezzaOdbc;
+    }
+
 }

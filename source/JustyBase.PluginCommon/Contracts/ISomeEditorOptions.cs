@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace JustyBase.Editor;
+namespace JustyBase.PluginCommon.Contracts;
 public interface ISomeEditorOptions
 {
+    const int DEFAULT_DOCUMENT_FONT_SIZE = 13;
     Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> GetAllSnippets { get; }
     Dictionary<string, string> FastReplaceDictionary { get; }
     List<string> TypoPatternList { get; }

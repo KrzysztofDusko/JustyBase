@@ -1,15 +1,16 @@
 ﻿using K4os.Compression.LZ4.Streams;
 using System.Buffers;
-using System.Diagnostics;
 using System.Formats.Tar;
-using System.Reflection;
 using System.Text;
 
-namespace JustyBase.Helpers;
+namespace JustyBase.Common.Helpers;
 
 public sealed class OtherHelpers
 {
-    public async Task DownloadAllPlugins(string pluginDirectory, List<string> pluginsList, string downloadBasePath)
+
+    private static readonly List<string> _pluginsList = ["SqlitePlugin", "DuckDBPlugin", "MySqlPlugin",
+            "PostgresPlugin", "OraclePlugin", "NetezzaDotnetPlugin", "DB2Plugin" ];
+    public async Task DownloadAllPlugins(string pluginDirectory, string downloadBasePath)
     {
         if (Directory.Exists(pluginDirectory))
         {
@@ -21,7 +22,7 @@ public sealed class OtherHelpers
             Timeout = TimeSpan.FromMinutes(10)
         };
 
-        foreach (var driverName in pluginsList)
+        foreach (var driverName in _pluginsList)
         {
             using var response = await httpClientToDownload.GetAsync($"{downloadBasePath}{driverName}.tar.lz4");
             using (var stream = await response.Content.ReadAsStreamAsync())
@@ -37,7 +38,7 @@ public sealed class OtherHelpers
 
     public async Task DownloadFileWithReverse(string remoteFilePath, string pathToSave)
     {
-        HttpClient httpClientToDownload = new HttpClient()
+        HttpClient httpClientToDownload = new()
         {
             Timeout = TimeSpan.FromMinutes(10)
         };
@@ -52,7 +53,7 @@ public sealed class OtherHelpers
             {
                 while (position < contentLength)
                 {
-                    int toRead = contentLength - position < 32_768 ? (contentLength - position) : 32_768;
+                    int toRead = contentLength - position < 32_768 ? contentLength - position : 32_768;
                     int readed = download.Read(arr, position, toRead);
                     position += readed;
                 }
@@ -64,13 +65,13 @@ public sealed class OtherHelpers
 
         void FinishDownload(byte[] arr, int length)
         {
-            var sp = arr.AsSpan().Slice(0, length);
+            var sp = arr.AsSpan()[..length];
             sp.Reverse();
             using var file = File.Create(pathToSave);
             file.Write(sp);
         }
     }
-   
+
     public string CsvTxtPreviewer(string path)
     {
         using var binaryReader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read));
@@ -95,7 +96,7 @@ public sealed class OtherHelpers
                 sb.Append(new string('=', 25));
                 sb.Append("File cut off to 65 KB");
                 sb.AppendLine(new string('=', 25));
-                sb.Append(buffer.AsSpan().Slice(0, readed));
+                sb.Append(buffer.AsSpan()[..readed]);
                 sb.AppendLine();
                 string rep = new string('=', 100);
                 sb.AppendLine(rep);

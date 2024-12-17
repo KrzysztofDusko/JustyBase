@@ -1,13 +1,14 @@
+using JustyBase.Common.Contracts;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace JustyBase.Common.Helpers;
-public static class EncryptionHelper
+public sealed class WindowsEncryptionHelper : IEncryptionHelper
 {
     //Windows only !!
     //https://codingvision.net/c-safe-encryption-decryption-using-dpapi
-    public static string Encrypt(string text)
+    public string Encrypt(string text)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -23,7 +24,7 @@ public static class EncryptionHelper
         //and return the encrypted message 
         return Convert.ToBase64String(encryptedText);
     }
-    public static string Decrypt(string text)
+    public string Decrypt(string text)
     {
         if (!OperatingSystem.IsWindows())
         {
@@ -38,18 +39,16 @@ public static class EncryptionHelper
         // finally, returning the result 
         return Encoding.Unicode.GetString(originalText);
     }
-    public static string GetEncodedContentOfTextFile(string realFilePath)
+    public string GetEncodedContentOfTextFile(string realFilePath)
     {
         string content = File.ReadAllText(realFilePath);
         content = Decrypt(content);
 
         return content;
     }
-
-    public static void SaveTextFileEncoded(string filePath, string fileContent)
+    public void SaveTextFileEncoded(string filePath, string fileContent)
     {
         fileContent = Encrypt(fileContent);
         File.WriteAllText(filePath, fileContent);
     }
-
 }

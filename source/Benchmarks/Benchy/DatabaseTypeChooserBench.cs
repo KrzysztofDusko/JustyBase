@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using JustyBase.Tools.ImportHelpers;
+using JustyBase.Common.Tools.ImportHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

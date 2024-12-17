@@ -2,17 +2,18 @@
 using System.Data.Common;
 using System.Runtime.InteropServices;
 using System.Text;
-using JustyBase.Helpers.Importers;
+using JustyBase.Helpers.NetezzaImporter;
 using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommons;
 using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.PluginDatabaseBase.Enums;
-using JustyBase.StringExtensions;
+using JustyBase.PluginDatabaseBase.Models;
 
-namespace JustyBase.Services.Database;
+namespace NetezzaBase;
 
-public class NetezzaBase : DatabaseService, INetezza
+public class NetezzaCommonClass : DatabaseService, INetezza
 {
-    public NetezzaBase(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)
+    public NetezzaCommonClass(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)
     {
         AutoCompletDatabaseMode = CurrentAutoCompletDatabaseMode.DatabaseSchemaTable |
             CurrentAutoCompletDatabaseMode.SchemaOptional |
@@ -75,7 +76,7 @@ public class NetezzaBase : DatabaseService, INetezza
             ORDER BY DATABASE
             """;
         var rdr = cmd.ExecuteReader();
-        List<(string, string)> databases = new();
+        List<(string, string)> databases = [];
         while (rdr.Read())
         {
             databases.Add((rdr.GetString(2), rdr.GetString(4)));
@@ -84,7 +85,7 @@ public class NetezzaBase : DatabaseService, INetezza
     }
     protected override string GetSqlTablesAndOtherObjects(string dbName)
     {
-        bool noDescMode = (dbName == "SYSTEM");
+        bool noDescMode = dbName == "SYSTEM";
         bool ownerMode = false;
 
         if (!dbName.StartsWith('"'))
@@ -92,7 +93,7 @@ public class NetezzaBase : DatabaseService, INetezza
             dbName = dbName.ToUpper();
         }
 
-        string ownerOrSchema = "";
+        string ownerOrSchema;
 
         if (dbName == "SYSTEM")
         {
@@ -157,7 +158,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
 
         if (dbName == "SYSTEM" && !noDescMode)
         {
-            sql = 
+            sql =
             """
                 SELECT 
                     OBJID::INT AS OBJID
@@ -324,7 +325,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
     public override string GetDeleted(string table, string database, string schema)
     {
         var cols = GetColumns(database, schema, table, "");
-        var colList = String.Join("\r\n    , ", cols.Select(o => QuoteNameIfNeeded(o.Name)));
+        var colList = string.Join("\r\n    , ", cols.Select(o => QuoteNameIfNeeded(o.Name)));
 
         var tableCl = GetQuotedTwoOrTreePartName(database, schema, table);
 
@@ -378,20 +379,20 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
         return @$"COMMENT ON TABLE {tableCl} IS 'some comment';";
     }
 
-    protected Dictionary<string, Dictionary<string, Dictionary<string, ExternaTableCachedInfo>>> _exteralTableDictCache = new();
+    protected Dictionary<string, Dictionary<string, Dictionary<string, ExternaTableCachedInfo>>> _exteralTableDictCache = [];
     public void ClearExternalTableCache()
     {
         _exteralTableDictCache.Clear();
     }
 
-    protected Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> _distributionDictionary = new();
+    protected Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> _distributionDictionary = [];
     public Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> DistributionDictionary => _distributionDictionary;
 
-    protected Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> _oraganizeDictionary = new();
+    protected Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> _oraganizeDictionary = [];
     public Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>> OrganizeDictionary => _oraganizeDictionary;
 
 
-    private string GetKeysSql(string databaseName)
+    private static string GetKeysSql(string databaseName)
     {
         return
             $"""
@@ -419,21 +420,21 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             """;
     }
 
-    protected readonly Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, NetezzaKeyItem>>>> keysDictionary = new();
+    protected readonly Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, NetezzaKeyItem>>>> keysDictionary = [];
     public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, NetezzaKeyItem>>>> KeysDictionary => keysDictionary;
 
     public void FillKeysInfoForDatabase(string databaseName, DbConnection? dbConnection = null)
     {
         lock (_lock2)
         {
-            keysDictionary[databaseName] = new();
+            keysDictionary[databaseName] = [];
         }
 
         var databaseDic = keysDictionary[databaseName];
 
         var con = dbConnection ?? Connection;
         ChangeDatabaseSpecial(con, databaseName);
-        if (con is not null && con.State != System.Data.ConnectionState.Open)
+        if (con is not null && con.State != ConnectionState.Open)
         {
             con.Open();
         }
@@ -458,19 +459,19 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             string PKSCHEMA = rdr.GetString(6);
             string PKRELATION = rdr.GetString(7);
             string PKATTNAME = rdr.GetString(8);
-            string UPDT_TYPE = (rdr.GetValue(9) as string) ?? "NO ACTION";
-            string DEL_TYPE = (rdr.GetValue(10) as string) ?? "NO ACTION";
+            string UPDT_TYPE = rdr.GetValue(9) as string ?? "NO ACTION";
+            string DEL_TYPE = rdr.GetValue(10) as string ?? "NO ACTION";
 
 
             if (!databaseDic.TryGetValue(schema, out var databaseDictLevel1))
             {
-                databaseDictLevel1 = new();
+                databaseDictLevel1 = [];
                 databaseDic[schema] = databaseDictLevel1;
             }
 
             if (!databaseDictLevel1.TryGetValue(tabName, out var databaseDictLevel2))
             {
-                databaseDictLevel2 = new();
+                databaseDictLevel2 = [];
                 databaseDictLevel1[tabName] = databaseDictLevel2;
             }
 
@@ -480,7 +481,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
                 databaseDictLevel2[keyName] = databaseDictLevel3;
             }
 
-            databaseDictLevel3.columnList.Add((attName, PKATTNAME));
+            databaseDictLevel3.ColumnList.Add((attName, PKATTNAME));
         }
     }
 
@@ -493,13 +494,13 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
     {
         lock (_lock2)
         {
-            DistributionDictionary[databaseName] = new();
+            DistributionDictionary[databaseName] = [];
         }
         var databaseDic = DistributionDictionary[databaseName];
 
         var con = dbConnection ?? Connection;
         ChangeDatabaseSpecial(con, databaseName);
-        if (con is not null && con.State != System.Data.ConnectionState.Open)
+        if (con is not null && con.State != ConnectionState.Open)
         {
             con.Open();
         }
@@ -515,13 +516,13 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
 
             if (!databaseDic.TryGetValue(schema, out Dictionary<string, List<string>>? databaseDictLevel1))
             {
-                databaseDictLevel1 = new();
+                databaseDictLevel1 = [];
                 databaseDic[schema] = databaseDictLevel1;
             }
 
             if (!databaseDictLevel1.TryGetValue(tabName, out List<string>? databaseDictLevel2))
             {
-                databaseDictLevel2 = new();
+                databaseDictLevel2 = [];
                 databaseDictLevel1[tabName] = databaseDictLevel2;
             }
 
@@ -531,7 +532,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
 
         lock (_lock2)
         {
-            OrganizeDictionary[databaseName] = new();
+            OrganizeDictionary[databaseName] = [];
         }
         databaseDic = OrganizeDictionary[databaseName];
 
@@ -546,13 +547,13 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
 
             if (!databaseDic.TryGetValue(schema, out Dictionary<string, List<string>>? databaseDictLevel1))
             {
-                databaseDictLevel1 = new();
+                databaseDictLevel1 = [];
                 databaseDic[schema] = databaseDictLevel1;
             }
 
             if (!databaseDictLevel1.TryGetValue(tabName, out List<string>? databaseDictLevel2))
             {
-                databaseDictLevel2 = new();
+                databaseDictLevel2 = [];
                 databaseDictLevel1[tabName] = databaseDictLevel2;
             }
 
@@ -577,7 +578,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
         sb.AppendLine("(");
         if (!_exteralTableDictCache.ContainsKey(database))
         {
-            await CacheAllObjects(new TypeInDatabaseEnum[] { TypeInDatabaseEnum.ExternalTable }, database);
+            await CacheAllObjects([TypeInDatabaseEnum.ExternalTable], database);
         }
         if (_exteralTableDictCache.TryGetValue(database, out var d1) && d1.TryGetValue(schema, out var d2) && d2.TryGetValue(tableName, out var d3))
         {
@@ -796,7 +797,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             sb.AppendLine("END_PROC;");
             if (d3.Desc is not null)
             {
-                string cmt = d3.Desc;
+                string? cmt = d3.Desc;
                 cmt = CleanComment(cmt);
                 sb.AppendLine($"COMMENT ON PROCEDURE {procName} IS '{cmt}';");
             }
@@ -840,7 +841,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
     }
 
 
-    protected string GetDistributeSql(string databaseName)
+    private static string GetDistributeSql(string databaseName)
     {
         return
             $"""
@@ -859,7 +860,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             """;
     }
 
-    protected string GetOrganizeSql(string databaseName)
+    private static string GetOrganizeSql(string databaseName)
     {
         return
             $"""
@@ -875,7 +876,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             """;
     }
 
-    public override async ValueTask GetCreateTableTextStringBuilder(StringBuilder sb, string database, string schema, string tableName, string? overrideTableName = null, string ?middleCode = null, string? endingCode = null, List<string>? distOverride = null)
+    public override async ValueTask GetCreateTableTextStringBuilder(StringBuilder sb, string database, string schema, string tableName, string? overrideTableName = null, string? middleCode = null, string? endingCode = null, List<string>? distOverride = null)
     {
         var (cleanDatabaseName, cleanSchema, cleanTableName) = GetCleanedNames(database, schema, tableName);
 
@@ -883,7 +884,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
 
         var columns = GetColumns(database, schema, tableName, "");
         sb.Append("    ");
-        List<string> columnsString = new List<string>();
+        List<string> columnsString = [];
         foreach (var column in columns)
         {
             string cleanColumnName = QuoteNameIfNeeded(column.Name);
@@ -920,7 +921,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
         {
             if (distOverride.Count > 0)
             {
-                sb.AppendLine('(' + String.Join(',', distOverride) + ")");
+                sb.AppendLine('(' + string.Join(',', distOverride) + ")");
             }
             else
             {
@@ -952,10 +953,10 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             {
                 string cleanKeyName = QuoteNameIfNeeded(keyName);
 
-                var colList1 = kefInfo.columnList.Select(o => QuoteNameIfNeeded(o.colName));
+                var colList1 = kefInfo.ColumnList.Select(o => QuoteNameIfNeeded(o.colName));
                 if (kefInfo.KeyType == 'f')
                 {
-                    var colList2 = kefInfo.columnList.Select(o => QuoteNameIfNeeded(o.referencedPkColName));
+                    var colList2 = kefInfo.ColumnList.Select(o => QuoteNameIfNeeded(o.referencedPkColName));
                     sb.AppendLine($"ALTER TABLE {cleanDatabaseName}.{cleanSchema}.{cleanTableName} ADD CONSTRAINT {cleanKeyName} {KeyNameFromChar(kefInfo.KeyType)} ({string.Join(", ", colList1)}) REFERENCES {kefInfo.PKDATABASE}.{kefInfo.PKSCHEMA}.{kefInfo.PKRELATION}({string.Join(", ", colList2)}) ON DELETE {kefInfo.DEL_TYPE} ON UPDATE {kefInfo.UPDT_TYPE};");
                 }
                 else if (kefInfo.KeyType == 'p')
@@ -1058,7 +1059,7 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
         }
     }
 
-    protected virtual string DriverName =>  "dotnet";
+    protected virtual string DriverName => "dotnet";
     public override async Task DbSpecificImportPart(IDbImportJob importJob, string randName, Action<string>? progress, bool tableExists = false)
     {
         try
@@ -1066,9 +1067,10 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
             using var conn = GetConnection(Connection.Database, pooling: false);
             if (conn is not null)
             {
-                conn.Open();
-                await NetezzaImportHelper.NetezzaImportExecute(conn, this.TempDataDirectory, importJob, randName, progress, DriverName);
-                conn.Close();
+                await Task.Run(() => conn.Open());
+                await NetezzaImportHelper.NetezzaImportExecute(conn, TempDataDirectory, importJob, randName, progress, DriverName);
+                var t = Task.Run(() => conn.Close());
+                Task.WaitAny(t, Task.Delay(2_000));
             }
         }
         catch (Exception ex)
@@ -1078,57 +1080,57 @@ WHEN D1.SCHEMA IS NULL OR D1.SCHEMA = '' THEN 'ADMIN' ELSE D1.SCHEMA END AS SCHE
         }
     }
 
-    private Lock _lockForExternales = new Lock();
+    private readonly Lock _lockForExternales = new();
     public void ReadExternalTable(string database, DbDataReader rdr)
     {
         while (rdr.Read())
         {
-            string schema = rdr.GetValue(0) as string;
+            string? schema = rdr.GetValue(0) as string;
             string extTableName = rdr.GetString(1);
-            string sourceFileName = rdr.GetValue(2) as string;
-            int id = rdr.GetInt32(3);
-            string DELIM = rdr.GetValue(4) as string;
+            string? sourceFileName = rdr.GetValue(2) as string;
+            //int id = rdr.GetInt32(3);
+            string? DELIM = rdr.GetValue(4) as string;
 
-            string ENCODING = rdr.GetValue(5) as string;
-            string TIMESTYLE = rdr.GetValue(6) as string;
-            string REMOTESOURCE = rdr.GetValue(7) as string;
-            Int64? SKIPROWS = rdr.GetValue(8) as Int64?;
-            Int64? MAXERRORS = rdr.GetValue(9) as Int64?;
-            string ESCAPECHAR = rdr.GetValue(10) as string;//string
+            string? ENCODING = rdr.GetValue(5) as string;
+            string? TIMESTYLE = rdr.GetValue(6) as string;
+            string? REMOTESOURCE = rdr.GetValue(7) as string;
+            long? SKIPROWS = rdr.GetValue(8) as long?;
+            long? MAXERRORS = rdr.GetValue(9) as long?;
+            string? ESCAPECHAR = rdr.GetValue(10) as string;//string
             string LOGDIR = rdr.GetString(11);//string
-            string DECIMALDELIM = rdr.GetValue(12) as string;//string
-            string QUOTEDVALUE = rdr.GetValue(13) as string;//string
-            string NULLVALUE = rdr.GetValue(14) as string;//string
+            string? DECIMALDELIM = rdr.GetValue(12) as string;//string
+            string? QUOTEDVALUE = rdr.GetValue(13) as string;//string
+            string? NULLVALUE = rdr.GetValue(14) as string;//string
             bool? CRINSTRING = rdr.GetValue(15) as bool?;//bool
             bool? TRUNCSTRING = rdr.GetValue(16) as bool?;//bool
             bool? CTRLCHARS = rdr.GetValue(17) as bool?;//bool
             bool? IGNOREZERO = rdr.GetValue(18) as bool?;//bool
             bool? TIMEEXTRAZEROS = rdr.GetValue(19) as bool?;//bool
-            Int16? Y2BASE = rdr.GetValue(20) as Int16?;//int16
+            short? Y2BASE = rdr.GetValue(20) as short?;//int16
             bool? FILLRECORD = rdr.GetValue(21) as bool?;//bool
-            string COMPRESS = rdr.GetValue(22) as string;//string
+            string? COMPRESS = rdr.GetValue(22) as string;//string
             bool? INCLUDEHEADER = rdr.GetValue(23) as bool?;//bool
             bool? LFINSTRING = rdr.GetValue(24) as bool?;//bool
-            string DATESTYLE = rdr.GetValue(25) as string;//string
-            string DATEDELIM = rdr.GetValue(26) as string;//string
-            string TIMEDELIM = rdr.GetValue(27) as string;//string
-            string BOOLSTYLE = rdr.GetValue(28) as string;//string
-            string FORMAT = rdr.GetValue(29) as string;//string
-            Int32? SOCKETBUFSIZE = rdr.GetValue(30) as Int32?;//int32
+            string? DATESTYLE = rdr.GetValue(25) as string;//string
+            string? DATEDELIM = rdr.GetValue(26) as string;//string
+            string? TIMEDELIM = rdr.GetValue(27) as string;//string
+            string? BOOLSTYLE = rdr.GetValue(28) as string;//string
+            string? FORMAT = rdr.GetValue(29) as string;//string
+            int? SOCKETBUFSIZE = rdr.GetValue(30) as int?;//int32
             string RECORDDELIM = rdr.GetString(31).Replace("\r", "\\r").Replace("\n", "\\n");//string
-            Int64? MAXROWS = rdr.GetValue(32) as Int64?;//int64
+            long? MAXROWS = rdr.GetValue(32) as long?;//int64
             bool? REQUIREQUOTES = rdr.GetValue(33) as bool?;//bool
-            string RECORDLENGTH = rdr.GetValue(34) as string;//string
-            string DATETIMEDELIM = rdr.GetValue(35) as string;//string
-            string REJECTFILE = rdr.GetValue(36) as string;//string
+            string? RECORDLENGTH = rdr.GetValue(34) as string;//string
+            string? DATETIMEDELIM = rdr.GetValue(35) as string;//string
+            string? REJECTFILE = rdr.GetValue(36) as string;//string
 
             lock (_lockForExternales)
             {
                 ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_exteralTableDictCache, database, out var _);
-                databaseItem ??= new();
-                ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem!, schema, out var _);
+                databaseItem ??= [];
+                ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem!, schema!, out var _);
 
-                schemaItem ??= new();
+                schemaItem ??= [];
 
                 schemaItem[extTableName] = new ExternaTableCachedInfo()
                 {

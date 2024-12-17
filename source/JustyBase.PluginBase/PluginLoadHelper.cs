@@ -1,8 +1,9 @@
-﻿using JustyBase.PluginCommon.Enums;
+﻿using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginDatabaseBase.Database;
 using System.Reflection;
 
-namespace JustyBase.Common.Helpers;
+namespace JustyBase.PluginDatabaseBase;
 
 public static class PluginLoadHelper
 {
@@ -12,8 +13,8 @@ public static class PluginLoadHelper
         {
             if (typeof(IDatabaseService).IsAssignableFrom(type))
             {
-                var activatorFunc = (string userName, string password, string port, string ip, string db, int connectionTimeout) 
-                    => (Activator.CreateInstance(type, userName, password, "5480", ip, db, connectionTimeout) as IDatabaseService);
+                var activatorFunc = (string userName, string password, string port, string ip, string db, int connectionTimeout)
+                    => Activator.CreateInstance(type, userName, password, "5480", ip, db, connectionTimeout) as IDatabaseService;
                 var WHO_I_AM_CONST_FIELD = type.GetField(nameof(IDatabaseService.WHO_I_AM_CONST));
                 DatabaseTypeEnum databaseType = (DatabaseTypeEnum)WHO_I_AM_CONST_FIELD.GetValue(null);
                 DatabaseServiceHelpers.AddDatabaseImplementation(databaseType, activatorFunc);
@@ -27,7 +28,6 @@ public static class PluginLoadHelper
         return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
     }
 
-    public static bool PluginWasLoaded = false;
     private static readonly Lock _pluginLock = new Lock();
 
     public static void LoadPlugins(string pluginsLocation)
@@ -46,10 +46,9 @@ public static class PluginLoadHelper
                 ];
             foreach (var filePath in files)
             {
-                var pluginAssembly = PluginLoadHelper.LoadPlugin(filePath);
-                PluginLoadHelper.InstallSpecificDatabaseService(pluginAssembly);
+                var pluginAssembly = LoadPlugin(filePath);
+                InstallSpecificDatabaseService(pluginAssembly);
             }
-            PluginWasLoaded = true;
 #else
             foreach (var dir in Directory.GetDirectories(pluginsLocation))
             {
@@ -59,7 +58,6 @@ public static class PluginLoadHelper
                     PluginLoadHelper.InstallSpecificDatabaseService(pluginAssembly);
                 }
             }
-            PluginWasLoaded = true;
 #endif
         }
     }

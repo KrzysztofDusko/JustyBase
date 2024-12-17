@@ -1,5 +1,5 @@
 ﻿using JustyBase.PluginCommon.Enums;
-using JustyBase.StringExtensions;
+using JustyBase.PluginCommons;
 
 namespace JustyBase.PluginCommon.Contracts;
 

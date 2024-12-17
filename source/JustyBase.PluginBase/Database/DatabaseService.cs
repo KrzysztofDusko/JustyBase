@@ -1,7 +1,5 @@
 ﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Enums;
-using JustyBase.StringExtensions;
 using JustyBase.PluginDatabaseBase.Models;
 using System.Buffers;
 using System.Data;
@@ -10,6 +8,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginCommons;
 
 namespace JustyBase.PluginDatabaseBase.Database;
 
@@ -78,7 +78,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
     public Action<string> DbMessageAction { get; set; }
     //private static readonly StringPool stringPoolForSchemaGeneral = new StringPool();
     //protected static StringPool StringPoolForSchemaGeneral => stringPoolForSchemaGeneral;
-    public string CleanSqlWord(string word, CurrentAutoCompletDatabaseMode autoCompletMode)
+    public string CleanSqlWord(string? word, CurrentAutoCompletDatabaseMode autoCompletMode)
     {
         if (word is not null && (autoCompletMode & CurrentAutoCompletDatabaseMode.MakeUpperCase) != CurrentAutoCompletDatabaseMode.NotSet)
         {
@@ -107,7 +107,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
 
     protected readonly Dictionary<string, Dictionary<string, Dictionary<string, DatabaseObject>>> _databaseSchemaTable = new(StringComparer.OrdinalIgnoreCase);
 
-    private readonly Dictionary<string, string> _databaseDefSchema = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> _databaseDefSchema = new(StringComparer.OrdinalIgnoreCase);
 
     //DatabaseSchemaTableColumn[database][schema][objectName][column]
 
@@ -193,10 +193,6 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                     schema = schemaTmp;
                     schemas.Add(schema);
                 }
-                else
-                {
-                    schema = "ADMIN";
-                }
             }
             else if (_databaseSchemaTable.TryGetValue("SYSTEM", out var systemRes))
             {
@@ -243,7 +239,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
         }
     }
 
-    public IEnumerable<DatabaseColumn> GetColumns(string database, string schema, string table, string filter)
+    public IEnumerable<DatabaseColumn> GetColumns(string? database, string? schema, string? table, string filter)
     {
         if (table is null)
         {
@@ -313,11 +309,11 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
         }
     }
 
-    protected Dictionary<string, Dictionary<string, Dictionary<string, PorcedureCachedInfo>>> _procedureDictCache = new();
+    protected Dictionary<string, Dictionary<string, Dictionary<string, PorcedureCachedInfo>>> _procedureDictCache = [];
 
-    protected Dictionary<string, Dictionary<string, Dictionary<string, ViewCachedInfo>>> _viewDictCache = new();
+    protected Dictionary<string, Dictionary<string, Dictionary<string, ViewCachedInfo>>> _viewDictCache = [];
 
-    protected Dictionary<string, Dictionary<string, Dictionary<string, SynonymCachedInfo>>> _synonymTableDictCache = new();
+    protected Dictionary<string, Dictionary<string, Dictionary<string, SynonymCachedInfo>>> _synonymTableDictCache = [];
 
     protected abstract string? GetProceduresSql(string database, string objectFilterName);
 
@@ -479,34 +475,39 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                                         }
                                         else if (executeAsOwnerObj is short int16Num)
                                         {
-                                            EXECUTEDASOWNER = int16Num == 1 ? true : false;
+                                            EXECUTEDASOWNER = int16Num == 1;
                                         }
 
-                                        string stringDesc = rdr.GetValue(5) as string;
-                                        string PROCEDURESIGNATURE = rdr.GetValue(6) as string;
-                                        string ARGUMENTS = rdr.GetValue(7) as string;
-                                        string LANGUAGE = rdr.GetValue(8) as string;
+                                        var PROCEDURESIGNATURE_OBJ = rdr.GetValue(6);
 
-                                        Monitor.Enter(_procedureDictCache);
-
-                                        ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_procedureDictCache, database, out var _);
-                                        databaseItem ??= new();
-                                        ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem, schema, out var _);
-                                        schemaItem ??= new();
-
-                                        schemaItem[PROCEDURESIGNATURE] = new PorcedureCachedInfo()
+                                        if (PROCEDURESIGNATURE_OBJ is string PROCEDURESIGNATURE)
                                         {
-                                            Id = id,
-                                            ProcedureSource = source,
-                                            Returns = RETURNS,
-                                            ExecuteAsOwner = EXECUTEDASOWNER,
-                                            Desc = stringDesc,
-                                            ProcedureSignature = PROCEDURESIGNATURE,
-                                            Arguments = ARGUMENTS,
-                                            ProcLanguage = LANGUAGE
-                                            //SPECIFICNAME = SPECIFICNAME
-                                        };
-                                        Monitor.Exit(_procedureDictCache);
+                                            string? stringDesc = rdr.GetValue(5) as string;
+                                            string? ARGUMENTS = rdr.GetValue(7) as string;
+                                            string? LANGUAGE = rdr.GetValue(8) as string;
+                                            lock (_procedureDictCache)
+                                            {
+                                                ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_procedureDictCache, database, out var _);
+                                                databaseItem ??= [];
+                                                ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem, schema, out var _);
+                                                schemaItem ??= [];
+                                                schemaItem[PROCEDURESIGNATURE] = new PorcedureCachedInfo()
+                                                {
+                                                    Id = id,
+                                                    ProcedureSource = source,
+                                                    Returns = RETURNS,
+                                                    ExecuteAsOwner = EXECUTEDASOWNER,
+                                                    Desc = stringDesc,
+                                                    ProcedureSignature = PROCEDURESIGNATURE,
+                                                    Arguments = ARGUMENTS,
+                                                    ProcLanguage = LANGUAGE
+                                                    //SPECIFICNAME = SPECIFICNAME
+                                                };
+
+                                            }
+                                        }
+
+
                                     }
                                 }
                                 else if (typeInDatabase == TypeInDatabaseEnum.View)
@@ -517,15 +518,15 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                                         string? viewName = rdr.GetString(1);
                                         string? source = rdr.GetString(2);
 
-                                        Monitor.Enter(_viewDictCache);
-
-                                        ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_viewDictCache, database, out var _);
-                                        databaseItem ??= new();
-                                        ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem, schema, out var _);
-                                        schemaItem ??= new();
-
-                                        schemaItem[viewName] = new ViewCachedInfo(source);
-                                        Monitor.Exit(_viewDictCache);
+                                        lock (_viewDictCache)
+                                        {
+                                            ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_viewDictCache, database, out var _);
+                                            databaseItem ??= [];
+                                            ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem!, schema!, out var _);
+                                            schemaItem ??= [];
+                                            schemaItem[viewName] = new ViewCachedInfo(source);
+                                        }
+        
                                     }
                                 }
                                 else if (typeInDatabase == TypeInDatabaseEnum.ExternalTable && this is INetezza netezza)
@@ -542,17 +543,15 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                                         string refObjNamePart1 = rdr.GetValue(3) as string ?? "PROBLEM"; //server or database
                                         string refObjNamePart2 = rdr.GetValue(4) as string ?? "PROBLEM"; // schema
 
-                                        Monitor.Enter(_synonymTableDictCache);
-
-                                        ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_synonymTableDictCache, database, out var _);
-                                        databaseItem ??= new();
-                                        ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem, schema, out var _);
-                                        schemaItem ??= new();
-
-                                        var syn = new SynonymCachedInfo(refObjNamePart1, refObjNamePart2, refObjName);
-
-                                        schemaItem[name] = syn;
-                                        Monitor.Exit(_synonymTableDictCache);
+                                        lock (_synonymTableDictCache)
+                                        {
+                                            ref var databaseItem = ref CollectionsMarshal.GetValueRefOrAddDefault(_synonymTableDictCache, database, out var _);
+                                            databaseItem ??= [];
+                                            ref var schemaItem = ref CollectionsMarshal.GetValueRefOrAddDefault(databaseItem!, schema!, out var _);
+                                            schemaItem ??= [];
+                                            var syn = new SynonymCachedInfo(refObjNamePart1, refObjNamePart2, refObjName);
+                                            schemaItem[name] = syn;
+                                        }
                                     }
                                 }
                             }
@@ -576,7 +575,6 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                         //problems with netezza ODBC
                         Task t2 = Task.Delay(2_000);
                         Task.WaitAny(t1, t2);
-
                     }
                     catch (Exception ex)
                     {
@@ -613,7 +611,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                     res = GetProcedureSource(database, schema, itemNameOrSignature, procedureId);
                     break;
                 case TypeInDatabaseEnum.View:
-                    res = GetViewSource(database, schema, itemNameOrSignature, procedureId);
+                    res = GetViewSource(database, schema, itemNameOrSignature);
                     break;
                 case TypeInDatabaseEnum.ExternalTable:
                     if (this is INetezza netezza)
@@ -650,9 +648,9 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
     public virtual async ValueTask<List<PorcedureCachedInfo>> GetProceduresSignaturesFromName(string database, string schema, string procName)
     {
         await Task.CompletedTask;
-        return [new PorcedureCachedInfo()];
+        return [new PorcedureCachedInfo() { ProcedureSignature = String.Empty }];
     }
-    private string? GetViewSource(string database, string schema, string procedureName, int procedureId)
+    private string? GetViewSource(string database, string schema, string procedureName)
     {
         string? res = null;
         if (database is not null && _viewDictCache.TryGetValue(database, out var schemas)
@@ -683,8 +681,8 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
     }
 
     private bool _initialized = false;
-    private static readonly Lock _lock1 = new Lock();
-    protected static readonly Lock _lock2 = new Lock();
+    private static readonly Lock _lock1 = new();
+    protected static readonly Lock _lock2 = new();
 
     public void CacheMainDictionary()
     {
@@ -820,7 +818,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
         cmd.CommandText = GetSqlOfColumns(database);
         var rdr = cmd.ExecuteReader();
 
-        List<DatabaseColumn> tempCols = new List<DatabaseColumn>();
+        List<DatabaseColumn> tempCols = [];
         int num = 0;
         int prevObjId = -1;
         int tmpA = 0;
@@ -887,8 +885,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
             schema = QuoteNameIfNeeded(schema);
         }
 
-        string tableCl = "";
-
+        string tableCl;
         if (database is not null && schema is not null)
         {
             tableCl = $"{database}.{schema}.{table}";
@@ -939,7 +936,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                 {
                     return $"UPPER({aliasText}.{QuoteNameIfNeeded(o.Name)}) LIKE &SEARCHED";
                 });
-                if (colsToWhere.Count() == 0)
+                if (!colsToWhere.Any())
                 {
                     whereAddition =
                         """
@@ -1037,7 +1034,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
 
     public string GetTop100SelectNumberFromTables(string database, string schema, IEnumerable<DatabaseObject> tables)
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         sb.AppendLine(TABS_WITH_ROWS);
         sb.AppendLine($"{TIMEOUT_OVERRIDE}:20");
         sb.AppendLine(CONTINUE_ON_ERROR);
@@ -1177,7 +1174,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
 
     public async ValueTask<string> GetCreateTableText(string database, string schema, string tableName, string? overrideTableName = null, string? middleCode = null, string? endingCode = null, List<string>? distOverride = null)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
         await GetCreateTableTextStringBuilder(stringBuilder, database, schema, tableName, overrideTableName, middleCode, endingCode, distOverride);
         return stringBuilder.ToString();
     }

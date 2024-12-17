@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JustyBase.Tools.ImportHelpers.XML;
+namespace JustyBase.Common.Tools.ImportHelpers.XML;
 
 public sealed class OneCellValue
 {

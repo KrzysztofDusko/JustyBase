@@ -1,6 +1,6 @@
 using System;
 
-namespace JustyBase.Tools.Models;
+namespace JustyBase.Common.Models;
 public sealed class HistoryEntry
 {
     public required DateTime Date { get; set; }
@@ -12,7 +12,7 @@ public sealed class HistoryEntry
     {
         get
         {
-            var res = SQL.Length <= 150 ? SQL: SQL[..150];
+            var res = SQL.Length <= 150 ? SQL : SQL[..150];
             return res.ReplaceLineEndings(" ");
         }
     }

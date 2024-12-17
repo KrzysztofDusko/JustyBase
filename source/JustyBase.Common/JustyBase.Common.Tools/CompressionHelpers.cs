@@ -4,7 +4,7 @@ using System.Formats.Tar;
 using System.IO.Compression;
 using JustyBase.PluginCommon.Enums;
 
-namespace JustyBase.Tools;
+namespace JustyBase.Common.Tools;
 
 public static class CompresionExt
 {

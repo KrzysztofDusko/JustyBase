@@ -1,16 +1,16 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace JustyBase;
+namespace JustyBase.Common;
 
 public sealed class AppOptions
 {
-    public List<string> StartsFolderPaths { get; set; } = new();
+    public List<string> StartsFolderPaths { get; set; } = [];
     public int ResultRowsLimit { get; set; } = 20_000;
     public int? ResultRowsLimitWarning { get; set; }//currently only in pro
     public int ConnectionTimeout { get; set; } = 5; //s
     public int CommandTimeout { get; set; } = 3_600; //s = 3_600 = 1 hour
     //AllSnippets[name] = (snippetType, desc, text, keyword - not used)
-    public Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> AllSnippets { get; set; } = new();
+    public Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> AllSnippets { get; set; } = [];
     public string SepInExportedCsv { get; set; } = ";";
     public string SepRowsInExportedCsv { get; set; } = "windows";
     public string EncondingName { get; set; } = "UTF-8";
@@ -44,6 +44,7 @@ public sealed class AppOptions
     public bool UseSplashScreen { get; set; } = true;
     public bool AutoDownloadUpdate { get; set; } = true;
     public bool AutoDownloadPlugins { get; set; } = true;
+    public bool AllowToLoadPlugins { get; set; } = true;
     public bool UpdateMitigateNextGenFirewalls { get; set; } = true; // palo alto
     public int LimitHistoryMonths { get; set; } = 6;
 
@@ -242,7 +243,7 @@ public sealed class AppOptions
     }
 }
 
-
+[JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(AppOptions))]
 public partial class MyJsonContextAppOptions : JsonSerializerContext
 {

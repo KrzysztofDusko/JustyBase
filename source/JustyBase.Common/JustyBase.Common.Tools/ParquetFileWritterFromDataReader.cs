@@ -2,18 +2,13 @@ using Parquet.Schema;
 using Parquet;
 using System.Data;
 
-namespace JustyBase.Tools;
+namespace JustyBase.Common.Tools;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-public sealed class ParquetFileWritterFromDataReader
+public sealed class ParquetFileWritterFromDataReader(IDataReader rdr, int groupSize = 32_768)
 {
-    private readonly IDataReader _rdr;
-    private readonly int _groupSize = 32_768;
-    public ParquetFileWritterFromDataReader(IDataReader rdr, int groupSize = 32_768)
-    {
-        _rdr = rdr;
-        _groupSize = groupSize;
-    }
+    private readonly IDataReader _rdr = rdr;
+    private readonly int _groupSize = groupSize;
 
     public async Task CreateFile(Stream fileStream)
     {
@@ -64,13 +59,11 @@ public sealed class ParquetFileWritterFromDataReader
 
         async Task WriteGroup(ParquetSchema schema, ParquetWriter parquetWriter, int smallCounter)
         {
-            using (ParquetRowGroupWriter groupWriter = parquetWriter.CreateRowGroup())
+            using ParquetRowGroupWriter groupWriter = parquetWriter.CreateRowGroup();
+            for (int i = 0; i < filedsCount; i++)
             {
-                for (int i = 0; i < filedsCount; i++)
-                {
-                    Parquet.Data.DataColumn column = new Parquet.Data.DataColumn(schema.DataFields[i], columns[i].GetArray(smallCounter));
-                    await groupWriter.WriteColumnAsync(column);
-                }
+                Parquet.Data.DataColumn column = new Parquet.Data.DataColumn(schema.DataFields[i], columns[i].GetArray(smallCounter));
+                await groupWriter.WriteColumnAsync(column);
             }
         }
     }
@@ -78,8 +71,7 @@ public sealed class ParquetFileWritterFromDataReader
 
 internal sealed class OneColumn
 {
-    private Type _columnType;
-    private int _groupSize;
+    private readonly Type _columnType;
     private string?[]? stringValues;
     private int?[]? intValues;
     private long?[]? longValues;
@@ -91,7 +83,6 @@ internal sealed class OneColumn
 
     public OneColumn(int groupSize, Type columnType)
     {
-        _groupSize = groupSize;
         _columnType = columnType;
         if (columnType == typeof(int))
         {
