@@ -26,5 +26,9 @@ public interface ISomeEditorOptions
             {".dtsx", ("DTSX", "HTML-Mode.xshd", true) },
             {".txt", ("TXT", "MarkDown-Mode.xshd", false) }
     };
+
+    bool IsFromatterAvaiable { get; set; }
+
+    Task<string> GetFormatterSql(string txt);
 }
 

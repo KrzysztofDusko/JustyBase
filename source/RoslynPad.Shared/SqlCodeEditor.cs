@@ -392,7 +392,7 @@ public sealed class SqlCodeEditor : CodeTextEditor
             }
         }
         // D9 = "("
-        else if (TextArea.IsFocused && e.Key == Key.D9 && e.HasModifiers(ModifierKeys.Shift) && TextArea is not null && TextArea.Selection.Length < 1024)
+        else if (TextArea is not null && TextArea.IsFocused && e.Key == Key.D9 && e.HasModifiers(ModifierKeys.Shift) && TextArea is not null && TextArea.Selection.Length < 1024)
         {
             var selection = TextArea.Selection;
             int sellen = selection.Length;
@@ -473,7 +473,7 @@ public sealed class SqlCodeEditor : CodeTextEditor
                     break;
                 case Key.G:
                     int res = await GoToLineAsyncAction();
-                    if (res > 0)
+                    if (res > 0 && TextArea is not null)
                     {
                         TextArea.Caret.Line = res;
                         TextArea.Caret.BringCaretToView();
@@ -522,9 +522,9 @@ public sealed class SqlCodeEditor : CodeTextEditor
                     }
                     break;
                 case Key.V:
-                    if (e.HasModifiers(ModifierKeys.Shift))
+                    if (e.HasModifiers(ModifierKeys.Shift) && ContolShiftvAction is not null)
                     {
-                        await ContolShiftvAction?.Invoke();
+                        await ContolShiftvAction.Invoke();
                     }
                     break;
             }

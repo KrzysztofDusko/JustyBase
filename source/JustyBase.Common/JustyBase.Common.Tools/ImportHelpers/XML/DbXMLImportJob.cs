@@ -111,7 +111,7 @@ public sealed class DbXMLImportJob : DbImportJob, IDbXMLImportJob
             val = GetValueStringRepresentationWithType(out nz, _currentRow[columnNumber].OriginalValue, dataTypeAdnotation: false, textQualifier: "");
         }
 
-        if (nz == DbSimpleType.Integer && _currentRow[columnNumber].OriginalValue.Trim().Length == 11 && _columnHeadersNames[columnNumber].Contains("PESEL", StringComparison.OrdinalIgnoreCase))
+        if (nz == DbSimpleType.Integer && _currentRow[columnNumber].OriginalValue.Trim().Length == 11 && _columnHeadersNames![columnNumber].Contains("PESEL", StringComparison.OrdinalIgnoreCase))
         {
             nz = DbSimpleType.Nvarchar;
             val = _currentRow[columnNumber].OriginalValue;

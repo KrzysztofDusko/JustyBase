@@ -1,8 +1,10 @@
 ﻿using Avalonia.Input.Platform;
 using JustyBase.PluginCommon.Contracts;
+using JustyBase.Services;
+using System.Data;
 using System.Threading.Tasks;
 
-namespace JustyBase.Services;
+namespace SqlEditor.Avalonia.AvaloniaSpecificHelpers;
 
 public sealed class ClipboardService : IClipboardService
 {
@@ -15,9 +17,13 @@ public sealed class ClipboardService : IClipboardService
     {
         _avaloniaSpecificHelpers = avaloniaSpecificHelpers;
     }
-    public async Task<object> GetDataAsync(string format)
+    public async Task<object?> GetDataAsync(string format)
     {
-        return await Clipboard.GetDataAsync(format);
+        if (Clipboard is null)
+        {
+            return null;
+        }
+        return await Clipboard?.GetDataAsync(format);
     }
 
     public async Task<string[]> GetFormatsAsync()

@@ -11,5 +11,16 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)GeneralApplicationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SqlDocumentViewModelHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DbSchemaModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\IDatabaseSchemaItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\MessageForUserTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AddNewConnectionViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\DbObjectQuickMenuViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\DbSchemaViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\HistoryViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ImportViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SchemaSearchViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SnippetControlViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\SqlDocumentViewModel.cs" />
   </ItemGroup>
 </Project>

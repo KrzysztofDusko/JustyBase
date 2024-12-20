@@ -116,9 +116,14 @@ public sealed class ImportFromExcelFile(Action<string>? exceptionMessageAction, 
     {
         var importJobs = ReadFileAndReturnSingleImportJobs();
 
+        ArgumentNullException.ThrowIfNull(importJobs, nameof(importJobs));
+        
+
         int i = 0;
         await foreach (DbImportJob importJob in importJobs)
         {
+            ArgumentNullException.ThrowIfNull(importJob, nameof(importJob));
+            ArgumentNullException.ThrowIfNull(importJob.ColumnHeadersNames, nameof(importJob.ColumnHeadersNames));
             string tmp = i == 0 ? "" : $"_{i}";
             string name = databaseTypeEnum == DatabaseTypeEnum.Oracle || string.IsNullOrEmpty(schemaName) ? $"{databasaTableName}{tmp}" : $"{schemaName}.{databasaTableName}{tmp}";
 
@@ -126,6 +131,7 @@ public sealed class ImportFromExcelFile(Action<string>? exceptionMessageAction, 
             {
                 adColumnInfo?.Invoke(importJob.ColumnHeadersNames[j], importJob.ColumnTypesBestMatch[j].ToString());
             }
+            ArgumentNullException.ThrowIfNull(importJob.PreviewRows, nameof(importJob.PreviewRows));
             previewAction?.Invoke(importJob.PreviewRows);
             yield return new ImportStepHelper()
             {

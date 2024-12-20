@@ -2,10 +2,10 @@
 using JustyBase.Editor.CompletionProviders;
 
 namespace JustyBase.Editor;
-public sealed class CompletionDataSql(string text, string desc, bool isSelected, Glyph glyph, SnippetManager snippetManager) 
+public sealed class CompletionDataSql(string text, string desc, bool isSelected, Glyph glyph, SnippetManager? snippetManager) 
     : ICompletionDataEx
 {
-    private readonly SnippetManager _snippetManager = snippetManager;
+    private readonly SnippetManager? _snippetManager = snippetManager;
 
     private readonly Glyph _glyph = glyph;
 
@@ -109,7 +109,7 @@ public sealed class CompletionDataSql(string text, string desc, bool isSelected,
 
         if (completionChar == '\t' || CompletSnippetOnEnter(e))
         {
-            var snippet =  _snippetManager.FindSnippet(Text);
+            var snippet =  _snippetManager?.FindSnippet(Text);
             if (snippet != null)
             {
                 var editorSnippet = snippet.CreateAvalonEditSnippet();

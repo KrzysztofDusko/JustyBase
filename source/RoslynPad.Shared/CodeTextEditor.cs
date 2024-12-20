@@ -146,7 +146,9 @@ public partial class CodeTextEditor : TextEditor
         AfterToolTipOpen();
     }
 #endif
+
     partial void InitializeToolTip();
+
     partial void AfterToolTipOpen();
 
     partial void Initialize();

@@ -12,6 +12,8 @@ public sealed class DataReaderFromExcelReaderAbstract : IDataReader
     private readonly CsvReader? _csvReader;//special case becouse of that excel cannot store decimals but Csv can..
     public DataReaderFromExcelReaderAbstract(ExcelReaderAbstract excelReader, DatabaseTypeChooser databaseTypeChooser)
     {
+        ArgumentNullException.ThrowIfNull(excelReader, nameof(excelReader));
+        ArgumentNullException.ThrowIfNull(databaseTypeChooser, nameof(databaseTypeChooser));
         _excelAbstractReader = excelReader;
         _isCsvReader = _excelAbstractReader is CsvReader;
         if (_isCsvReader)
@@ -149,12 +151,12 @@ public sealed class DataReaderFromExcelReaderAbstract : IDataReader
 
     public string GetName(int i)
     {
-        return _databaseTypeChooser.NormalizedColumnHeaderNames[i];
+        return _databaseTypeChooser!.NormalizedColumnHeaderNames![i];
     }
 
     public int GetOrdinal(string name)
     {
-        return Array.IndexOf(_databaseTypeChooser.NormalizedColumnHeaderNames, name);
+        return Array.IndexOf(_databaseTypeChooser!.NormalizedColumnHeaderNames!, name);
     }
 
     public DataTable? GetSchemaTable()
@@ -169,7 +171,7 @@ public sealed class DataReaderFromExcelReaderAbstract : IDataReader
 
     public object GetValue(int i)
     {
-        return _databaseTypeChooser.ColumnTypesBestMatch[i].DatabaseTypeSimple switch
+        return _databaseTypeChooser!.ColumnTypesBestMatch![i].DatabaseTypeSimple switch
         {
             DbSimpleType.Integer => GetInt64(i),
             DbSimpleType.Numeric => GetDecimal(i),

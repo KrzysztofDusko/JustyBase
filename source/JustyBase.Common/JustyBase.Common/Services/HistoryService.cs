@@ -33,34 +33,30 @@ public sealed class HistoryService(IGeneralApplicationData generalApplicationDat
             _historyEntries = [];
 
             using var fs = new FileStream(IGeneralApplicationData.HistoryDatFilePath, FileMode.OpenOrCreate, FileAccess.Read);
-            using (ZstdSharp.DecompressionStream decompressionStream = new ZstdSharp.DecompressionStream(fs, leaveOpen: false))
+            using (var binaryReader = new BinaryReader(fs, encoding: System.Text.Encoding.UTF8, leaveOpen: false))
             {
-                using (var binaryReader = new BinaryReader(decompressionStream/*fs*/, encoding: System.Text.Encoding.UTF8, leaveOpen: false))
+                while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
                 {
-                    //while (binaryReader.BaseStream.Position != binaryReader.BaseStream.Length)
-                    while (true)
+                    try
                     {
-                        try
+                        var logDateTime = DateTime.FromBinary(binaryReader.ReadInt64());
+                        var sql = binaryReader.ReadString();
+                        var database = binaryReader.ReadString();
+                        var connectioName = binaryReader.ReadString();
+                        if (logDateTime >= DateTime.Now.AddMonths(-_generalApplicationData.Config.LimitHistoryMonths))
                         {
-                            var logDateTime = DateTime.FromBinary(binaryReader.ReadInt64());
-                            var sql = binaryReader.ReadString();
-                            var database = binaryReader.ReadString();
-                            var connectioName = binaryReader.ReadString();
-                            if (logDateTime >= DateTime.Now.AddMonths(-_generalApplicationData.Config.LimitHistoryMonths))
+                            HistoryItemsCollection.Add(new HistoryEntry()
                             {
-                                HistoryItemsCollection.Add(new HistoryEntry()
-                                {
-                                    Date = logDateTime,
-                                    Database = database,
-                                    Connection = connectioName,
-                                    SQL = sql
-                                });
-                            }
+                                Date = logDateTime,
+                                Database = database,
+                                Connection = connectioName,
+                                SQL = sql
+                            });
                         }
-                        catch (Exception)
-                        {
-                            break;
-                        }
+                    }
+                    catch (Exception)
+                    {
+                        break;
                     }
                 }
             }
@@ -72,9 +68,9 @@ public sealed class HistoryService(IGeneralApplicationData generalApplicationDat
         lock (_sync)
         {
             var currentDateTime = DateTime.Now;
-            using (var compressionStream = new ZstdSharp.CompressionStream(File.Open(IGeneralApplicationData.HistoryDatFilePath, FileMode.Append, FileAccess.Write), leaveOpen: false))
+            using (var fs = File.Open(IGeneralApplicationData.HistoryDatFilePath, FileMode.Append, FileAccess.Write))
             {
-                using (var binaryWriter = new BinaryWriter(compressionStream, encoding: System.Text.Encoding.UTF8))
+                using (var binaryWriter = new BinaryWriter(fs, encoding: System.Text.Encoding.UTF8))
                 {
                     binaryWriter.Write(currentDateTime.ToBinary());
                     binaryWriter.Write(sql);

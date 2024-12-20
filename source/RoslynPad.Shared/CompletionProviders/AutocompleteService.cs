@@ -13,7 +13,7 @@ public sealed class AutocompleteService
 {
     public IEnumerable<CompletionDataSql> GetWordsList(string input, Dictionary<string, List<string>> aliasDbTable,
         Dictionary<string, List<string>> subqueryHints,Dictionary<string, List<string>> withHints,
-        Dictionary<string, List<string>> tempTableHints, IDatabaseService databaseService, string databaseName
+        Dictionary<string, List<string>> tempTableHints, IDatabaseService databaseService, string? databaseName
     )
     {
         input.GetDotsPositionsAndCount(out int lastDotIndex, out int howManyDots,out int firsDotIndex);

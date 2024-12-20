@@ -119,12 +119,12 @@ public sealed class DataReaderFromLines(OneCellValue[][] linesX, DatabaseTypeCho
 
     public string GetName(int i)
     {
-        return _databaseTypeChooser.NormalizedColumnHeaderNames[i];
+        return _databaseTypeChooser!.NormalizedColumnHeaderNames![i];
     }
 
     public int GetOrdinal(string name)
     {
-        return Array.IndexOf(_databaseTypeChooser.NormalizedColumnHeaderNames, name);
+        return Array.IndexOf(_databaseTypeChooser!.NormalizedColumnHeaderNames!, name);
     }
 
     public DataTable? GetSchemaTable()
@@ -138,7 +138,7 @@ public sealed class DataReaderFromLines(OneCellValue[][] linesX, DatabaseTypeCho
         {
             return "";
         }
-        if (_databaseTypeChooser.ColumnTypesBestMatch[i].DatabaseTypeSimple == DbSimpleType.Nvarchar)
+        if (_databaseTypeChooser!.ColumnTypesBestMatch![i].DatabaseTypeSimple == DbSimpleType.Nvarchar)
         {
             //if prefered is text then use orignal value 2023/01 vs 2023-01-01
             return CurrentRow[i]?.OriginalValue ?? "";
@@ -152,7 +152,7 @@ public sealed class DataReaderFromLines(OneCellValue[][] linesX, DatabaseTypeCho
 
     public object GetValue(int i)
     {
-        return _databaseTypeChooser.ColumnTypesBestMatch[i].DatabaseTypeSimple switch
+        return _databaseTypeChooser!.ColumnTypesBestMatch![i].DatabaseTypeSimple switch
         {
             DbSimpleType.Integer => GetInt64(i),
             DbSimpleType.Numeric => GetDecimal(i),

@@ -14,7 +14,7 @@ public interface IRuntimeDocumentsContainer
     /// </summary>
     /// <param name="title"></param>
     /// <returns></returns>
-    string AddNewDocument(string title);
+    string AddNewDocument(string title, string? initText = null);
     bool TryGetOpenedDocumentVmByFilePath(string path, out IHotDocumentVm? openedVm);
     protected static string NewDocumentId => $"DOC_ID_{Guid.NewGuid()}";
     bool RemoveDocumentById(string id);

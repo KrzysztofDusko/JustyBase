@@ -120,4 +120,11 @@ public sealed class TestOptions : ISomeEditorOptions
     public Dictionary<string, string> VariablesDictStatic { get; set; } = [];
 
     public bool CollapseFoldingOnStartup => true;
+
+    public bool IsFromatterAvaiable { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public Task<string> GetFormatterSql(string txt)
+    {
+        throw new NotImplementedException();
+    }
 }

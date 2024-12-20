@@ -6,8 +6,8 @@
 	 <DefineConstants>AVALONIA</DefineConstants>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="11.2.2" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.2.2" />
+		<PackageReference Include="Avalonia" Version="11.2.3" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
 		<!--<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.1.0" />-->
 		<PackageReference Include="System.Reactive" Version="6.0.1" />
 	</ItemGroup>

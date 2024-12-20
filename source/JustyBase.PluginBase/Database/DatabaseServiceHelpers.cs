@@ -124,7 +124,7 @@ public static class DatabaseServiceHelpers
     IDatabaseService // result -> Oracle/Db2/etc.
     >> SpecificDbImpelmetations = [];
 
-    private static readonly Lock _lockAddDatabaseImplementation = new Lock();
+    private static readonly Lock _lockAddDatabaseImplementation = new ();
     public static void AddDatabaseImplementation(DatabaseTypeEnum databaseTypeEnum, Func<
         string,//username
         string,//password
@@ -151,7 +151,7 @@ public static class DatabaseServiceHelpers
     /// <param name="delayCache"></param>
     /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
-    public static IDatabaseService? GetDatabaseService(IDatabaseInfo databaseInfo, string connectionName, bool forceRefresh = false, bool delayCache = false, int connectionTimeout = 0,
+    public static IDatabaseService? GetDatabaseService(IDatabaseInfo? databaseInfo, string connectionName, bool forceRefresh = false, bool delayCache = false, int connectionTimeout = 0,
         Action<string>? messageAction = null, IDatabaseService? ownDatabaseService = null)
     {
         ArgumentNullException.ThrowIfNull(connectionName);

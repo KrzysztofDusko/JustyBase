@@ -48,22 +48,7 @@ internal static partial class SqlDocumentViewModelHelper
         }
         return toAsk;
     }
-    public static string ReplaceVariablesP2(string query, List<string> toAsk)
-    {
-        // $DATA2, before $DATA
-        toAsk.Sort(delegate (string x, string y)
-        {
-            if (x.Length != y.Length) return y.Length.CompareTo(x.Length);
-            else return y.CompareTo(x);
-        });
 
-        foreach (var variableTxt in toAsk)
-        {
-            VariablesViewModelHelpers.AddVariable(variableTxt[1..], SqlDocumentViewModelHelper.KnownParams[variableTxt]);
-        }
-
-        return query.ReplaceVariablesInSql(toAsk, SqlDocumentViewModelHelper.KnownParams);
-    }
 
     public static List<string> ConvertSqlTextToListOfSqls(bool singleCommandLocal, string query)
     {
@@ -113,19 +98,20 @@ internal static partial class SqlDocumentViewModelHelper
     private static partial Regex rxParamGen();
     public static readonly Regex rxParam = rxParamGen();
 
-    public static readonly Regex DatabaseSchemaTableRegex = new Regex(@"(((?<part1>\w+)\.)?(?<part2>\w*)\.)?(?<part3>\w+)");
+    public static readonly Regex DatabaseSchemaTableRegex = new(@"(((?<part1>\w+)\.)?(?<part2>\w*)\.)?(?<part3>\w+)");
 
-    public static readonly Regex SleepRegex = new Regex(@"(^|(\r\n)+)@sleep: (?<num>\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    public static readonly Regex SleepRegex = new(@"(^|(\r\n)+)@sleep: (?<num>\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-    public static readonly Regex ExtractRegex = new Regex(@"(^|(\r\n)+)@extract: (?<path>.+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    public static readonly Regex ExtractRegex = new(@"(^|(\r\n)+)@extract: (?<path>.+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-    public static readonly Regex CompressRegex = new Regex(@"(^|(\r\n)+)@compress: (?<path>.+) (?<mode>\w+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    public static readonly Regex CompressRegex = new(@"(^|(\r\n)+)@compress: (?<path>.+) (?<mode>\w+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-    public static readonly Regex ChangeConnectionRegex = new Regex(@"(^|(\r\n)+)@change_connection: (?<connectionName>\w+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    public static readonly Regex ChangeConnectionRegex = new(@"(^|(\r\n)+)@change_connection: (?<connectionName>\w+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     public static void SetConnectionList(bool force = false)
     {
         var generalApplicationData = App.GetRequiredService<IGeneralApplicationData>();
+        var messageForUserTools = App.GetRequiredService<IMessageForUserTools>();
         var simpleLogger = App.GetRequiredService<ISimpleLogger>();
         if (_connectionsList is null || force)
         {
@@ -157,7 +143,7 @@ internal static partial class SqlDocumentViewModelHelper
         }
         catch (Exception ex1)
         {
-            MessageForUserTools.ShowSimpleMessageBox(ex1);
+            messageForUserTools.ShowSimpleMessageBoxInstance(ex1);
             simpleLogger.TrackError(ex1, isCrash: false);
         }
     }
@@ -178,28 +164,6 @@ internal static partial class SqlDocumentViewModelHelper
         return -1;
     }
 
-    private static readonly DataTable _tableToCompute = new();
-    public static object Evaluate(string expression)
-    {
-        object result = ReplaceSessionVariables(expression);
-        try
-        {
-            result = _tableToCompute.Compute(expression, "");
-        }
-        catch (Exception)
-        {
-            //InteractionsHelpers.MessageBoxHelper(ex.Message);
-            //InteractionsHelpers.MessageBoxHelper(ex.StackTrace);
-        }
-
-        return result;
-    }
-
-    public static string ReplaceSessionVariables(string query)
-    {
-        var tab = VariablesViewModelHelpers.GetVariablesDictStatic();
-        return query.ReplaceVariablesInSql(tab.Keys.ToList(), tab, variableStart: '&');
-    }
 
     public static DbConnection OpenConnectionIfNeeded(IDatabaseService actualDatabaseService, DbConnection con, ISimpleLogger simpleLogger)
     {

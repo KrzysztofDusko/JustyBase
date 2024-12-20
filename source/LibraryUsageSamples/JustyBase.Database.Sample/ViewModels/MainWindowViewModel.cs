@@ -67,7 +67,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(IAvaloniaSpecificHelpers avaloniaSpecificHelpers)
     {
         _avaloniaSpecificHelpers = avaloniaSpecificHelpers;
-        string NetezzaTest = Environment.GetEnvironmentVariable("NetezzaTest");
+        string? NetezzaTest = Environment.GetEnvironmentVariable("NetezzaTest");
         if (NetezzaTest is null)
         {
             throw new ArgumentNullException(nameof(NetezzaTest));

@@ -15,6 +15,7 @@ using JustyBase.Common;
 using JustyBase.PluginCommon.Models;
 using JustyBase.PluginDatabaseBase;
 using NetezzaOdbcPlugin;
+using System.Reflection;
 
 namespace JustyBase;
 public class GeneralApplicationData : IGeneralApplicationData
@@ -149,6 +150,10 @@ public class GeneralApplicationData : IGeneralApplicationData
 
     public string DownloadPluginsBasePath => Environment.GetEnvironmentVariable("JB_DOWNLOAD_BASE_PATH") ??"";
 
+    public bool IsFromatterAvaiable { get; set; }
+
+    private Assembly _cachedFormatter;
+
     public void ClearTempSippetsObjects()
     {
         _typoList = null;
@@ -260,6 +265,17 @@ public class GeneralApplicationData : IGeneralApplicationData
                 _messageForUserTools.ShowSimpleMessageBoxInstance(ex);
             }
         }
+
+        if (_cachedFormatter is null && !File.Exists(@"PoorMansNetEasy.dll"))
+        {
+            IsFromatterAvaiable = false;
+        }
+        else
+        {
+            IsFromatterAvaiable = true;
+        }
+
+
         //register implementations
         DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQLOdbc, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new NetezzaOdbc(userName, password, "5480", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Oracle, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new JustyBase.Services.Database.Oracle(userName, password, "", ip, db, connectionTimeout));
@@ -269,14 +285,14 @@ public class GeneralApplicationData : IGeneralApplicationData
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Sqlite, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Sqlite(userName, password, "", ip, db, connectionTimeout));
     }
 
-    public string AddNewDocument(string title)
+    public string AddNewDocument(string title, string initText = null)
     {
         string id = IGeneralApplicationData.NewDocumentId;
         _dictionaryOfDocuments[id] = new OfflineTabData()
         {
             MyId = id,
             Title = title,
-            SqlText = null,
+            SqlText = initText,
             SqlFilePath = null
         };
         return id;
@@ -376,8 +392,10 @@ public class GeneralApplicationData : IGeneralApplicationData
 
     public OfflineDocumentContainer GetOfflineDocumentContainer(string selectedTabId)
     {
-        OfflineDocumentContainer mn = new();
-        mn.SelectedTabId = selectedTabId;
+        OfflineDocumentContainer mn = new()
+        {
+            SelectedTabId = selectedTabId
+        };
         List<string> documentToRemove = [];
         foreach (var (_, value) in _dictionaryOfDocuments)
         {
@@ -393,5 +411,13 @@ public class GeneralApplicationData : IGeneralApplicationData
 
         mn.SqlOfflineDocumentDictionary = _dictionaryOfDocuments;
         return mn;
+    }
+
+    public async Task<string> GetFormatterSql(string txt)
+    {
+        Assembly specialFormatterAssembly = _cachedFormatter ??= Assembly.LoadFrom(@"PoorMansNetEasy.dll");
+        dynamic dynamicFormatter = specialFormatterAssembly.CreateInstance("ExtraFormatter.Formatter");
+        var res = await Task.Run(() => dynamicFormatter.DoFormat(txt));
+        return res;
     }
 }
