@@ -1,13 +1,13 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using JustyBase.Common.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginDatabaseBase.Database;
+using JustyBase.Services.Database;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using JustyBase.Services.Database;
-using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.PluginCommon.Models;
-using JustyBase.Common.Contracts;
 
 
 namespace JustyBase.Models.Tools;
@@ -33,15 +33,15 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
     public string Owner { get; set; }
     public string Comment { get; set; }
     public string ToolTipText => $"Comment: {Comment ?? "no desc"}";
-    public ObservableCollection<DbSchemaModel> LoadChildren()
+    public ObservableCollection<DbSchemaModel> LoadChildren(ObservableCollection<DbSchemaModel>? newNodeCollection = null)
     {
         DatabaseTypeEnum dbType = DatabaseTypeEnumValue;//GetDatabaseType();
-        return LoadChildren(dbType);
+        return LoadChildren(dbType, newNodeCollection);
     }
 
-    private ObservableCollection<DbSchemaModel> LoadChildren(DatabaseTypeEnum databaseTypeEnum)
+    private ObservableCollection<DbSchemaModel> LoadChildren(DatabaseTypeEnum databaseTypeEnum, ObservableCollection<DbSchemaModel>? newNodeCollection)
     {
-        var newNodeCollection = new ObservableCollection<DbSchemaModel>();
+        newNodeCollection ??= new ObservableCollection<DbSchemaModel>();
         switch (ActualTypeInDatabase)
         {
             case TypeInDatabaseEnum.Connection:
@@ -97,7 +97,7 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
             case TypeInDatabaseEnum.baseTables:
                 var type = TypeInDatabaseEnum.Table;
                 var tables = DatabaseServiceHelpers.GetDatabaseService(_generalApplicationData, ConnectionName).GetDbObjects(Database, CurrentSchema, "", type).OrderBy(o => o.Owner.PadRight(20) + o.Name);
-                
+
                 foreach (var item in tables)
                 {
                     newNodeCollection.Add(new DbSchemaModel(type, this.DatabaseTypeEnumValue)
@@ -297,7 +297,7 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
                 newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.DbItemMoreInfo, this.DatabaseTypeEnumValue)
                 {
                     Parent = this,
-                    Name = $"Owner : {this.Owner??"empty owner"}",
+                    Name = $"Owner : {this.Owner ?? "empty owner"}",
                     Info = "more info",
                     ConnectionName = ConnectionName,
                     Database = Database,
@@ -308,16 +308,26 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
                 var columns = DatabaseServiceHelpers.GetDatabaseService(_generalApplicationData, ConnectionName).GetColumns(Database, CurrentSchema, Parent?.Name, "");
                 foreach (var item in columns)
                 {
-                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.columnInThisTable, this.DatabaseTypeEnumValue) { Parent = this, Name = item.Name, Info = "column"
-                    , Comment = item.Desc, ConnectionName = this.ConnectionName});
+                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.columnInThisTable, this.DatabaseTypeEnumValue)
+                    {
+                        Parent = this,
+                        Name = item.Name,
+                        Info = "column"
+                    ,
+                        Comment = item.Desc,
+                        ConnectionName = this.ConnectionName
+                    });
                 }
                 break;
             case TypeInDatabaseEnum.View:
                 var columns2 = DatabaseServiceHelpers.GetDatabaseService(_generalApplicationData, ConnectionName).GetColumns(Database, CurrentSchema, Name, "");
                 foreach (var item in columns2)
                 {
-                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.columnInThisView, this.DatabaseTypeEnumValue) { 
-                        Parent = this, Name = item.Name, Info = "column",
+                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.columnInThisView, this.DatabaseTypeEnumValue)
+                    {
+                        Parent = this,
+                        Name = item.Name,
+                        Info = "column",
                         ConnectionName = this.ConnectionName
                     });
                 }
@@ -326,7 +336,7 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
                 var columns3 = DatabaseServiceHelpers.GetDatabaseService(_generalApplicationData, ConnectionName).GetColumns(Database, CurrentSchema, Name, "");
                 foreach (var item in columns3)
                 {
-                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.columnInThisExternal, this.DatabaseTypeEnumValue) 
+                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.columnInThisExternal, this.DatabaseTypeEnumValue)
                     { Parent = this, Name = item.Name, Info = "column", ConnectionName = this.ConnectionName });
                 }
                 break;
@@ -350,13 +360,13 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
                 }
                 if (colTemp is not null)
                 {
-                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.ColumnDataType, this.DatabaseTypeEnumValue) 
+                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.ColumnDataType, this.DatabaseTypeEnumValue)
                     { Name = colTemp.FullTypeName, Info = "data type", ConnectionName = this.ConnectionName });
-                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.ColumnDataTypeNullInfo, this.DatabaseTypeEnumValue) 
+                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.ColumnDataTypeNullInfo, this.DatabaseTypeEnumValue)
                     { Name = colTemp.ColumnNotNull.ToString(), Info = "not null", ConnectionName = this.ConnectionName });
 
                     var colDesc = String.IsNullOrWhiteSpace(colTemp.Desc) ? "No description" : colTemp.Desc;
-                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.ColumnComment, this.DatabaseTypeEnumValue) 
+                    newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.ColumnComment, this.DatabaseTypeEnumValue)
                     { Name = colDesc, Info = "comment", ConnectionName = this.ConnectionName });
                 }
                 break;
@@ -365,11 +375,11 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
                 if (nzService is not null)
                 {
                     if (nzService.DistributionDictionary.TryGetValue(Database, out var dc0) &&
-                        dc0.TryGetValue(CurrentSchema, out var dic1) && Parent is not null && Parent.Name is not null && dic1.TryGetValue(Parent.Name, out var distList))
+                        dc0.TryGetValue(CurrentSchema, out var dic1) && Parent?.Name != null && dic1.TryGetValue(Parent.Name, out var distList))
                     {
                         foreach (var item in distList)
                         {
-                            newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.thisDistributionCollumn, this.DatabaseTypeEnumValue) 
+                            newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.thisDistributionCollumn, this.DatabaseTypeEnumValue)
                             { Parent = this, Name = item, Info = "", ConnectionName = this.ConnectionName });
                         }
                     }
@@ -401,9 +411,12 @@ public sealed partial class DbSchemaModel : ObservableObject, IDatabaseSchemaIte
                         foreach (var (keyName, kefInfo) in dict3)
                         {
                             newNodeCollection.Add(new DbSchemaModel(TypeInDatabaseEnum.thisReference, this.DatabaseTypeEnumValue)
-                            { 
-                                Parent = this, Name = $"{DatabaseService.KeyNameFromChar(kefInfo.KeyType)}: {keyName}", Info = "(" + string.Join(',', kefInfo.ColumnList.Select(o=>o.colName)) + ")"
-                                ,ConnectionName = this.ConnectionName
+                            {
+                                Parent = this,
+                                Name = $"{DatabaseService.KeyNameFromChar(kefInfo.KeyType)}: {keyName}",
+                                Info = "(" + string.Join(',', kefInfo.ColumnList.Select(o => o.colName)) + ")"
+                                ,
+                                ConnectionName = this.ConnectionName
                             });
                         }
                     }

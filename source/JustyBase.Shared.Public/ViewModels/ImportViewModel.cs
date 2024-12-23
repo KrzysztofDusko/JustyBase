@@ -1,13 +1,4 @@
 //TODO
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.Common.Contracts;
@@ -20,6 +11,15 @@ using JustyBase.PluginCommon.Models;
 using JustyBase.PluginCommons;
 using JustyBase.PluginDatabaseBase.Database;
 using JustyBase.Shared.Helpers;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace JustyBase.ViewModels.Documents;
 
@@ -39,7 +39,7 @@ public sealed partial class ImportViewModel
     [ObservableProperty]
     public partial TabItem SelectedTab { get; set; }
 
-    readonly string _createNewTxt = "[CREATE NEW TABLE]";
+    private readonly string _createNewTxt = "[CREATE NEW TABLE]";
 
     [ObservableProperty]
     public partial bool AllColumnsAsText { get; set; }
@@ -115,20 +115,20 @@ public sealed partial class ImportViewModel
     {
         ImportFilepath = filePath;
 
-        var _curentImportFromFile = new ImportFromExcelFile(x => MessageForUserTools.ShowSimpleMessageBox(x), _generalApplicationData.GlobalLoggerObject)
+        var curentImportFromFile = new ImportFromExcelFile(x => MessageForUserTools.ShowSimpleMessageBox(x), _generalApplicationData.GlobalLoggerObject)
         {
             FilePath = filePath,
             TreatAllColumnsAsText = this.AllColumnsAsText
         };
-        _importFromExcelFilesClasses[filePath] = _curentImportFromFile;
+        _importFromExcelFilesClasses[filePath] = curentImportFromFile;
 
-        if (!string.IsNullOrWhiteSpace(_curentImportFromFile.FilePath))
+        if (!string.IsNullOrWhiteSpace(curentImportFromFile.FilePath))
         {
             var initSuccess = await Task.Run(() =>
             {
-                if (!_curentImportFromFile.InitImport(encoding: Encoding.UTF8))
+                if (!curentImportFromFile.InitImport(encoding: Encoding.UTF8))
                 {
-                    _curentImportFromFile.DoFileDispose();
+                    curentImportFromFile.DoFileDispose();
                     return false;
                 }
                 return true;
@@ -139,9 +139,9 @@ public sealed partial class ImportViewModel
             }
 
             ExcelTabsNames.Clear();
-            for (int i = 0; i < _curentImportFromFile.SheetNamesToImport.Count; i++)
+            for (int i = 0; i < curentImportFromFile.SheetNamesToImport.Count; i++)
             {
-                string item = _curentImportFromFile.SheetNamesToImport[i];
+                string item = curentImportFromFile.SheetNamesToImport[i];
                 ExcelTabsNames.Add(new TabItem() { TabName = item, TabOk = (i == 0) });
                 SelectedTab = ExcelTabsNames[0];
             }
@@ -155,7 +155,7 @@ public sealed partial class ImportViewModel
     public Action<string[]> ActionFromView;
     private readonly Lock _lock = new();
 
-    [RelayCommand(AllowConcurrentExecutions =true)]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task ImportStart(string option)
     {
         if (option == "Continue")
@@ -171,7 +171,7 @@ public sealed partial class ImportViewModel
             {
                 await OpenMethod(importFilePath);
             }
-            var _curentImportFromFile = _importFromExcelFilesClasses[importFilePath];
+            var curentImportFromFile = _importFromExcelFilesClasses[importFilePath];
             //StartEnabled = false;
 
             if (SelectedTableText == _createNewTxt || string.IsNullOrWhiteSpace(SelectedTableText))
@@ -217,13 +217,13 @@ public sealed partial class ImportViewModel
             {
                 _dispatcherTimer.Start();
             }
-            if (_curentImportFromFile is null)
+            if (curentImportFromFile is null)
             {
                 _messageForUserTools.ShowSimpleMessageBoxInstance("_currentImport is null");
                 return;
             }
 
-            _curentImportFromFile.StandardMessageAction = (s) => MessageForUserTools.DispatcherAction(
+            curentImportFromFile.StandardMessageAction = (s) => MessageForUserTools.DispatcherAction(
                 () =>
                 {
                     importItem.Info = s;
@@ -239,23 +239,23 @@ public sealed partial class ImportViewModel
                 }
             }
 
-            for (int i = 0; i < _curentImportFromFile.SheetNamesToImport.Count; i++)
+            for (int i = 0; i < curentImportFromFile.SheetNamesToImport.Count; i++)
             {
-                var item = _curentImportFromFile.SheetNamesToImport[i];
+                var item = curentImportFromFile.SheetNamesToImport[i];
                 if (!excelNames.Contains(item))
                 {
-                    _curentImportFromFile.SheetNamesToImport.Remove(item);
+                    curentImportFromFile.SheetNamesToImport.Remove(item);
                 }
             }
 
             string tableNameMask = SelectedTableText;
-            var sheets = _curentImportFromFile.SheetNamesToImport;
+            var sheets = curentImportFromFile.SheetNamesToImport;
 
             try
             {
                 if (option == "Fast")
                 {
-                    var fastImportTask = _curentImportFromFile.ImportFromFileAllSteps(service.DatabaseType, service, SelectedSchema, tableNameMask);
+                    var fastImportTask = curentImportFromFile.ImportFromFileAllSteps(service.DatabaseType, service, SelectedSchema, tableNameMask);
                     _importFromExcelFilesClasses.Remove(importFilePath);
                     StartEnabled = true;
                     await fastImportTask;
@@ -263,7 +263,7 @@ public sealed partial class ImportViewModel
                 else if (option == "WithSteps")
                 {
                     ColumnsInGrid.Clear();
-                    var importTaskWithSteps = _curentImportFromFile.ImportFromFileStepByStep(service.DatabaseType, service, SelectedSchema, tableNameMask,
+                    var importTaskWithSteps = curentImportFromFile.ImportFromFileStepByStep(service.DatabaseType, service, SelectedSchema, tableNameMask,
                         (x, y) =>
                         {
                             ColumnsInGrid.Add(new ColumnInGrid()
@@ -341,7 +341,7 @@ public sealed partial class ImportViewModel
             {
                 TabsWarningMessage = ex.Message;
                 _generalApplicationData.GlobalLoggerObject.TrackError(ex, isCrash: false);
-                _curentImportFromFile?.DoFileDispose();
+                curentImportFromFile?.DoFileDispose();
                 _messageForUserTools.ShowSimpleMessageBoxInstance(ex);
                 return;
             }

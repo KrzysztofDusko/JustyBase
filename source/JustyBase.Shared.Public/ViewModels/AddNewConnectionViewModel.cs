@@ -1,12 +1,12 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using JustyBase.Common.Contracts;
+using JustyBase.Common.Models;
+using JustyBase.PluginDatabaseBase.Database;
+using JustyBase.Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.Shared.Helpers;
-using JustyBase.Common.Contracts;
-using JustyBase.Common.Models;
 
 namespace JustyBase.ViewModels.Tools;
 
@@ -30,7 +30,7 @@ public sealed partial class AddNewConnectionViewModel
             return;
         }
 
-        var res = _generalApplicationData.AddToOrEditLoginData(ConName,Database, DriversList[DriverIndex], Pass, UserName, Server);
+        var res = _generalApplicationData.AddToOrEditLoginData(ConName, Database, DriversList[DriverIndex], Pass, UserName, Server);
         Refresh(res);
         CloseWindowAction?.Invoke();
     }

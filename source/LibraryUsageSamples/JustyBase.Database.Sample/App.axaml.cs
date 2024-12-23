@@ -17,15 +17,11 @@ public class App : Application
         AvaloniaXamlLoader.Load(this);
 
         var uri = new Uri($"avares://JustyBase.Database.Sample/Assets/SQL-Mode.xshd");
-        using (var stream = AssetLoader.Open(uri))
-        {
-            using (var reader = new System.Xml.XmlTextReader(stream))
-            {
-                AvaloniaEdit.Highlighting.HighlightingManager.Instance.RegisterHighlighting("SQL", [],
-                    AvaloniaEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
-                        AvaloniaEdit.Highlighting.HighlightingManager.Instance));
-            }
-        }       
+        using var stream = AssetLoader.Open(uri);
+        using var reader = new System.Xml.XmlTextReader(stream);
+        AvaloniaEdit.Highlighting.HighlightingManager.Instance.RegisterHighlighting("SQL", [],
+            AvaloniaEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
+                AvaloniaEdit.Highlighting.HighlightingManager.Instance));
 
     }
 

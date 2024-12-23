@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace JustyBase.PluginCommon.Models;
+﻿namespace JustyBase.PluginCommon.Models;
 
 public record class SchemaSearchItem
 {

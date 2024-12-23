@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace JustyBase.PluginCommon.Contracts;
 public interface ISomeEditorOptions
 {
@@ -8,7 +5,7 @@ public interface ISomeEditorOptions
     Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> GetAllSnippets { get; }
     Dictionary<string, string> FastReplaceDictionary { get; }
     List<string> TypoPatternList { get; }
-    Dictionary<string, string> VariablesDictStatic { get; set; }
+    Dictionary<string, string> VariablesDictionary { get; set; }
     bool CollapseFoldingOnStartup { get; }
 
     static readonly Dictionary<string, (string name, string assetName, bool isXml)> REGISTERED_EXTENSIONS = new(StringComparer.OrdinalIgnoreCase)

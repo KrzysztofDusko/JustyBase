@@ -1,19 +1,19 @@
+using JustyBase.Common.Contracts;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using JustyBase.Common.Contracts;
 
 namespace JustyBase.Helpers.Interactions;
 
 public sealed partial class MessageForUserTools : IMessageForUserTools
 {
-    private readonly static MessageForUserTools _instance = new();
+    private static readonly MessageForUserTools Instance = new();
     public static void DispatcherAction(Action actionToDispatch)
     {
-        _instance.DispatcherActionInstance(actionToDispatch);
+        Instance.DispatcherActionInstance(actionToDispatch);
     }
-    
+
     public void ShowOrShowInExplorerHelper(string path, string? argOverRide = null)
     {
         if (OperatingSystem.IsWindows() && path is not null && (File.Exists(path) || Directory.Exists(path)))
@@ -35,9 +35,9 @@ public sealed partial class MessageForUserTools : IMessageForUserTools
 
 
     // To support flashing.
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+    private static partial bool FlashWindowEx(ref FLASHWINFO pwfi);
     //Flash both the window caption and taskbar button.
     //This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags. 
     public const UInt32 FLASHW_ALL = 3;
@@ -103,7 +103,7 @@ public sealed partial class MessageForUserTools : IMessageForUserTools
 
     void IMessageForUserTools.ShowSimpleMessageBoxInstance(string messageForUser, string title)
     {
-        MessageForUserTools.ShowSimpleMessageBox(messageForUser, title);
+        ShowSimpleMessageBox(messageForUser, title);
     }
 
 }

@@ -221,7 +221,7 @@ public partial class SqlCompletionProvider : ICodeEditorCompletionProvider
             }
 
             string baseSQL = TextPartAfterFrom(betweenBrackets.text, ignoreBracketMismatch);
-            var variablesDictionary = _someEditorOptions?.VariablesDictStatic;
+            var variablesDictionary = _someEditorOptions?.VariablesDictionary;
 
             if (variablesDictionary is not null)
             {

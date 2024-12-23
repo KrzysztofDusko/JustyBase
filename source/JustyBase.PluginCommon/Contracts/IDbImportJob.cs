@@ -1,6 +1,6 @@
-﻿using System.Data;
-using JustyBase.PluginCommon.Enums;
+﻿using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginCommon.Models;
+using System.Data;
 
 namespace JustyBase.PluginCommon.Contracts;
 

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.ViewModels.Documents;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace JustyBase.ViewModels;
 
@@ -11,9 +11,9 @@ public sealed class DbObjectQuickMenuViewModel : ObservableObject
 {
     public string ObjectTitle { get; set; } = "some title..";
     public ObservableCollection<QuickMenuItem> OptionsList { get; set; }
-    public Action CloseAction { get; set; }
+    public Action CloseAction { get; init; }
 
-    public SqlDocumentViewModel SqlDocVM 
+    public SqlDocumentViewModel SqlDocVM
     {
         get;
         set

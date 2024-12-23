@@ -1,16 +1,4 @@
 ﻿//TODO : way to many code in this file, need to refactor
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Data.Common;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.Common.Contracts;
@@ -32,17 +20,29 @@ using JustyBase.PluginDatabaseBase.Database;
 using JustyBase.Shared.Helpers;
 using JustyBase.ViewModels.Tools;
 using JustyBase.Views;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Common;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace JustyBase.ViewModels.Documents;
 
 public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleanableViewModel, IHotDocumentVm
-{    
+{
     private readonly IClipboardService _clipboardService;
     private readonly IGeneralApplicationData _generalApplicationData;
     private readonly ISimpleLogger _simpleLogger;
     private readonly HistoryService _historyService;
     private readonly AutocompleteService _autocompleteService;
-    private readonly IMessageForUserTools  _messageForUserTools;
+    private readonly IMessageForUserTools _messageForUserTools;
 
     private FileSystemWatcher _fileWatcher = new();
     private void MakeWatcher(string path)
@@ -106,7 +106,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
     private void VmSharedPreparation()
     {
         CommentLinesCommand = new RelayCommand(SqlEditor.CommentSelectedLines);
-        LogItems = new ObservableCollection<LogMessage>();
+        LogItems = [];
 
         if (string.IsNullOrEmpty(SelectedDatabase))
         {
@@ -212,7 +212,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                     break;
                 case SqlDocumentViewModelHelper.CurrentOptionsListDDL:
                 case SqlDocumentViewModelHelper.CurrentOptionsListRECREATE:
-                    var (dbObject, schema) = FindFromName(tappedWord,true, out string database);
+                    var (dbObject, schema) = FindFromName(tappedWord, true, out string database);
                     if (dbObject is not null)
                     {
                         if (optionName == "Ddl")
@@ -274,7 +274,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         }
         catch (Exception ex)
         {
-            _simpleLogger.TrackError(ex,isCrash:true);
+            _simpleLogger.TrackError(ex, isCrash: true);
             _messageForUserTools.ShowSimpleMessageBoxInstance($"ERROR {ex.Message}");
         }
     }
@@ -294,7 +294,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             {
                 return;
             }
-            ImportFromExcelFile importFrom = new (x => _messageForUserTools.ShowSimpleMessageBoxInstance(x), _simpleLogger)
+            ImportFromExcelFile importFrom = new(x => _messageForUserTools.ShowSimpleMessageBoxInstance(x), _simpleLogger)
             {
                 StandardMessageAction = (msg) =>
                 {
@@ -322,10 +322,10 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         }
     }
 
-    private (DatabaseObject dbObject, string schema) FindFromName(string tappedWord,bool cleanNames, out string database)
+    private (DatabaseObject dbObject, string schema) FindFromName(string tappedWord, bool cleanNames, out string database)
     {
         var m = SqlDocumentViewModelHelper.DatabaseSchemaTableRegex.Match(tappedWord);
-        
+
         if (m.Success)
         {
             database = m.Groups["part1"].Value;
@@ -343,7 +343,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             }
         }
         database = null;
-        return (null,null);
+        return (null, null);
     }
 
     public string SelectedConnectionName => SelectedConnectionIndex < 0 || SelectedConnectionIndex >= SqlDocumentViewModelHelper.ConnectionsList.Count ? "" : SqlDocumentViewModelHelper.ConnectionsList[SelectedConnectionIndex].Name;
@@ -419,7 +419,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         int i = 1;
         foreach (var actualRange in lines)
         {
-            if (allLetters && i==1)
+            if (allLetters && i == 1)
             {
                 i++;
                 continue;
@@ -526,28 +526,26 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
 
 
     [ObservableProperty]
-    public partial bool KeepConnectionOpen { get;set; } = true;
+    public partial bool KeepConnectionOpen { get; set; } = true;
 
     partial void OnKeepConnectionOpenChanged(bool value)
     {
-        if (!KeepConnectionOpen)
+        if (KeepConnectionOpen) return;
+        try
         {
-            try
+            if (_cachedDbConnection?.Connection != null && _cachedDbConnection.Connection.State == ConnectionState.Open)
             {
-                if (_cachedDbConnection is not null && _cachedDbConnection.Connection is not null && _cachedDbConnection.Connection.State == ConnectionState.Open)
-                {
-                    _cachedDbConnection.Connection.Close();
-                }
+                _cachedDbConnection.Connection.Close();
             }
-            catch (Exception ex)
-            {
-                _messageForUserTools.ShowSimpleMessageBoxInstance(ex);
-                _simpleLogger.TrackCrashMessagePlusOpenNotepad(ex, "close failed", isCrash: false);
-            }
-            finally
-            {
-                _cachedDbConnection = null;
-            }
+        }
+        catch (Exception ex)
+        {
+            _messageForUserTools.ShowSimpleMessageBoxInstance(ex);
+            _simpleLogger.TrackCrashMessagePlusOpenNotepad(ex, "close failed", isCrash: false);
+        }
+        finally
+        {
+            _cachedDbConnection = null;
         }
     }
 
@@ -623,7 +621,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             _simpleLogger.TrackError(ex, isCrash: false);
         }
         var vvm = App.GetRequiredService<VariablesViewModel>();
-        vvm.AddVariable(m.Groups["sessionVar"].Value[1..], val2.ToString());
+        vvm.AddVariableFromEditorOrByPlus(m.Groups["sessionVar"].Value[1..], val2.ToString());
     }
 
     private readonly VariablesViewModel _variablesViewModel;
@@ -633,19 +631,19 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         toAsk.Sort(delegate (string x, string y)
         {
             if (x.Length != y.Length) return y.Length.CompareTo(x.Length);
-            else return y.CompareTo(x);
+            return y.CompareTo(x);
         });
 
         foreach (var variableTxt in toAsk)
         {
-            _variablesViewModel.AddVariable(variableTxt[1..], SqlDocumentViewModelHelper.KnownParams[variableTxt]);
+            _variablesViewModel.AddVariableFromEditorOrByPlus(variableTxt[1..], SqlDocumentViewModelHelper.KnownParams[variableTxt]);
         }
 
         return query.ReplaceVariablesInSql(toAsk, SqlDocumentViewModelHelper.KnownParams);
     }
     public string ReplaceSessionVariables(string query)
     {
-        var tab = _variablesViewModel.GetVariablesDictStatic();
+        var tab = _variablesViewModel.UpdateVariablesCompletition();
         return query.ReplaceVariablesInSql(tab.Keys.ToList(), tab, variableStart: '&');
     }
 
@@ -675,7 +673,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             yield return item;
         }
     }
-    
+
     //move this logic to service class
     private readonly Lock _runningQueriesLock = new();
     public int TasksToAbort
@@ -683,7 +681,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         get
         {
             int res = 0;
-            for (int i = _globalAbortUBound; i < _globalQueryNumber; i++) 
+            for (int i = _globalAbortUBound; i < _globalQueryNumber; i++)
             {
                 if (!_querieDic[i].FullFinish)
                 {
@@ -697,7 +695,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
     private int _globalAbortUBound = 0;
     private readonly Dictionary<int, QueryInfo> _querieDic = [];
     private int _globalQueryNumber = 0;
-    private const int CANCELATION_TIMEOUT_SEC = 5;
+    private const int CancelationTimeoutSec = 5;
     private async Task AbortSqlHelper(int pevAbortUbound)
     {
         for (int i = pevAbortUbound; i < _globalAbortUBound; i++)
@@ -724,12 +722,12 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                     {
                         cmd.Cancel();
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
                         _simpleLogger.TrackError(ex, isCrash: false);
                         _messageForUserTools.ShowSimpleMessageBoxInstance($"Error with command cancelation\r\n{ex.Message}");
                     }
-                }).WaitAsync(TimeSpan.FromSeconds(CANCELATION_TIMEOUT_SEC));
+                }).WaitAsync(TimeSpan.FromSeconds(CancelationTimeoutSec));
 
                 if (q.FullFinish)
                 {
@@ -747,14 +745,14 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             _querieDic[actualQueryNum] = new QueryInfo
             {
                 FullFinish = false,
-                DbCommands = new Dictionary<DbCommand, SqlCommandState>()
+                DbCommands = []
             };
         }
     }
 
     public void InserSnippet(string text)
     {
-        var snippet =new CodeSnippet("ABC","DEF",text,"GHI");
+        var snippet = new CodeSnippet("ABC", "DEF", text, "GHI");
         var editorSnippet = snippet.CreateAvalonEditSnippet();
 
         using (SqlEditor.TextArea.Document.RunUpdate())
@@ -802,7 +800,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             con = service.GetConnection(null, pooling: doPooling);
             if (keepConnectionOpenLocal)
             {
-                _cachedDbConnection = new CachedDbConnection(service,con, null);
+                _cachedDbConnection = new CachedDbConnection(service, con, null);
             }
         }
         return con;
@@ -820,7 +818,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
     [ObservableProperty]
     public partial int ProgressValue { get; set; } = 0;
 
-    [RelayCommand(AllowConcurrentExecutions =true)]
+    [RelayCommand(AllowConcurrentExecutions = true)]
     private async Task RunSqlAsync(string option)
     {
         if (SqlEditor is null || SelectedConnectionIndex == -1)
@@ -838,7 +836,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         string localTitle = GetTile();
         bool localDoPooling = DoPooling;
         bool singleCommandLocal = SingleCommand || option?.Contains("|SingleBath") == true;
-        
+
         if (keepConnectionOpenLocal) // only one SQL at same time
         {
             IsRunEnabled = false;
@@ -863,16 +861,16 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
             return;
         }
 
-        Match variableDevineMatch = SqlDocumentViewModelHelper.RxSessionVariableDefine.Match(query);
-        if (variableDevineMatch.Success)
+        Match variableDefineMatch = SqlDocumentViewModelHelper.RxSessionVariableDefine.Match(query);
+        if (variableDefineMatch.Success)
         {
-            await AddSessionVariable(variableDevineMatch, null, localTitle);
+            await AddSessionVariable(variableDefineMatch, null, localTitle);
             ReturnPhase();
             return;
         }
 
-        bool TABS_WITH_ROWS = query.StartsWith(DatabaseService.TABS_WITH_ROWS);
-        bool TIMEOUT_OVERRIDE = query.Contains(DatabaseService.TIMEOUT_OVERRIDE);
+        bool tabsWithRows = query.StartsWith(DatabaseService.TABS_WITH_ROWS);
+        bool timeoutOverride = query.Contains(DatabaseService.TIMEOUT_OVERRIDE);
 
         if (query.Contains(DatabaseService.CONTINUE_ON_ERROR))
         {
@@ -880,7 +878,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         }
         bool continueOnErrorLocal = ContinueOnError;
 
-        int? FORCED_TIMEOUT = SqlDocumentViewModelHelper.FindForcedTimeout(query);
+        int? forcedTimeout = SqlDocumentViewModelHelper.FindForcedTimeout(query);
 
         if (SqlEditor.ErrorWaningsPahse1())
         {
@@ -889,7 +887,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
 
         query = await AskAndReplaceVariablesFromUser(query);
 
-        List<string> sqls =  SqlDocumentViewModelHelper.ConvertSqlTextToListOfSqls(singleCommandLocal, query);
+        List<string> sqls = SqlDocumentViewModelHelper.ConvertSqlTextToListOfSqls(singleCommandLocal, query);
         int actualqlobalQueryNum = _globalQueryNumber;//it is possible to run another query before this ends, so we have to remember this number
         try
         {
@@ -964,7 +962,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                             var m1 = SqlDocumentViewModelHelper.RxSessionVariableDefine.Match(sql);
                             if (m1.Success)
                             {
-                                await AddSessionVariable(m1, con,localTitle);
+                                await AddSessionVariable(m1, con, localTitle);
                                 await Task.Delay(20);
                                 continue;
                             }
@@ -1013,10 +1011,10 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                             {
                                 netezza.OptimizeCommandBuffer(cmd, !option.StartsWith(".csv")); //experimental
                             }
-                            
+
                             _querieDic[actualqlobalQueryNum].DbCommands[cmd] = SqlCommandState.created;
 
-                            SetTimeoutForCommand(localTitle, actualDatabaseService, cmd, FORCED_TIMEOUT);
+                            SetTimeoutForCommand(localTitle, actualDatabaseService, cmd, forcedTimeout);
 
                             long? exportUpFrontRowCount = null;
                             cmd.CommandText = sql;
@@ -1062,7 +1060,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                                 }
 
                                 using var rdr = cmd.ExecuteReader(cb);
-                   
+
                                 _querieDic[actualqlobalQueryNum].DbCommands[cmd] = SqlCommandState.executed;
 
                                 if (actualqlobalQueryNum < _globalAbortUBound)
@@ -1078,12 +1076,12 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                                 {
                                     if (string.IsNullOrEmpty(forceAnotherOption) && option.StartsWith("Grid") && rdr.FieldCount > 0)
                                     {
-                                        HandleStandardGrid(actualDatabaseService, $"{localTitle}_{currentLocalSqlNumber}", query, currentLogMessage, TABS_WITH_ROWS, actualqlobalQueryNum, rdr, cmd, shortQuery);
+                                        HandleStandardGrid(actualDatabaseService, $"{localTitle}_{currentLocalSqlNumber}", query, currentLogMessage, tabsWithRows, actualqlobalQueryNum, rdr, cmd, shortQuery);
                                     }
                                     else if ((forceAnotherOption == "@expXlsx" || option.StartsWith(".xlsb")) && !String.IsNullOrWhiteSpace(filePathToExport))
                                     {
                                         var timestamp = Stopwatch.GetTimestamp();
-                                        void progressAction(int n)
+                                        void ProgressAction(int n)
                                         {
                                             MessageForUserTools.DispatcherAction(() =>
                                             {
@@ -1094,7 +1092,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                                                 }
                                             });
                                         }
-                                        rdr.HandleExcelOutput(filePathToExport, sql, "Justy", progressAction);
+                                        rdr.HandleExcelOutput(filePathToExport, sql, "Justy", ProgressAction);
                                     }
                                     else if ((forceAnotherOption == "@expCsv" || option.Contains(".csv") || option.StartsWith(".parquet")) && !String.IsNullOrWhiteSpace(filePathToExport))
                                     {
@@ -1106,7 +1104,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                                         }
 
                                         Stopwatch sw = Stopwatch.StartNew();
-                                        void innerAction(long localN)
+                                        void InnerAction(long localN)
                                         {
                                             if (exportUpFrontRowCount is long longRows)
                                             {
@@ -1125,16 +1123,16 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                                                 AddLogMessage($" {(1_000 * localN / sw.Elapsed.TotalMilliseconds):N0} rows per sec", LogMessageType.ok, DateTime.Now, localTitle);
                                             }
                                         }
-                                        void progressAction2(long n)
+                                        void ProgressAction2(long n)
                                         {
                                             long localN = n;
                                             MessageForUserTools.DispatcherAction(() =>
                                             {
-                                                innerAction(localN);
+                                                InnerAction(localN);
                                             });
                                         }
 
-                                        rdr.HandleCsvOrParquetOutput(filePathToExport, opt, progressAction2);
+                                        rdr.HandleCsvOrParquetOutput(filePathToExport, opt, ProgressAction2);
                                     }
                                     if (rdr.RecordsAffected != -1)
                                     {
@@ -1341,7 +1339,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
     {
         if ((service.DatabaseType == DatabaseTypeEnum.NetezzaSQL || service.DatabaseType == DatabaseTypeEnum.NetezzaSQLOdbc) && !OperatingSystem.IsWindows())
         {
-            AddLogMessage($"TO DO CommandTimeout on nonWindows", LogMessageType.ok, System.DateTime.Now, localTitle);
+            AddLogMessage("TO DO CommandTimeout on nonWindows", LogMessageType.ok, System.DateTime.Now, localTitle);
         }
         else
         {

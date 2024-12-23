@@ -1,15 +1,13 @@
-using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using JustyBase.Common.Contracts;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.Common.Contracts;
+using System.Collections.ObjectModel;
 
 namespace JustyBase.ViewModels.Tools;
-
 public sealed partial class DbSchemaViewModel
 {
-   
     private readonly IGeneralApplicationData _generalApplicationData;
     private readonly ISimpleLogger _simpleLogger;
     private readonly IClipboardService _clipboardService;
@@ -58,71 +56,58 @@ public sealed partial class DbSchemaViewModel
     private ObservableCollection<Control> TodoMenuItems { get; set; }
 
 
-    public void PrepareContextMenu(object data)
+    public void PrepareContextMenu(object? data)
     {
         TypeInDatabaseEnum selRowType = GetSelectedType(data);
-        if (selRowType == TypeInDatabaseEnum.otherNoneEntry)
+        switch (selRowType)
         {
-            return;
-        }
-        if (selRowType == TypeInDatabaseEnum.Connection)
-        {
-            MenuItems = MenuItemsForConnections;
-        }
-        else if (selRowType == TypeInDatabaseEnum.baseTables)
-        {
-            MenuItems = MenuItemsForTableGroup;
-        }
-        else if (selRowType == TypeInDatabaseEnum.Table)
-        {
-            MenuItems = MenuItemsForTable;
-        }
-        else if (selRowType == TypeInDatabaseEnum.View)
-        {
-            MenuItems = MenuItemsForView;
-        }
-        else if (selRowType == TypeInDatabaseEnum.baseViews)
-        {
-            MenuItems = MenuItemsForViewGroups;
-        }
-        else if (selRowType == TypeInDatabaseEnum.Procedure)
-        {
-            MenuItems = MenuItemsForProcedures;
-        }
-        else if (selRowType == TypeInDatabaseEnum.Fluid)
-        {
-            MenuItems = MenuItemsForFluids;
-        }
-        else if (selRowType == TypeInDatabaseEnum.baseProcedures)
-        {
-            MenuItems = MenuItemsForProceduresGroups;
-        }
-        else if (selRowType == TypeInDatabaseEnum.ExternalTable)
-        {
-            MenuItems = MenuItemsForExternalTablesNz;
-        }
-        else if (selRowType == TypeInDatabaseEnum.baseExternals)
-        {
-            MenuItems = MenuItemsForExternalTablesNzGroups;
-        }
-        else if(selRowType == TypeInDatabaseEnum.Synonym)
-        {
-            MenuItems = MenuItemsForSynonyms;
-        }
-        else if (selRowType == TypeInDatabaseEnum.baseSynonyms)
-        {
-            MenuItems = MenuItemsForSynonymsGroups;
-        }
-        else if (selRowType == TypeInDatabaseEnum.baseSequence)
-        {
-            MenuItems = MenuItemsForSequenceGroups;
-        }
-        else
-        {
-            MenuItems = TodoMenuItems;
+            case TypeInDatabaseEnum.otherNoneEntry:
+                return;
+            case TypeInDatabaseEnum.Connection:
+                MenuItems = MenuItemsForConnections;
+                break;
+            case TypeInDatabaseEnum.baseTables:
+                MenuItems = MenuItemsForTableGroup;
+                break;
+            case TypeInDatabaseEnum.Table:
+                MenuItems = MenuItemsForTable;
+                break;
+            case TypeInDatabaseEnum.View:
+                MenuItems = MenuItemsForView;
+                break;
+            case TypeInDatabaseEnum.baseViews:
+                MenuItems = MenuItemsForViewGroups;
+                break;
+            case TypeInDatabaseEnum.Procedure:
+                MenuItems = MenuItemsForProcedures;
+                break;
+            case TypeInDatabaseEnum.Fluid:
+                MenuItems = MenuItemsForFluids;
+                break;
+            case TypeInDatabaseEnum.baseProcedures:
+                MenuItems = MenuItemsForProceduresGroups;
+                break;
+            case TypeInDatabaseEnum.ExternalTable:
+                MenuItems = MenuItemsForExternalTablesNz;
+                break;
+            case TypeInDatabaseEnum.baseExternals:
+                MenuItems = MenuItemsForExternalTablesNzGroups;
+                break;
+            case TypeInDatabaseEnum.Synonym:
+                MenuItems = MenuItemsForSynonyms;
+                break;
+            case TypeInDatabaseEnum.baseSynonyms:
+                MenuItems = MenuItemsForSynonymsGroups;
+                break;
+            case TypeInDatabaseEnum.baseSequence:
+                MenuItems = MenuItemsForSequenceGroups;
+                break;
+            default:
+                MenuItems = TodoMenuItems;
+                break;
         }
     }
-    
+
     private void GenerateContextMenu()
     {
         MenuItemsForTable =
@@ -173,7 +158,6 @@ public sealed partial class DbSchemaViewModel
             new MenuItem() { Header = "Export Data", Command = ContextMenuActionCommand, CommandParameter = "EXPORT_DATA" },
         ];
 
-
         MenuItemsForProceduresGroups =
         [
             new MenuItem() { Header = "Create to new query window", Command = ContextMenuActionCommand, CommandParameter = "CREATE_PROCEDURE" },
@@ -190,7 +174,6 @@ public sealed partial class DbSchemaViewModel
         [
             new MenuItem() { Header = "Show usage sample to new query window", Command = ContextMenuActionCommand, CommandParameter = "FLUID_SAMPLE" },
         ];
-
 
         MenuItemsForView =
         [
@@ -261,5 +244,4 @@ public sealed partial class DbSchemaViewModel
         RefreshTableListCommand = new AsyncRelayCommand(RefreshTableListAsync);
         ShowConnectedOnlyCommand = new RelayCommand(ShowConnectedOnly);
     }
-
 }

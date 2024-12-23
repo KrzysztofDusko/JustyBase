@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using JustyBase.Common;
+using JustyBase.Common.Contracts;
 using JustyBase.Common.Helpers;
 using JustyBase.Common.Models;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.Common.Contracts;
-using System.Diagnostics;
-using JustyBase.Common;
 using JustyBase.PluginCommon.Models;
 using JustyBase.PluginDatabaseBase;
+using JustyBase.PluginDatabaseBase.Database;
 using NetezzaOdbcPlugin;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace JustyBase;
 public class GeneralApplicationData : IGeneralApplicationData
@@ -40,7 +40,7 @@ public class GeneralApplicationData : IGeneralApplicationData
             }
             try
             {
-                
+
 #if DEBUG
                 PluginLoadHelper.LoadPlugins(Environment.GetEnvironmentVariable("DEBUG_PLUGIN_BASE_PATH"));
 #else
@@ -98,7 +98,7 @@ public class GeneralApplicationData : IGeneralApplicationData
         }
         return _loginTmp;
     }
-    
+
     public bool AddToOrEditLoginData(string name, string database, string driver, string password, string userName, string server)
     {
         name = name.ToUpper();
@@ -136,7 +136,7 @@ public class GeneralApplicationData : IGeneralApplicationData
     public string SelectedTabIdFromStart { get; set; }
 
     private Dictionary<string, string>? _fastReplace;
-    
+
     private List<string>? _typoList;
     public Dictionary<string, string> FastReplaceDictionary => _fastReplace ?? Config.AllSnippets.Where(x => x.Value.snippetType == SnippetModel.FAST_STRING).Select(x => new KeyValuePair<string, string>(x.Key, x.Value.Text)).ToDictionary();
 
@@ -146,9 +146,9 @@ public class GeneralApplicationData : IGeneralApplicationData
     public bool CollapseFoldingOnStartup => Config.CollapseFoldingOnStartup;
     public Dictionary<string, (string snippetType, string? Description, string? Text, string? Keyword)> GetAllSnippets => Config.AllSnippets;
 
-    public Dictionary<string, string> VariablesDictStatic { get; set; }
+    public Dictionary<string, string> VariablesDictionary { get; set; } = [];
 
-    public string DownloadPluginsBasePath => Environment.GetEnvironmentVariable("JB_DOWNLOAD_BASE_PATH") ??"";
+    public string DownloadPluginsBasePath => Environment.GetEnvironmentVariable("JB_DOWNLOAD_BASE_PATH") ?? "";
 
     public bool IsFromatterAvaiable { get; set; }
 
@@ -226,7 +226,7 @@ public class GeneralApplicationData : IGeneralApplicationData
         Config ??= new AppOptions();
         Config.AddDefaultValues();
 
-        
+
         if (File.Exists(IGeneralApplicationData.StartupPath))
         {
             try
@@ -244,7 +244,7 @@ public class GeneralApplicationData : IGeneralApplicationData
         if (_dictionaryOfDocuments.Count == 0)
         {
             var id = IGeneralApplicationData.NewDocumentId;
-            _dictionaryOfDocuments[id] = new OfflineTabData() 
+            _dictionaryOfDocuments[id] = new OfflineTabData()
             {
                 MyId = id,
                 Title = "Document1",
@@ -385,7 +385,7 @@ public class GeneralApplicationData : IGeneralApplicationData
             MyId = id,
             Title = "problem",
             SqlText = "problem",
-            SqlFilePath =null,
+            SqlFilePath = null,
             HotDocumentViewModel = documentViewModel
         };
     }

@@ -15,7 +15,7 @@ public interface ISimpleLogger
 public sealed class EmptyLogger : ISimpleLogger
 {
     public void Dispose()
-    { 
+    {
     }
 
     public void OpenMessageInNotepad(string message)

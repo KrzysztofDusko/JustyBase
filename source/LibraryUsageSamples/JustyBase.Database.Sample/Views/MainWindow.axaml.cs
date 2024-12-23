@@ -117,7 +117,7 @@ public sealed class TestOptions : ISomeEditorOptions
 
     public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION","BETWEEN"];
 
-    public Dictionary<string, string> VariablesDictStatic { get; set; } = [];
+    public Dictionary<string, string> VariablesDictionary { get; set; } = [];
 
     public bool CollapseFoldingOnStartup => true;
 

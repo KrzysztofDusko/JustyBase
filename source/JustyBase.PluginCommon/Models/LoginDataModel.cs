@@ -13,7 +13,7 @@ public sealed class LoginDataModel
     public int? DefaultIndex { get; set; }
 }
 
-[JsonSourceGenerationOptions(WriteIndented =true)]
+[JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(List<LoginDataModel>))]
 public partial class MyJsonContextLoginDataModelList : JsonSerializerContext
 {

@@ -1,14 +1,14 @@
-using JustyBase.PluginDatabaseBase.Database;
+using JustyBase.Common.Contracts;
 using JustyBase.Editor;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginDatabaseBase.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JustyBase.PluginCommon.Contracts;
-using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginCommon.Models;
-using JustyBase.Common.Contracts;
 
 namespace JustyBase.Services.Database;
 
@@ -35,7 +35,7 @@ internal interface IDatabaseSchemaItem
         {
             textToInsert = $"{schemaModel.Database}.{schemaModel.CurrentSchema}.{schemaModel.Name}";
         }
-        
+
         editor.Document.Insert(editor.TextArea.Caret.Offset, textToInsert);
         editor.Focus();
     }
@@ -64,7 +64,7 @@ internal interface IDatabaseSchemaItem
             {
                 if (SqlCodeEditorHelpers.LastFocusedEditor is not null && SqlCodeEditorHelpers.LastFocusedEditor.Text.StartsWith("RECREATE_HACK"))
                 {
-                    words = new HashSet<string>(SqlCodeEditorHelpers.LastFocusedEditor.Text.Split("\n").Select(o=>o.Trim()));
+                    words = new HashSet<string>(SqlCodeEditorHelpers.LastFocusedEditor.Text.Split("\n").Select(o => o.Trim()));
                 }
             }
             catch (Exception ex)
@@ -104,7 +104,7 @@ internal interface IDatabaseSchemaItem
         }
         else if (optionName.StartsWith("SELECT_SEARCH"))
         {
-            sql = dbService.GetTop100Select(DATABASE, SCHEMA, ITEM_NAME, snippetMode: false /*!!*/, addWhereToTextCols:true);
+            sql = dbService.GetTop100Select(DATABASE, SCHEMA, ITEM_NAME, snippetMode: false /*!!*/, addWhereToTextCols: true);
         }
         else if (optionName.StartsWith("SELECT"))
         {
@@ -157,7 +157,7 @@ internal interface IDatabaseSchemaItem
         }
         else if (optionName.StartsWith("DDL_PROCEDURE"))
         {
-            sql = await dbService.GetCreateProcedureText(DATABASE, SCHEMA, ITEM_NAME, forceFreshCode:true);
+            sql = await dbService.GetCreateProcedureText(DATABASE, SCHEMA, ITEM_NAME, forceFreshCode: true);
         }
         else if (optionName.StartsWith("DDL_ALL_PROCEDURES"))
         {

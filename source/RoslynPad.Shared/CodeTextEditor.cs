@@ -10,8 +10,9 @@ public partial class CodeTextEditor : TextEditor
 {
     protected CompletionWindow? _completionWindow;
     private OverloadInsightWindow? _insightWindow;
+#if !AVALONIA
     private ToolTip? _toolTip;
-
+#endif
     public CodeTextEditor()
     {
         ShowLineNumbers = true;
@@ -25,24 +26,14 @@ public partial class CodeTextEditor : TextEditor
             EnableEmailHyperlinks = false
         };
 
+#if !AVALONIA
         TextArea.TextView.VisualLinesChanged += OnVisualLinesChanged;
+#endif
+
         TextArea.TextEntering += OnTextEntering;
         TextArea.TextEntered += OnTextEntered;
-
-        //TextArea.CommandBindings.Add(new RoutedCommandBinding(new RoutedCommand("XXX", new KeyGesture(Key.J, KeyModifiers.Control)),
-        //    (sender, e) => ABC()));
-
-        //var commandBindings = TextArea.CommandBindings;
-        //var deleteLineCommand = commandBindings.OfType<CommandBinding>().FirstOrDefault(x =>
-        //    x.Command == AvalonEditCommands.DeleteLine);
-        //if (deleteLineCommand != null)
-        //{
-        //    commandBindings.Remove(deleteLineCommand);
-        //}
         Initialize();
     }
-
-
 
     protected enum TriggerMode
     {
@@ -62,12 +53,13 @@ public partial class CodeTextEditor : TextEditor
         remove => RemoveHandler(ToolTipRequestEvent, value);
     }
 
+#if !AVALONIA
     private void OnVisualLinesChanged(object? sender, EventArgs e)
     {
         _toolTip?.Close(this);
     }
 
-#if !AVALONIA
+
     private void OnMouseHoverStopped(object? sender, MouseEventArgs e)
     {
         if (_toolTip != null)
@@ -76,9 +68,6 @@ public partial class CodeTextEditor : TextEditor
             e.Handled = true;
         }
     }
-#endif
-
-#if !AVALONIA
     private async void OnMouseHover(object? sender, MouseEventArgs e)
     {
         TextViewPosition? position;
@@ -243,7 +232,11 @@ public partial class CodeTextEditor : TextEditor
                     cw.CompletionList.BorderThickness = new Thickness(1);
                 }
             };
+#if AVALONIA
+            _completionWindow.Opened += async (o, args) =>
+#else
             _completionWindow.Loaded += async (o, args) =>
+#endif
             {
                 await Task.Delay(10);
                 var cw = (o as CompletionWindow);

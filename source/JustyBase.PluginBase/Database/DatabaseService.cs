@@ -1,5 +1,7 @@
 ﻿using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginCommons;
 using JustyBase.PluginDatabaseBase.Models;
 using System.Buffers;
 using System.Data;
@@ -8,8 +10,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using JustyBase.PluginCommon.Models;
-using JustyBase.PluginCommons;
 
 namespace JustyBase.PluginDatabaseBase.Database;
 
@@ -526,7 +526,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                                             schemaItem ??= [];
                                             schemaItem[viewName] = new ViewCachedInfo(source);
                                         }
-        
+
                                     }
                                 }
                                 else if (typeInDatabase == TypeInDatabaseEnum.ExternalTable && this is INetezza netezza)
@@ -570,7 +570,8 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                             }
                             catch (Exception)
                             {
-                            }}
+                            }
+                        }
                         );
                         //problems with netezza ODBC
                         Task t2 = Task.Delay(2_000);
@@ -712,7 +713,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                         return;
                     }
 
-                    var con = GetConnection(database, pooling: false,forSchema: true);
+                    var con = GetConnection(database, pooling: false, forSchema: true);
                     try
                     {
                         con.Open();
@@ -788,7 +789,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
             DateTime? crtTime = rdr.GetValue(6) as DateTime?;
             TypeInDatabaseEnum dbType = databaseObjectType.GetTypeInDatabaseEnumFromDbName();
 
-            _ = acualDb.TryAdd(schema, new Dictionary<string, DatabaseObject>()); // no StringComparer.OrdinalIgnoreCase by purpouse
+            _ = acualDb.TryAdd(schema, []); // no StringComparer.OrdinalIgnoreCase by purpouse
             acualDb[schema][objNme] = new DatabaseObject(objId, objNme, desc, dbType, databaseObjectType, owner, crtTime);
         }
         if (DatabaseType == DatabaseTypeEnum.PostgreSql)

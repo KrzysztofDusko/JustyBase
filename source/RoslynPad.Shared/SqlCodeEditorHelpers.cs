@@ -60,41 +60,42 @@ public static class SqlCodeEditorHelpers
             }
         }
     }
-    private static readonly Dictionary<string, Dictionary<string, HighlightingBrush>> _sqlColors = new()
-    {
-        {".sql|Light" ,
-            new()
-            {
-                { "Keywords", new SimpleHighlightingBrush(Colors.Blue) },
-                { "Char", new SimpleHighlightingBrush(Colors.Red) },
-                { "NumberLiteral", new SimpleHighlightingBrush(Colors.Brown) },
 
-                {"Comment",new SimpleHighlightingBrush(Colors.Green) },
-                {"Preprocessor",new SimpleHighlightingBrush(Colors.Green) },
+    //private static readonly Dictionary<string, Dictionary<string, HighlightingBrush>> _sqlColors = new()
+    //{
+    //    {".sql|Light" ,
+    //        new()
+    //        {
+    //            { "Keywords", new SimpleHighlightingBrush(Colors.Blue) },
+    //            { "Char", new SimpleHighlightingBrush(Colors.Red) },
+    //            { "NumberLiteral", new SimpleHighlightingBrush(Colors.Brown) },
 
-                {"MethodCall",new SimpleHighlightingBrush(Color.FromRgb(250,0,250)) },
-                {"ValueTypeKeywords", new SimpleHighlightingBrush(Colors.BlueViolet) },
-                //{"Parametr", new SimpleHighlightingBrush(Color.FromRgb(255, 0, 0)) },
-                {"TrueFalse", new SimpleHighlightingBrush(Colors.DarkCyan) },
-            }
-        },
-        {".sql|Dark" ,
-            new()
-            {
-                { "Keywords", new SimpleHighlightingBrush(Colors.LightGreen) },
-                { "Char", new SimpleHighlightingBrush(Colors.OrangeRed) },
-                { "NumberLiteral", new SimpleHighlightingBrush(Colors.Orange) },
+    //            {"Comment",new SimpleHighlightingBrush(Colors.Green) },
+    //            {"Preprocessor",new SimpleHighlightingBrush(Colors.Green) },
 
-                {"Comment",new SimpleHighlightingBrush(Colors.Yellow) },
-                {"Preprocessor",new SimpleHighlightingBrush(Colors.Yellow) },
+    //            {"MethodCall",new SimpleHighlightingBrush(Color.FromRgb(250,0,250)) },
+    //            {"ValueTypeKeywords", new SimpleHighlightingBrush(Colors.BlueViolet) },
+    //            //{"Parametr", new SimpleHighlightingBrush(Color.FromRgb(255, 0, 0)) },
+    //            {"TrueFalse", new SimpleHighlightingBrush(Colors.DarkCyan) },
+    //        }
+    //    },
+    //    {".sql|Dark" ,
+    //        new()
+    //        {
+    //            { "Keywords", new SimpleHighlightingBrush(Colors.LightGreen) },
+    //            { "Char", new SimpleHighlightingBrush(Colors.OrangeRed) },
+    //            { "NumberLiteral", new SimpleHighlightingBrush(Colors.Orange) },
 
-                {"MethodCall",new SimpleHighlightingBrush(Color.FromRgb(250,0,250)) },
-                {"ValueTypeKeywords", new SimpleHighlightingBrush(Colors.BlueViolet) },
-               // {"Parametr", new SimpleHighlightingBrush(Color.FromRgb(0, 255, 0)) },
-                {"TrueFalse", new SimpleHighlightingBrush(Colors.DarkCyan) },
-            }
-        }
-    };
+    //            {"Comment",new SimpleHighlightingBrush(Colors.Yellow) },
+    //            {"Preprocessor",new SimpleHighlightingBrush(Colors.Yellow) },
+
+    //            {"MethodCall",new SimpleHighlightingBrush(Color.FromRgb(250,0,250)) },
+    //            {"ValueTypeKeywords", new SimpleHighlightingBrush(Colors.BlueViolet) },
+    //           // {"Parametr", new SimpleHighlightingBrush(Color.FromRgb(0, 255, 0)) },
+    //            {"TrueFalse", new SimpleHighlightingBrush(Colors.DarkCyan) },
+    //        }
+    //    }
+    //};
 }
 
 

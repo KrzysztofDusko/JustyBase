@@ -1,19 +1,17 @@
-﻿using System;
+﻿using JustyBase.Common.Contracts;
+using JustyBase.Common.Models;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommons;
+using JustyBase.PluginDatabaseBase.Database;
+using JustyBase.ViewModels.Documents;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text.RegularExpressions;
-using JustyBase.Helpers.Interactions;
-using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.ViewModels.Tools;
-using JustyBase.Common.Contracts;
-using JustyBase.ViewModels.Documents;
-using JustyBase.PluginCommon.Contracts;
-using JustyBase.Common.Models;
-using JustyBase.PluginCommons;
 
 namespace JustyBase.Shared.Helpers;
 
@@ -68,7 +66,7 @@ internal static partial class SqlDocumentViewModelHelper
     public static int? FindForcedTimeout(string query)
     {
         int? FORCED_TIMEOUT = null;
-        var i1 = query.IndexOf(DatabaseService.TIMEOUT_OVERRIDE) + DatabaseService.TIMEOUT_OVERRIDE.Length + 1;
+        var i1 = query.IndexOf(DatabaseService.TIMEOUT_OVERRIDE, StringComparison.Ordinal) + DatabaseService.TIMEOUT_OVERRIDE.Length + 1;
         if (i1 < query.Length - 1)
         {
             var i2 = query.IndexOfAny(_newLiness, i1);
@@ -115,7 +113,7 @@ internal static partial class SqlDocumentViewModelHelper
         var simpleLogger = App.GetRequiredService<ISimpleLogger>();
         if (_connectionsList is null || force)
         {
-            _connectionsList ??= new();
+            _connectionsList ??= [];
             _connectionsList.Clear();
             foreach (var (item, value) in generalApplicationData.LoginDataDic)
             {
@@ -124,7 +122,7 @@ internal static partial class SqlDocumentViewModelHelper
                 var conItem = new ConnectionItem(item, type)
                 {
                     DefaultDatabase = value.Database,
-                    DatabaseList = new ObservableCollection<string>()
+                    DatabaseList = []
                 };
                 if (!string.IsNullOrWhiteSpace(value.Database))
                 {
@@ -156,7 +154,7 @@ internal static partial class SqlDocumentViewModelHelper
         for (int i = 0; i < _connectionsList.Count; i++)
         {
             ConnectionItem item = _connectionsList[i];
-            if (item.Name.AsSpan().Contains(word,StringComparison.OrdinalIgnoreCase))
+            if (item.Name.AsSpan().Contains(word, StringComparison.OrdinalIgnoreCase))
             {
                 return i;
             }

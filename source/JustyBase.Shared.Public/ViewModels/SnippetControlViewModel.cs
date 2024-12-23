@@ -9,8 +9,8 @@ namespace JustyBase.ViewModels;
 public sealed partial class SnippetControlViewModel : ObservableObject
 {
     private readonly IGeneralApplicationData _generalApplicationData;
-    public string TXT { get; set; } = "TXT";
-    public ObservableCollection<SnippetModel> SnippetModels { get; set; }
+    public string Txt { get; set; } = "TXT";
+    public ObservableCollection<SnippetModel> SnippetModels { get; set; } = [];
 
     [ObservableProperty]
     public partial SnippetModel SelectedSnippetModel { get; set; }
@@ -21,16 +21,15 @@ public sealed partial class SnippetControlViewModel : ObservableObject
 
     public SnippetControlViewModel()
     {
-        _generalApplicationData = App.GetRequiredService<IGeneralApplicationData>();   
-        SnippetModels = new ObservableCollection<SnippetModel>();
+        _generalApplicationData = App.GetRequiredService<IGeneralApplicationData>();
         foreach (var itm in _generalApplicationData.Config.AllSnippets)
         {
             SnippetModels.Add(new SnippetModel() { SnippetType = itm.Value.snippetType, SnippetDesc = itm.Value.Description, SnippetName = itm.Key, SnippetText = itm.Value.Text });
         }
-        AddNewCommand = new RelayCommand(() => 
+        AddNewCommand = new RelayCommand(() =>
         {
             var snp = new SnippetModel() { SnippetType = SnippetModel.STANDARD_STRING, SnippetName = "<NAME>" };
-            int tmpInt = SnippetSelectedIndex > 0? SnippetSelectedIndex:0;
+            int tmpInt = SnippetSelectedIndex > 0 ? SnippetSelectedIndex : 0;
             SnippetModels.Insert(tmpInt, new SnippetModel() { SnippetType = SnippetModel.STANDARD_STRING, SnippetName = "<NAME>" });
             SelectedSnippetModel = snp;
             SnippetSelectedIndex = tmpInt;

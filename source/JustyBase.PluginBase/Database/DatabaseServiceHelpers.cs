@@ -124,7 +124,7 @@ public static class DatabaseServiceHelpers
     IDatabaseService // result -> Oracle/Db2/etc.
     >> SpecificDbImpelmetations = [];
 
-    private static readonly Lock _lockAddDatabaseImplementation = new ();
+    private static readonly Lock _lockAddDatabaseImplementation = new();
     public static void AddDatabaseImplementation(DatabaseTypeEnum databaseTypeEnum, Func<
         string,//username
         string,//password
@@ -180,7 +180,7 @@ public static class DatabaseServiceHelpers
                 databaseInfo.LoadPluginsIfNeeded(null).Wait();
                 databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetDataDir());
             }
-            else 
+            else
             {
                 databaseService = ownDatabaseService;
             }
@@ -194,7 +194,7 @@ public static class DatabaseServiceHelpers
             {
                 databaseService.Logger = databaseInfo.GlobalLoggerObject;
             }
-            else 
+            else
             {
                 databaseService.Logger = ISimpleLogger.EmptyLogger;
             }

@@ -1,15 +1,15 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using JustyBase.Common.Contracts;
+using JustyBase.Common.Models;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginCommon.Models;
+using JustyBase.PluginDatabaseBase.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using JustyBase.Common.Models;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.PluginCommon.Contracts;
-using JustyBase.PluginCommon.Enums;
-using JustyBase.PluginCommon.Models;
-using JustyBase.Common.Contracts;
 
 namespace JustyBase.ViewModels.Tools;
 
@@ -19,31 +19,29 @@ public sealed partial class SchemaSearchViewModel
     public IDatabaseService Service => _service;
     private readonly IGeneralApplicationData _generalApplicationData;
 
-    private bool _refreshStartup;
     public bool RefreshStartup
     {
-        get => _refreshStartup;
+        get;
         set
         {
-            SetProperty(ref _refreshStartup, value);
+            SetProperty(ref field, value);
             _generalApplicationData.Config.RefreshOnStartupInSchemaSearch = RefreshStartup;
         }
     }
 
-    private bool _searchInSource;
     public bool SearchInSource
     {
-        get => _searchInSource;
+        get;
         set
         {
-            SetProperty(ref _searchInSource, value);
+            SetProperty(ref field, value);
             _generalApplicationData.Config.SearchInSource = SearchInSource;
             AfterOptionsChange();
         }
     }
     private ObservableCollection<ConnectionItem> GetConnections()
     {
-        connectionList = new ObservableCollection<ConnectionItem>();
+        _connectionList = [];
         foreach (var (item, value) in _generalApplicationData.LoginDataDic)
         {
             var type = DatabaseServiceHelpers.StringToDatabaseTypeEnum(value.Driver);
@@ -51,19 +49,19 @@ public sealed partial class SchemaSearchViewModel
             var conItem = new ConnectionItem(item, type)
             {
                 DefaultDatabase = value.Database,
-                DatabaseList = new ObservableCollection<string>()
+                DatabaseList = []
             };
             if (!string.IsNullOrWhiteSpace(value.Database))
             {
                 conItem.DefaultDatabase = value.Database;
                 conItem.DatabaseList.Add(value.Database);
             }
-            connectionList.Add(conItem);
+            _connectionList.Add(conItem);
         }
-        return connectionList;
+        return _connectionList;
     }
-    private ObservableCollection<ConnectionItem> connectionList;
-    public ObservableCollection<ConnectionItem> ConnectionList => connectionList ??= GetConnections();
+    private ObservableCollection<ConnectionItem> _connectionList;
+    public ObservableCollection<ConnectionItem> ConnectionList => _connectionList ??= GetConnections();
 
     public string ConnectionName
     {
@@ -131,7 +129,7 @@ public sealed partial class SchemaSearchViewModel
             foreach (var schema in schemas)
             {
                 var obejctType = new TypeInDatabaseEnum[]
-                { 
+                {
                     TypeInDatabaseEnum.Table,
                     TypeInDatabaseEnum.View,
                     TypeInDatabaseEnum.Procedure,
@@ -156,7 +154,7 @@ public sealed partial class SchemaSearchViewModel
                                 {
                                     Id = item.Id,
                                     Type = tpe.ToStringEx(),
-                                    Name = item2.ProcedureSignature ?? item.Name,
+                                    Name = string.IsNullOrEmpty(item2.ProcedureSignature) ? item.Name : item2.ProcedureSignature,
                                     Db = database,
                                     Desc = item.Desc,
                                     Schema = schema,
@@ -257,14 +255,7 @@ public sealed partial class SchemaSearchViewModel
         set
         {
             SetProperty(ref field, value);
-            if (CaseSensitive)
-            {
-                _currentStringComparation = StringComparison.Ordinal;
-            }
-            else
-            {
-                _currentStringComparation = StringComparison.OrdinalIgnoreCase;
-            }
+            _currentStringComparation = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
             _generalApplicationData.Config.CaseSensitive = CaseSensitive;
             RefreshRegex();
             AfterOptionsChange();

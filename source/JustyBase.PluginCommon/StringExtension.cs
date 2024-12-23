@@ -169,11 +169,12 @@ public static partial class StringExtension
         }
         if (l1.Count == 0)
         {
-            return new List<Range>();
+            return [];
         }
-        var res = new List<Range>(l1.Count);
-
-        res.Add(new Range(0, l1[0]));
+        var res = new List<Range>(l1.Count)
+        {
+            new Range(0, l1[0])
+        };
 
         for (int i = 1; i < l1.Count; i++)
         {
@@ -208,12 +209,12 @@ public static partial class StringExtension
                 dotCnt++;
             }
         }
-    }    
+    }
 
     public static string ReplaceVariablesInSql(this string query, List<string> toAsk, Dictionary<string, string> knownVariables, char variableStart = '$')
     {
         string cleanSql = query.CreateCleanSql();
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new();
 
         List<string>? sortedToAsk = null;
 
@@ -311,22 +312,21 @@ public static partial class StringExtension
         }
         else if (data is string stringdata)
         {
-            return retQuoted(data);
+            return retQuoted(stringdata);
         }
         else
         {
             return data?.ToString() ?? "NULL";
         }
 
-        static string retQuoted(object o)
+        static string retQuoted(string o)
         {
-            string? res = o?.ToString();
-            if (res is not null && res.Contains('\''))
+            if (o.Contains('\''))
             {
-                res = res.Replace("'", "''");
+                o = o.Replace("'", "''");
             }
 
-            return $"'{res}'";
+            return $"'{o}'";
         }
     }
 
@@ -694,7 +694,7 @@ public static partial class StringExtension
     }
     public static List<string> MySplit2(this ReadOnlySpan<char> primarySQL, char separator = ',')
     {
-        List<string> newCreatedList = new List<string>();
+        List<string> newCreatedList = [];
 
         int hmN = 0;
         int hmq1 = 0;
