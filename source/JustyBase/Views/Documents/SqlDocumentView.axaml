@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="JustyBase.Views.Documents.SqlDocumentView"
+             xmlns="https://github.com/avaloniaui"
+			 xmlns:AvalonEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:JustyBase.ViewModels.Documents"
+			 xmlns:m2="using:JustyBase.Common.Models"
+			 xmlns:ce="using:JustyBase.Editor"
+             mc:Ignorable="d"
+             d:DesignWidth="1000" d:DesignHeight="500"
+             x:DataType="vm:SqlDocumentViewModel"
+			 x:CompileBindings="True"
+			 DragDrop.AllowDrop="True">
+	<UserControl.Styles>
+		<Styles>
+			<Style Selector="SplitButton.semivisibleSbt">
+				<Setter Property="Opacity" Value="0.5"/>
+			</Style>
+			<Style Selector="PathIcon.yellowPathIcon">
+				<Setter Property="Foreground" Value="Yellow"/>
+			</Style>
+			<Style Selector="PathIcon.greenPathIcon">
+				<Setter Property="Foreground" Value="Green"/>
+			</Style>
+			<Style Selector="Button">
+				<Setter Property="MinHeight" Value="30"/>
+				<Setter Property="Height" Value="30"/>
+			</Style>
+			<Style Selector="ComboBox">
+				<Setter Property="MinWidth" Value="100"/>
+			</Style>
+		</Styles>
+	</UserControl.Styles>
+	<Grid Focusable="True">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.KeyBindings>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter="Grid" Gesture="Ctrl+Return"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter="Grid" Gesture="F5"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter="Grid|SingleBath" Gesture="Ctrl+F5"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter=".xlsb" Gesture="Ctrl+F7"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter=".csv" Gesture="Ctrl+F8"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter=".csv.zst" Gesture="Ctrl+F9"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter=".csv.br" Gesture="Ctrl+F10"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter=".csv.zip" Gesture="Ctrl+F11"/>
+			<KeyBinding Command="{Binding RunSqlCommand}" CommandParameter=".parquet" Gesture="Ctrl+F12"/>
+			<KeyBinding Command="{Binding CopyWithFormatsCommand}" Gesture="Ctrl+Shift+C"/>
+		</Grid.KeyBindings>
+		<Border Grid.Row="0" BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="0 0 0 1" Margin="0 0 0 3">
+			<WrapPanel  Orientation="Horizontal" Margin="1">
+				<Button Name="openFile" Background="Transparent" Command="{Binding OpenFileCommand}"
+						HotKey="Ctrl+O" IsEnabled="True" 
+						ToolTip.Tip="create new sql">
+					<PathIcon Data="{StaticResource NewFileInconPath}"/>
+				</Button>
+				<Button Name="saveBt" Background="Transparent"
+					Command="{Binding SaveFileCommand}" CommandParameter="Save"
+					HotKey="Ctrl+S"
+					ToolTip.Tip="save">
+					<PathIcon Data="{StaticResource SaveIconPath}" />
+				</Button>
+				<Button Name="saveAsBt" Background="Transparent"
+					Command="{Binding SaveFileCommand}" CommandParameter="SaveAs"
+					HotKey="Ctrl+Shift+S"
+					ToolTip.Tip="save as">
+					<PathIcon Data="{StaticResource DocumentSaveIcon}"/>
+				</Button>
+				<SplitButton Name="runSqlButton" Command="{Binding RunSqlCommand}"
+							 CommandParameter="Grid"
+							 IsEnabled="{Binding IsRunEnabled}"
+							 Classes.semivisibleSbt="{Binding !!HowManyRunning}"
+							 ToolTip.Tip="run query">
+					<SplitButton.Flyout>
+						<MenuFlyout Placement="Bottom">
+							<MenuItem Header="Run query" HotKey="F5" InputGesture="F5" Command="{Binding RunSqlCommand}" CommandParameter="Grid"/>
+							<MenuItem Header="Run as single command" HotKey="Ctrl+F5" InputGesture="Ctrl+F5" Command="{Binding RunSqlCommand}" CommandParameter="Grid|SingleBath"/>
+							<MenuItem Header="Run to excel" HotKey="Ctrl+F7" InputGesture="Ctrl+F7" Command="{Binding RunSqlCommand}" CommandParameter=".xlsb"/>
+							<MenuItem Header="Run to csv" HotKey="Ctrl+F8" InputGesture="Ctrl+F8" Command="{Binding RunSqlCommand}" CommandParameter=".csv"/>
+							<MenuItem Header="Run to csv zstd"  HotKey="Ctrl+F9" InputGesture="Ctrl+F9" Command="{Binding RunSqlCommand}" CommandParameter=".csv.zst"/>
+							<MenuItem Header="Run to csv brotli"  HotKey="Ctrl+F10" InputGesture="Ctrl+F10" Command="{Binding RunSqlCommand}" CommandParameter=".csv.br"/>
+							<MenuItem Header="Run to csv zip"  HotKey="Ctrl+F11" InputGesture="Ctrl+F11" Command="{Binding RunSqlCommand}" CommandParameter=".csv.zip"/>
+							<MenuItem Header="Run to parquet" HotKey="Ctrl+F12" InputGesture="Ctrl+F12" Command="{Binding RunSqlCommand}" CommandParameter=".parquet"/>
+						</MenuFlyout>
+					</SplitButton.Flyout>
+					<PathIcon Data="{StaticResource RunSqlIconPath}" Margin="0" Foreground="Green"/>
+				</SplitButton>
+				<Button Name="stopBt"
+						Command="{Binding AbortSqlCommand}"
+						IsEnabled="{Binding !!TasksToAbort}"
+						Background="Transparent"
+						Foreground="Red"
+						ToolTip.Tip="stop executing queries">
+					<Panel>
+						<PathIcon Data="{StaticResource AbortIconPath}" IsVisible="{Binding !!TasksToAbort}" Foreground="Red"/>
+						<PathIcon Data="{StaticResource AbortIconPath}" IsVisible="{Binding !TasksToAbort}" Foreground="Gray"/>
+					</Panel>
+				</Button>
+				<ProgressBar Name="progressBar" Margin="6 0" ShowProgressText="True"
+						 Width="70" MinWidth="70" Minimum="0" Maximum="100"
+						 Value="{Binding ProgressValue}"/>
+				<Button Name="commentBt" Background="Transparent"
+					Command="{Binding CommentLinesCommand}" HotKey="Ctrl+Oem2"
+					ToolTip.Tip="Comment selected lines" ToolTip.ShowDelay="10"
+					IsVisible="True">
+					<PathIcon Data="{StaticResource CommentIconPath}"/>
+				</Button>
+				<Button Name="formatBt" Background="Transparent" Command="{Binding FormatSqlCommand}"
+					FontSize="22" ToolTip.Tip="format document (make sql prettier)"
+					ToolTip.ShowDelay="10" IsVisible="True">
+					<PathIcon Data="{StaticResource FormaterIconPath}" Margin="0"/>
+				</Button>
+				<CheckBox ToolTip.Tip="Continue on error" ToolTip.ShowDelay="10" IsChecked="{Binding ContinueOnError}" Margin="4 0 0 0" />
+				<CheckBox ToolTip.Tip="Keep connection open" ToolTip.ShowDelay="10" IsChecked="{Binding KeepConnectionOpen}" />
+				<ComboBox ToolTip.Tip="Select database connection" ItemsSource="{Binding ConnectionsList}"
+						  SelectedIndex="{Binding SelectedConnectionIndex}" VerticalAlignment="Center">
+					<ComboBox.ItemTemplate>
+						<DataTemplate x:DataType="m2:ConnectionItem">
+							<StackPanel Orientation="Horizontal">
+								<Image Source="{Binding DatabaseType, Converter={StaticResource databaseIconConverter}}"></Image>
+								<TextBlock Text="{Binding Name}" Margin="8 0 0 0" Padding="0"></TextBlock>
+							</StackPanel>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<ComboBox SelectedItem="{Binding SelectedDatabase}"
+						  ItemsSource="{Binding DatabasesList}"
+						  ToolTip.Tip="please run any sql to refresh database list"
+						  VerticalAlignment="Center"/>
+				<ToggleSwitch IsVisible="{Binding ShowDetailsButtonX}" Name="AdvancedInfo" OnContent="Details" OffContent="Details" IsChecked="{Binding ShowDetails}"/>
+				<ToggleSwitch Margin="10 0" IsChecked="{Binding WordWrap}" OnContent="Word wrap on" OffContent="Word wrap off"
+							  IsVisible="{Binding #AdvancedInfo.IsChecked}"/>
+					<Label IsVisible="{Binding #AdvancedInfo.IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5 0">running</Label>
+					<TextBlock IsVisible="{Binding #AdvancedInfo.IsChecked}" Text="{Binding HowManyRunning}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Green"/>
+					<Label IsVisible="{Binding #AdvancedInfo.IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5 0">can be aborted</Label>
+					<TextBlock IsVisible="{Binding #AdvancedInfo.IsChecked}" Text="{Binding TasksToAbort}" HorizontalAlignment="Center" Margin="5 0" VerticalAlignment="Center" Foreground="Green"/>
+					<TextBlock IsVisible="{Binding #AdvancedInfo.IsChecked}" Text="{Binding FilePath}"/>
+				<ToggleSwitch IsChecked="{Binding RunEvery}" OnContent="execute periodically on" OffContent="execute periodically off"
+							 IsVisible="{Binding #AdvancedInfo.IsChecked}"
+							 Command="{Binding RunSqlInTimerCommand}"
+							 ToolTip.Tip="please use only if you know what you are doing"/>
+				<TextBox Text="{Binding PeriodicIntervalText}" IsVisible="{Binding #AdvancedInfo.IsChecked}"
+						 IsEnabled="{Binding RunEvery}" ToolTip.Tip="please use only if you know what you are doing"/>
+			</WrapPanel>
+		</Border>
+		<ce:SqlCodeEditor Grid.Row="1" Name="SqlEditor" ShowLineNumbers="True"
+								FontFamily="Cascadia Code,JetBrains Mono,Consolas,Menlo,Monospace"
+								FontWeight="Regular" FontSize="{Binding FontSize, Mode=TwoWay}"
+							    IsReadOnly="{Binding IsReadOnly}"
+								WordWrap="{Binding WordWrap}"
+								Background="{DynamicResource SystemAltHighColor}">
+			<ce:CodeTextEditor.ContextMenu>
+				<ContextMenu Name="rightMenu">
+					<MenuItem Header="Show in explorer" Command="{Binding ShowInExplorerCommand}"/>
+					<MenuItem Header="Cut" InputGesture="Ctrl+X" Command="{Binding CutCommand}"/>
+					<MenuItem Header="Copy" InputGesture="Ctrl+C" Command="{Binding CopyCommand}"/>
+					<MenuItem Header="Copy with formats" InputGesture="Ctrl+Shift+C" Command="{Binding CopyWithFormatsCommand}"/>
+					<MenuItem Header="Paste" InputGesture="Ctrl+V" Command="{Binding PasteCommand}"/>
+					<MenuItem Header="Undo" InputGesture="Ctrl+Z" Command="{Binding UndoCommand}"/>
+					<MenuItem Header="Redo"
+						InputGesture="Ctrl+Y" Command="{Binding RedoCommand}"/>
+					<Separator/>
+					<MenuItem Header="Export">
+						<MenuItem Header="excel" Command="{Binding RunSqlCommand}" CommandParameter=".xlsb"/>
+						<MenuItem Header="csv" Command="{Binding RunSqlCommand}" CommandParameter=".csv"/>
+					</MenuItem>
+					<MenuItem Header="text -> $text" Command="{Binding ReplaceVariableCommand}"/>
+					<Separator/>
+					<MenuItem Header="Import from clipboard" Command="{Binding ImportFromClipboardCommand}"/>
+					<MenuItem Header="Paste clip as Select/Union" Command="{Binding PastClipAsSelectUnionCommand}"/>
+					<MenuItem Header="Clipboard A B -> ('A','B')"
+						Command="{Binding PasteAsInCommand}" CommandParameter="Text"/>
+					<MenuItem Header="Clipboard 1 2 -> (1,2)"
+						Command="{Binding PasteAsInCommand}" CommandParameter="Num"/>
+				</ContextMenu>
+			</ce:CodeTextEditor.ContextMenu>
+		</ce:SqlCodeEditor>
+	</Grid>
+</UserControl>

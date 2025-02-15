@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:JustyBase.ViewModels.Tools"
+			 xmlns:sys="using:System"
+			 xmlns:m2="using:JustyBase.Common.Models"
+             mc:Ignorable="d" d:DesignWidth="340" d:DesignHeight="410"
+			 x:DataType="vm:AddNewConnectionViewModel"
+			 x:CompileBindings="True"
+             x:Class="JustyBase.Views.Tools.AddNewConnectionView">
+	<UserControl.Resources>
+		<StreamGeometry x:Key="passwordBox">M11.7802 10.2195C11.4872 9.92672 11.0124 9.92683 10.7195 10.2198C10.4267 10.5128 10.4268 10.9876 10.7198 11.2805L11.4395 11.9998L10.7197 12.7197C10.4268 13.0126 10.4268 13.4874 10.7197 13.7803C11.0126 14.0732 11.4874 14.0732 11.7803 13.7803L12.5004 13.0602L13.2198 13.7793C13.5128 14.0721 13.9876 14.072 14.2805 13.779C14.5733 13.4861 14.5732 13.0112 14.2802 12.7184L13.5611 11.9996L14.2803 11.2803C14.5732 10.9874 14.5732 10.5126 14.2803 10.2197C13.9874 9.92678 13.5126 9.92678 13.2197 10.2197L12.5002 10.9392L11.7802 10.2195ZM5.21954 10.2198C5.51237 9.92683 5.98724 9.92672 6.2802 10.2195L7.00017 10.9392L7.71967 10.2197C8.01256 9.92678 8.48743 9.92678 8.78033 10.2197C9.07322 10.5126 9.07322 10.9874 8.78033 11.2803L8.06108 11.9996L8.7802 12.7184C9.07317 13.0112 9.07328 13.4861 8.78046 13.779C8.48763 14.072 8.01276 14.0721 7.7198 13.7793L7.00042 13.0602L6.28033 13.7803C5.98744 14.0732 5.51256 14.0732 5.21967 13.7803C4.92678 13.4874 4.92678 13.0126 5.21967 12.7197L5.93951 11.9998L5.21979 11.2805C4.92683 10.9876 4.92672 10.5128 5.21954 10.2198ZM16.5 13.5C16.0858 13.5 15.75 13.8358 15.75 14.25C15.75 14.6642 16.0858 15 16.5 15H18.25C18.6642 15 19 14.6642 19 14.25C19 13.8358 18.6642 13.5 18.25 13.5H16.5ZM5.24923 5C3.454 5 2 6.45538 2 8.25V15.75C2 17.5449 3.45507 19 5.25 19H18.75C20.5449 19 22 17.5449 22 15.75V8.25C22 6.45538 20.546 5 18.7508 5H5.24923ZM3.5 8.25C3.5 7.2832 4.28303 6.5 5.24923 6.5H18.7508C19.717 6.5 20.5 7.2832 20.5 8.25V15.75C20.5 16.7165 19.7165 17.5 18.75 17.5H5.25C4.2835 17.5 3.5 16.7165 3.5 15.75V8.25Z</StreamGeometry>
+		<StreamGeometry x:Key="databaseIcon">M40 12C40 9.34893 37.7069 7.35204 34.95 6.09039C32.0832 4.77847 28.2106 4 24 4C19.7894 4 15.9168 4.77847 13.05 6.09039C10.2931 7.35204 8 9.34893 8 12V36.25H8.00685C8.14576 38.7769 10.3804 40.6879 13.05 41.9096C15.9168 43.2215 19.7894 44 24 44C28.2106 44 32.0832 43.2215 34.95 41.9096C37.6196 40.6879 39.8542 38.7769 39.9932 36.25H40V12ZM10.5 12C10.5 10.9232 11.5088 9.54504 14.0903 8.36366C16.562 7.23257 20.0644 6.5 24 6.5C27.9356 6.5 31.438 7.23257 33.9097 8.36366C36.4912 9.54504 37.5 10.9232 37.5 12C37.5 13.0768 36.4912 14.455 33.9097 15.6363C31.438 16.7674 27.9356 17.5 24 17.5C20.0644 17.5 16.562 16.7674 14.0903 15.6363C11.5088 14.455 10.5 13.0768 10.5 12ZM37.5 36C37.5 37.0769 36.4912 38.455 33.9097 39.6363C31.438 40.7674 27.9356 41.5 24 41.5C20.0644 41.5 16.562 40.7674 14.0903 39.6363C11.5088 38.455 10.5 37.0769 10.5 36V16.3939C11.2516 16.9799 12.1247 17.4862 13.05 17.9096C15.9168 19.2215 19.7894 20 24 20C28.2106 20 32.0832 19.2215 34.95 17.9096C35.8753 17.4862 36.7484 16.9799 37.5 16.3939V36Z</StreamGeometry>
+		<StreamGeometry x:Key="serverIcon">M9.25 6C8.83579 6 8.5 6.33579 8.5 6.75C8.5 7.16421 8.83579 7.5 9.25 7.5H14.75C15.1642 7.5 15.5 7.16421 15.5 6.75C15.5 6.33579 15.1642 6 14.75 6H9.25ZM8.5 17.75C8.5 17.3358 8.83579 17 9.25 17H14.75C15.1642 17 15.5 17.3358 15.5 17.75C15.5 18.1642 15.1642 18.5 14.75 18.5H9.25C8.83579 18.5 8.5 18.1642 8.5 17.75ZM9.25 14C8.83579 14 8.5 14.3358 8.5 14.75C8.5 15.1642 8.83579 15.5 9.25 15.5H14.75C15.1642 15.5 15.5 15.1642 15.5 14.75C15.5 14.3358 15.1642 14 14.75 14H9.25ZM6 5C6 3.34315 7.34315 2 9 2H15C16.6569 2 18 3.34315 18 5V19C18 20.6569 16.6569 22 15 22H9C7.34315 22 6 20.6569 6 19V5ZM9 3.5C8.17157 3.5 7.5 4.17157 7.5 5V19C7.5 19.8284 8.17157 20.5 9 20.5H15C15.8284 20.5 16.5 19.8284 16.5 19V5C16.5 4.17157 15.8284 3.5 15 3.5H9Z</StreamGeometry>
+		<StreamGeometry x:Key="databaseDriverIcon">M4 6V18C4 18.6906 4.3153 19.2934 4.77423 19.7798C5.2294 20.2622 5.85301 20.6626 6.56668 20.9825C7.99575 21.6231 9.91738 22 12 22C12.5109 22 13.0121 21.9773 13.4987 21.9336C12.8538 21.5859 12.2984 21.0933 11.8762 20.4995C10.0055 20.4848 8.34946 20.1378 7.18027 19.6137C6.58195 19.3455 6.14382 19.0456 5.86525 18.7503C5.59044 18.4591 5.5 18.2069 5.5 18V8.39242C5.82094 8.61282 6.18063 8.80942 6.56668 8.98248C7.99575 9.6231 9.91738 10 12 10C14.0826 10 16.0042 9.6231 17.4333 8.98248C17.8194 8.80942 18.1791 8.61282 18.5 8.39242V13H19.25C19.5052 13 19.7557 13.0201 20 13.0589V6C20 5.30945 19.6847 4.70664 19.2258 4.22025C18.7706 3.73784 18.147 3.33745 17.4333 3.01752C16.0042 2.3769 14.0826 2 12 2C9.91738 2 7.99575 2.3769 6.56668 3.01752C5.85301 3.33745 5.2294 3.73784 4.77423 4.22025C4.3153 4.70664 4 5.30945 4 6ZM5.5 6C5.5 5.79309 5.59044 5.54091 5.86525 5.24966C6.14382 4.95441 6.58195 4.65449 7.18027 4.38628C8.37519 3.85063 10.0786 3.5 12 3.5C13.9214 3.5 15.6248 3.85063 16.8197 4.38628C17.418 4.65449 17.8562 4.95441 18.1348 5.24966C18.4096 5.54091 18.5 5.79309 18.5 6C18.5 6.20691 18.4096 6.45909 18.1348 6.75034C17.8562 7.04559 17.418 7.3455 16.8197 7.61372C15.6248 8.14937 13.9214 8.5 12 8.5C10.0786 8.5 8.37519 8.14937 7.18027 7.61372C6.58195 7.3455 6.14382 7.04559 5.86525 6.75034C5.59044 6.45909 5.5 6.20691 5.5 6ZM23 17.75C23 15.6789 21.3211 14 19.25 14L19.1482 14.0068C18.7822 14.0565 18.5 14.3703 18.5 14.75C18.5 15.1642 18.8358 15.5 19.25 15.5L19.404 15.5052C20.5748 15.5844 21.5 16.5591 21.5 17.75C21.5 18.9926 20.4926 20 19.25 20L19.2466 20.0046L19.1448 20.0119C18.779 20.0633 18.4983 20.3783 18.5 20.758C18.5019 21.1722 18.8392 21.5065 19.2534 21.5046V21.5L19.4523 21.4948C21.4276 21.3913 23 19.7543 23 17.75ZM16.5 14.75C16.5 14.3358 16.1642 14 15.75 14L15.5508 14.0052C13.5724 14.1087 12 15.7457 12 17.75C12 19.8211 13.6789 21.5 15.75 21.5L15.8518 21.4932C16.2178 21.4435 16.5 21.1297 16.5 20.75C16.5 20.3358 16.1642 20 15.75 20L15.596 19.9948C14.4252 19.9156 13.5 18.9409 13.5 17.75C13.5 16.5074 14.5074 15.5 15.75 15.5L15.8518 15.4932C16.2178 15.4435 16.5 15.1297 16.5 14.75ZM20 17.75C20 17.3358 19.6642 17 19.25 17H15.75L15.6482 17.0068C15.2822 17.0565 15 17.3703 15 17.75C15 18.1642 15.3358 18.5 15.75 18.5H19.25L19.3518 18.4932C19.7178 18.4435 20 18.1297 20 17.75Z</StreamGeometry>
+		<StreamGeometry x:Key="personIcon">M24 4C18.4772 4 14 8.47715 14 14C14 19.5228 18.4772 24 24 24C29.5228 24 34 19.5228 34 14C34 8.47715 29.5228 4 24 4ZM16.5 14C16.5 9.85786 19.8579 6.5 24 6.5C28.1421 6.5 31.5 9.85786 31.5 14C31.5 18.1421 28.1421 21.5 24 21.5C19.8579 21.5 16.5 18.1421 16.5 14ZM12.2499 28C9.90326 28 8.00002 29.9013 8 32.2489L8 33C8 36.7555 9.94167 39.5669 12.9202 41.3802C15.8491 43.1633 19.7861 44 24 44C28.2139 44 32.1509 43.1633 35.0798 41.3802C38.0583 39.5669 40 36.7555 40 33L40 32.2487C40 29.9011 38.0967 28 35.7502 28H12.2499ZM10.5 32.2489C10.5 31.283 11.283 30.5 12.2499 30.5H35.7502C36.7171 30.5 37.5 31.2829 37.5 32.2488L37.5 33C37.5 35.7444 36.1398 37.8081 33.7798 39.2448C31.3703 40.7117 27.9323 41.5 24 41.5C20.0677 41.5 16.6297 40.7117 14.2202 39.2448C11.8602 37.8081 10.5 35.7444 10.5 33L10.5 32.2489Z</StreamGeometry>
+		<StreamGeometry x:Key="nameIcon">M6.99976 9.72794C6.99976 9.32591 7.32567 9 7.7277 9H13.2718C13.6738 9 13.9998 9.32591 13.9998 9.72794V9.77206C13.9998 10.1741 13.6738 10.5 13.2718 10.5H7.7277C7.32567 10.5 6.99976 10.1741 6.99976 9.77206V9.72794ZM6.99976 13.7279C6.99976 13.3259 7.32567 13 7.7277 13H18.2718C18.6738 13 18.9998 13.3259 18.9998 13.7279V13.7721C18.9998 14.1741 18.6738 14.5 18.2718 14.5H7.7277C7.32567 14.5 6.99976 14.1741 6.99976 13.7721V13.7279ZM7.7277 17C7.32567 17 6.99976 17.3259 6.99976 17.7279V17.7721C6.99976 18.1741 7.32567 18.5 7.7277 18.5H15.2718C15.6738 18.5 15.9998 18.1741 15.9998 17.7721V17.7279C15.9998 17.3259 15.6738 17 15.2718 17H7.7277ZM2.00391 7.75C2.00391 5.67893 3.68284 4 5.75391 4H22.2505C24.3216 4 26.0005 5.67893 26.0005 7.75V13.2605C25.5238 13.0583 25.009 12.9738 24.5005 13.007V7.75C24.5005 6.50736 23.4932 5.5 22.2505 5.5H5.75391C4.51127 5.5 3.50391 6.50736 3.50391 7.75V20.2501C3.50391 21.4927 4.51127 22.5001 5.75391 22.5001H13.982C13.7728 22.8307 13.6166 23.1939 13.5209 23.5768L13.4151 24.0001H5.75391C3.68284 24.0001 2.00391 22.3211 2.00391 20.2501V7.75ZM23.0999 14.6695L15.1974 22.5719C14.8533 22.916 14.6092 23.3472 14.4911 23.8194L14.0334 25.6501C13.8344 26.4462 14.5556 27.1674 15.3517 26.9683L17.1824 26.5106C17.6545 26.3926 18.0857 26.1485 18.4299 25.8043L26.3323 17.9019C27.2249 17.0093 27.2249 15.5621 26.3323 14.6695C25.4397 13.7768 23.9925 13.7768 23.0999 14.6695Z</StreamGeometry>
+	</UserControl.Resources>
+	<ScrollViewer>
+		<Border BorderBrush="{DynamicResource SystemAccentColor}" BorderThickness="1"  UseLayoutRounding="True" CornerRadius="5" Margin="5">
+		<StackPanel Margin="0 20 0 0" >
+			<ComboBox HorizontalAlignment="Left"
+					  MinWidth="200"
+					  Margin="70 10"
+					  ItemsSource="{Binding ConnectionList}"
+					  SelectedItem="{Binding SelectedConnection}"
+					  SelectedIndex="{Binding SelectedConnectionIndex,Mode=OneWayToSource}"
+					  IsVisible="{Binding ShowExistings}"
+					  ToolTip.Tip="use to preview existing connection">
+				<ComboBox.ItemTemplate>
+					<DataTemplate x:DataType="m2:ConnectionItem">
+						<StackPanel Orientation="Horizontal">
+							<Image Source="{Binding DatabaseType, Converter={StaticResource databaseIconConverter}}"></Image>
+							<TextBlock Text="{Binding Name}" Padding="0"></TextBlock>
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>				
+			</ComboBox>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="100"/>
+				<ColumnDefinition Width="150" />
+			</Grid.ColumnDefinitions>
+			<!--<Label Grid.Row ="0" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Grid.ColumnSpan="4">
+				<TextBlock Text="Add connection" TextDecorations="Underline" FontWeight="Bold"></TextBlock>
+			</Label>-->			
+			<TextBlock x:Name="tbMessage" Grid.Row="1" Grid.ColumnSpan="2" Text="name have to be uniqe"  FontWeight="Bold"
+					   Foreground="Red" HorizontalAlignment="Center"
+					   IsVisible="False"/>
+			<StackPanel Margin="10 1" Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+				<PathIcon Margin="0 0 5 0" Data="{StaticResource nameIcon}"/>
+				<Label  Content="Name" HorizontalAlignment="Left"
+					ToolTip.Tip="connection name (friendly for you)" />
+			</StackPanel>			
+			<TextBox Margin="0 0 0 2"  Name="tbName" Grid.Row="2" Grid.Column="1" Text="{Binding ConName}"
+					 ToolTip.Tip="connection name (friendly for you)"/>
+			<StackPanel Margin="10 1" Grid.Row="3" Grid.Column="0" Orientation="Horizontal">
+				<PathIcon Margin="0 0 5 0" Data="{StaticResource databaseDriverIcon}"  />
+				<Label  Content="Driver" HorizontalAlignment="Left"
+				   ToolTip.Tip="select database type, ask your database administrator if you don't know what to choose"/>
+			</StackPanel>
+			<ComboBox Margin="0 0 0 2" Name="tbDriver"  Grid.Row="3" Grid.Column="1"
+					   MinWidth="150"
+					   Width="150"
+					   SelectedIndex="{Binding DriverIndex}"
+					   ItemsSource="{Binding DriversList}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate x:DataType="sys:String">
+						<StackPanel Orientation="Horizontal">
+							<Image Source="{Binding ., Converter={StaticResource databaseIconConverter}}"></Image>
+							<TextBlock Text="{Binding .}" Margin="8 0 0 0" Padding="0"></TextBlock>
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+			<StackPanel Margin="10 1" Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+				<PathIcon Margin="0 0 5 0" Data="{StaticResource serverIcon}"  />
+
+				<Label  Content="Server" HorizontalAlignment="Left"
+					   ToolTip.Tip="database ip address or network name, ask your database administrator if you don't know what to choose"/>
+			</StackPanel>
+			<TextBox Margin="0 0 0 2" Name="tbServer"  Grid.Row="4" Grid.Column="1" Text="{Binding	Server}"
+					ToolTip.Tip="database ip address or network name, ask your database administrator if you don't know what to choose"/>
+			<StackPanel Margin="10 1" Grid.Row="5" Grid.Column="0" Orientation="Horizontal">
+				<PathIcon Margin="0 0 5 0" Data="{StaticResource databaseIcon}"  />
+				<Label Content="Database" HorizontalAlignment="Left"
+			   ToolTip.Tip="database name, ask your database administrator if you don't know what to type"/>
+			</StackPanel>		
+			<TextBox Margin="0 0 0 2" Name="tbDatabase"  Grid.Row="5" Grid.Column="1" Text="{Binding Database}"
+					 ToolTip.Tip="database name, ask your database administrator if you don't know what to type"/>
+			<StackPanel Margin="10 1" Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
+				<PathIcon Margin="0 0 5 0" Data="{StaticResource personIcon}"  />
+				<Label  Content="Username" HorizontalAlignment="Left"
+						   ToolTip.Tip="database username, ask your database administrator if you don't know what to type"/>
+			</StackPanel>
+			<TextBox Margin="0 0 0 2" Name="tbUserName"  Grid.Row="6" Grid.Column="1" Text="{Binding UserName}"
+					 ToolTip.Tip="database username, ask your database administrator if you don't know what to type"/>
+			<StackPanel Margin="10 1" Grid.Row="7" Grid.Column="0" Orientation="Horizontal">
+				<PathIcon Margin="0 0 5 0" Data="{StaticResource passwordBox}"  />
+				<Label  Content="Password" HorizontalAlignment="Left"
+				   ToolTip.Tip="database user password, ask your database administrator if you don't know what to type"/>
+			</StackPanel>
+			<TextBox Margin="0 0 0 2" Name="tbPassword"  Grid.Row="7" Grid.Column="1" PasswordChar="*" Text="{Binding Pass}"
+					 ToolTip.Tip="database user password, ask your database administrator if you don't know what to type"/>
+			<Button x:Name="AddNewBt" Grid.Row="8" Grid.Column="0" 
+					MinWidth="120" Margin="10" Command="{Binding AddNewCommand}"
+					ToolTip.Tip="a restart may be required"
+					>Save</Button>
+			<Button x:Name="DeleteNewBt" Grid.Row="8" Grid.Column="1" 
+					MinWidth="120" Margin="10" Command="{Binding DeleteCommand}"
+				IsVisible="{Binding ShowExistings}"
+					ToolTip.Tip="a restart may be required"
+					>Delete</Button>
+			<Button x:Name="CloneBt" Grid.Row="9" Grid.Column="0" 
+				MinWidth="120" Margin="10" Command="{Binding CloneConnectionCommand}"
+				IsVisible="{Binding ShowExistings}">Clone</Button>
+		</Grid>
+		</StackPanel>
+		</Border>
+	</ScrollViewer>
+</UserControl>

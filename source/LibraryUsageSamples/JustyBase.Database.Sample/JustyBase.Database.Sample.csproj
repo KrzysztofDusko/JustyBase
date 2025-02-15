@@ -7,8 +7,8 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <PublishAot>true</PublishAot>
-		<DefineConstants>NETEZZA</DefineConstants>
 		<LangVersion>Preview</LangVersion>
+		<!--<DefineConstants>NETEZZA</DefineConstants>-->
 		<!--<DefineConstants>ORACLE</DefineConstants>-->
 		<!--<PublishLzmaCompressed>true</PublishLzmaCompressed>
 		<UseSystemResourceKeys>true</UseSystemResourceKeys>
@@ -36,15 +36,17 @@
         <!--<PackageReference Include="Avalonia.Themes.Simple" Version="11.2.0" />-->
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
 		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.2" />
     </ItemGroup>
 
     <ItemGroup>			
-		<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" Condition="$(DefineConstants.Contains(ORACLE))" />			
+		<!--<ProjectReference Include="..\..\..\..\JustDataEvoProject\Plugins\OraclePlugin\OraclePlugin.csproj" Condition="$(DefineConstants.Contains(ORACLE))" />-->			
 		<ProjectReference Include="..\..\JustyBase.Common\JustyBase.Common\JustyBase.Common.csproj" />			
-		<ProjectReference Include="..\..\Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj" Condition="$(DefineConstants.Contains(NETEZZA))" />
-		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj" />
+		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginBase.csproj" />			
+		<!--<ProjectReference Include="..\..\Plugins\NetezzaDotnetPlugin\NetezzaDotnetPlugin.csproj" Condition="$(DefineConstants.Contains(NETEZZA))" />-->
+		<ProjectReference Include="..\..\Plugins\NetezzaDotnetPlugin\NetezzaDotnetPlugin.csproj" />
 		<ProjectReference Include="..\..\SqlEditor.Avalonia\SqlEditor.Avalonia.csproj" />
     </ItemGroup>
 </Project>

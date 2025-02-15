@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,14 +18,15 @@ using JustyBase.Common.Tools.ImportHelpers.XML;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommons;
 using JustyBase.Services;
-using NetezzaOdbcPlugin;
+using NetezzaDotnetPlugin;
 
 namespace JustyBase.Database.Sample.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IAvaloniaSpecificHelpers _avaloniaSpecificHelpers;
-    private readonly IDatabaseService _netezzaOdbc;
+    private readonly IEncryptionHelper _encryptionHelper;
+    private readonly IDatabaseService _netezza;
 
     [ObservableProperty]
     public partial bool CsvSelected { get; set; }
@@ -36,16 +36,19 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public string Info
     {
-        get => Dispatcher.UIThread.Invoke<string>(() => Document.Text); 
+        get => Dispatcher.UIThread.Invoke<string>(() => LogDocument.Text); 
         set 
         {
-            Dispatcher.UIThread.Post(() => Document.Text = value);
-            OnPropertyChanged(nameof(Document));
+            Dispatcher.UIThread.Post(() => LogDocument.Text = value);
+            OnPropertyChanged(nameof(LogDocument));
         }
     }
+    [ObservableProperty]
+    public partial TextDocument LogDocument { get; set; } = new TextDocument();
 
     [ObservableProperty]
     public partial TextDocument Document { get; set; } = new TextDocument();
+
 
     [ObservableProperty]
     public partial string SelectedMode { get; set; } = "plain";
@@ -56,25 +59,44 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool XlsxSelected { get; set; }
 
-    public ObservableCollection<string> DatabasesList =>
-    [
-        "Oracle", "NetezzaOdbc"
-    ];
 
-    [ObservableProperty]
-    public partial string SelectedDatabase { get; set; } = "NetezzaOdbc";
-
-    public MainWindowViewModel(IAvaloniaSpecificHelpers avaloniaSpecificHelpers)
+    public MainWindowViewModel(IAvaloniaSpecificHelpers avaloniaSpecificHelpers, IEncryptionHelper encryptionHelper)
     {
         _avaloniaSpecificHelpers = avaloniaSpecificHelpers;
-        string? NetezzaTest = Environment.GetEnvironmentVariable("NetezzaTest");
-        if (NetezzaTest is null)
+        _encryptionHelper = encryptionHelper;
+        string? netezzaTest = Environment.GetEnvironmentVariable("NetezzaTest");
+        if (netezzaTest is null)
         {
-            throw new ArgumentNullException(nameof(NetezzaTest));
+            throw new ArgumentNullException(nameof(netezzaTest));
         }
-        _netezzaOdbc = NetezzaOdbc.FromOdbc(NetezzaTest, 10);
-        _netezzaOdbc.Name = "NetezzaTest";
+        netezzaTest = _encryptionHelper.Decrypt(netezzaTest);
+
+        var i1 = netezzaTest.IndexOf("servername=", StringComparison.OrdinalIgnoreCase);
+        var i2 = netezzaTest.IndexOf(';', i1);
+        var servername = netezzaTest[(i1 + "servername=".Length)..i2];
+        
+        i1 = netezzaTest.IndexOf("database=", StringComparison.OrdinalIgnoreCase);
+        i2 = netezzaTest.IndexOf(';', i1);
+        var database = netezzaTest[(i1 + "database=".Length)..i2];
+
+        i1 = netezzaTest.IndexOf("username=", StringComparison.OrdinalIgnoreCase);
+        i2 = netezzaTest.IndexOf(';', i1);
+        var username = netezzaTest[(i1 + "username=".Length)..i2];
+
+        i1 = netezzaTest.IndexOf("password=", StringComparison.OrdinalIgnoreCase);
+        i2 = netezzaTest.IndexOf(';', i1);
+        var password = netezzaTest[(i1 + "password=".Length)..i2];
+
+        i1 = netezzaTest.IndexOf("port=", StringComparison.OrdinalIgnoreCase);
+        i2 = netezzaTest.IndexOf(';', i1);
+        var port = netezzaTest[(i1 + "port=".Length)..i2];
+
+        _netezza = new Netezza(username, password, port, servername, database, 3600)
+        {
+            Name = "NetezzaTest"
+        };
     }
+
 
     public List<string> CsvCompresionModes { get; } =
     [
@@ -115,7 +137,7 @@ public partial class MainWindowViewModel : ViewModelBase
         string randomName = StringExtension.RandomSuffix("IMP_");
         try
         {
-            await _currentImport.ImportFromFileAllSteps(_netezzaOdbc.DatabaseType, _netezzaOdbc, "", randomName);
+            await _currentImport.ImportFromFileAllSteps(_netezza.DatabaseType, _netezza, "", randomName);
             res = randomName;
         }
         catch (Exception ex)
@@ -159,8 +181,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 if (xmlData is byte[] xmlBytes)
                 {
                     Info += "-->\n";
-                    _netezzaOdbc.TempDataDirectory = Path.GetTempPath();
-                    var res = await _netezzaOdbc.PerformImportFromXmlAsync(new DbXMLImportJob(), xmlBytes,
+                    _netezza.TempDataDirectory = Path.GetTempPath();
+                    var res = await _netezza.PerformImportFromXmlAsync(new DbXMLImportJob(), xmlBytes,
                         (s) => Info += s);
                     Info += res;
                     Info += " <--\n";
@@ -213,7 +235,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             Info += "\nsql is running\n";
-            var filePath = await ExportRaw(sql);
+            var filePath = await ExportRaw(sql, Path.GetTempPath());
             if (filePath is null) return;
             var dataObject = new DataObject();
 
@@ -235,6 +257,35 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+
+    [RelayCommand]
+    private async Task ExportToDesktop()
+    {
+        try
+        {
+            Info = "";
+            string sql = await GetSql();
+
+            if (string.IsNullOrEmpty(sql))
+            {
+                Info = "ERROR - sql is null\n";
+                return;
+            }
+
+            Info += "\nsql is running\n";
+            var filePath = await ExportRaw(sql, Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+        }
+
+        catch (Exception ex)
+        {
+            Info += $"[ERROR]\n{ex.Message}\n*********\n{ex.StackTrace}\n";
+        }
+        finally
+        {
+            Info += "[END]\n";
+        }
+    }
+
     [RelayCommand]
     private async Task ExportAndOpen()
     {
@@ -250,7 +301,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             Info += "\nsql is running\n";
-            var filePath = await ExportRaw(sql);
+            var filePath = await ExportRaw(sql, Path.GetTempPath());
 
             Info += "opening\n";
             if (filePath is not null)
@@ -266,7 +317,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Info += "[END]\n";
         }
     }
-    public async Task OpenWithDefaultProgramAsync(string path)
+    public static async Task OpenWithDefaultProgramAsync(string path)
     {
         await Task.Run(() =>
         {
@@ -277,26 +328,68 @@ public partial class MainWindowViewModel : ViewModelBase
         });
     }
 
-    private async Task<string?> ExportRaw(string sql)
+    private async Task<string?> ExportRaw(string sql, string path)
     {
-        var filePath = Path.Combine(Path.GetTempPath(), StringExtension.RandomSuffix("exported") + ".xlsb");
+        bool csvSelected = CsvSelected;
+        string ext = GetExtension(csvSelected);
+
+        var filePath = Path.Combine(path, StringExtension.RandomSuffix("exported") + ext);
         await Task.Run(() =>
         {
-            var con = _netezzaOdbc.GetConnection(null, pooling: false);
+            var con = _netezza.GetConnection(null, pooling: false);
             con.Open();
             var cmd = con.CreateCommand();
             cmd.CommandText = sql;
             var rdr = cmd.ExecuteReader();
-            rdr.HandleExcelOutput(filePath, sql, null, x => Info += x);
+            if (csvSelected)
+            {
+                rdr.HandleCsvOrParquetOutput(filePath, null, x => Info += x);
+            }
+            else
+            {
+                rdr.HandleExcelOutput(filePath, sql, null, x => Info += x);
+            }
         });
 
         return filePath;
     }
 
-
-    public IDatabaseService GetTestDatabaseService(string _connectionName)
+    private string GetExtension(bool csvSelected)
     {
-        return _netezzaOdbc;
+        string ext = ".xlsb";
+        if (XlsxSelected)
+        {
+            ext = ".xlsx";
+        }
+        if (csvSelected)
+        {
+            if (SelectedMode == "plain")
+            {
+                ext = ".csv";
+            }
+            else if (SelectedMode == "zst")
+            {
+                ext = ".csv.zst";
+            }
+            else if (SelectedMode == "zip")
+            {
+                ext = ".csv.zip";
+            }
+            else if (SelectedMode == "br")
+            {
+                ext = ".csv.br";
+            }
+            else if (SelectedMode == "gzip")
+            {
+                ext = ".csv.gz";
+            }
+        }
+
+        return ext;
     }
 
+    public IDatabaseService GetTestDatabaseService()
+    {
+        return _netezza;
+    }
 }

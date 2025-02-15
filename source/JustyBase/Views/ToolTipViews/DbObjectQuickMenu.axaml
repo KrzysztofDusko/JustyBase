@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:JustyBase.ViewModels"
+             mc:Ignorable="d" 
+			 d:DesignWidth="300" 
+			 d:DesignHeight="210"
+			 Width="300"
+			 Height="210"
+             x:Class="JustyBase.Views.ToolTipViews.DbObjectQuickMenu"
+			 x:DataType="vm:DbObjectQuickMenuViewModel"
+			 UseLayoutRounding="True"
+			 CornerRadius="5"		
+			 x:CompileBindings="True">
+	<UserControl.DataContext>
+		<vm:DbObjectQuickMenuViewModel/>
+	</UserControl.DataContext>
+	<Border BorderBrush="{StaticResource SystemAccentColor}" BorderThickness="1" Margin="3 3"
+		Padding="3 3"
+ UseLayoutRounding="True" CornerRadius="5"
+ HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+	<StackPanel>
+		<TextBlock Margin="5" HorizontalAlignment="Center" FontWeight="Bold"
+				   Text="{Binding ObjectTitle}"/>
+		<ItemsControl ItemsSource="{Binding OptionsList}" >
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<UniformGrid Columns="2"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Button Margin="10 3 10 3" HorizontalAlignment="Stretch"
+							Command="{Binding DoJob}"
+							Click="ClickHandler">
+						<TextBlock Text="{Binding Title}" HorizontalAlignment="Center"/>
+					</Button>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</StackPanel>
+	</Border>
+</UserControl>

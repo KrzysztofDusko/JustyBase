@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.Odbc" Version="9.0.0" />
+    <PackageReference Include="System.Data.Odbc" Version="9.0.2" />
   </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\NetezzaBase\NetezzaBase.csproj" />
@@ -16,7 +16,7 @@
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>
-		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj">
+		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginBase.csproj">
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>

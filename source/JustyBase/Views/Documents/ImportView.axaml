@@ -1,0 +1,200 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="450"
+             x:Class="JustyBase.Views.Documents.ImportView"
+			 xmlns:vm="using:JustyBase.ViewModels.Documents"
+			 xmlns:m2="using:JustyBase.Common.Models"
+			 xmlns:sys="using:System"
+			 x:CompileBindings="True"
+			 x:DataType="vm:ImportViewModel">
+	<UserControl.Styles>
+		<Style Selector="ComboBox">
+			<Setter Property="MinWidth" Value="250"/>
+			<Setter Property="MaxWidth" Value="250"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Padding" Value="0 3 0 0"/>
+			<Setter Property="Height" Value="30"/>
+			<Setter Property="MinHeight" Value="26"/>
+			<Setter Property="MaxWidth" Value="250"/>
+		</Style>
+	</UserControl.Styles>
+	<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+		<Grid RowDefinitions="Auto,Auto,Auto,*" ColumnDefinitions="Auto,Auto" Focusable="True">
+		<Border Grid.Row="0" Grid.Column="0" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource TextControlForegroundDisabled}" >
+			<StackPanel Margin="5 5 5 5">
+				<TextBlock Text="1. Enter path of file" VerticalAlignment="Center" HorizontalAlignment="Left"
+						   Margin="20 3"
+						   FontWeight="Bold"
+						   />
+				<StackPanel Orientation="Horizontal">
+				<TextBox  Text="{Binding ImportFilepath}" MinWidth="200" MaxWidth="300"/>
+				<Button Background="Transparent" Command="{Binding OpenFileForImportCommand}"
+						IsEnabled="{Binding StartEnabled}">
+					<PathIcon Data="M12.25 8.5C10.1789 8.5 8.49999 10.1789 8.49999 12.25V35.75C8.49999 37.8211 10.1789 39.5 12.25 39.5H35.7499C37.821 39.5 39.4999 37.8211 39.4999 35.75V27.25C39.4999 26.5596 40.0596 26 40.7499 26C41.4403 26 41.9999 26.5596 41.9999 27.25V35.75C41.9999 39.2018 39.2017 42 35.7499 42H12.25C8.79821 42 6 39.2018 6 35.75V12.25C6 8.79822 8.79821 6 12.25 6H20.75C21.4403 6 22 6.55964 22 7.25C22 7.94036 21.4403 8.5 20.75 8.5H12.25ZM27.0002 7.25C27.0002 6.55964 27.5598 6 28.2502 6H40.75C41.4404 6 42 6.55964 42 7.25V19.75C42 20.4404 41.4404 21 40.75 21C40.0597 21 39.5 20.4404 39.5 19.75V10.2676L29.1338 20.6338C28.6457 21.1219 27.8542 21.1219 27.3661 20.6338C26.8779 20.1456 26.8779 19.3542 27.3661 18.866L37.732 8.5H28.2502C27.5598 8.5 27.0002 7.94036 27.0002 7.25Z"/>
+				</Button>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+		<Border Grid.Row="1" Grid.Column="0" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource TextControlForegroundDisabled}" >
+			<StackPanel Margin="5 5 5 5">
+				<TextBlock Text="2. Enter database destination" VerticalAlignment="Center" HorizontalAlignment="Left"
+						   Margin="20 3"
+						   FontWeight="Bold"/>
+				<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,10,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Connection" VerticalAlignment="Center"/>
+
+					<ComboBox Grid.Row="0" Grid.Column="2"
+						  ItemsSource="{Binding ConnectionsList}"
+						  SelectedItem="{Binding SelectedConnection}">
+						<ComboBox.ItemTemplate>
+							<DataTemplate x:DataType="m2:ConnectionItem">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="{Binding DatabaseType, Converter={StaticResource databaseIconConverter}}"/>
+									<TextBlock Text="{Binding Name}" Margin="8 0 0 0" Padding="0"></TextBlock>
+								</StackPanel>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="Database" VerticalAlignment="Center" />
+					<ComboBox Grid.Row="1" Grid.Column="2"
+						  ItemsSource="{Binding DatabaseItems}"
+						  SelectedItem="{Binding SelectedDatabase}"
+						  />
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="Schema" VerticalAlignment="Center"/>
+					<ComboBox Grid.Row="2" Grid.Column="2"
+						  ItemsSource="{Binding SchemaItems}"
+						  SelectedItem="{Binding SelectedSchema}"
+						  />
+					<TextBlock Grid.Row="3" Grid.Column="0" Text="Table" VerticalAlignment="Center"/>
+					<AutoCompleteBox Grid.Row="3" Grid.Column="2"
+						  ItemsSource="{Binding TableItems}"
+						  Text="{Binding SelectedTableText}"
+					      FilterMode="Contains"
+					      IsTextCompletionEnabled="True"
+						  Padding="6 4 0 0">
+						<AutoCompleteBox.ItemTemplate>
+							<DataTemplate x:DataType="sys:String">
+								<Border Margin="-4">
+									<TextBlock Text="{Binding}" Margin="6 0 0 0"/>
+								</Border>
+							</DataTemplate>
+						</AutoCompleteBox.ItemTemplate>
+					</AutoCompleteBox>
+				</Grid>
+			</StackPanel>
+		</Border>
+		<Border Grid.Row="2" Grid.Column="0" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource TextControlForegroundDisabled}" >
+			<StackPanel Margin="5 5 5 5">
+				<TextBlock Text="3. Import options" VerticalAlignment="Center" HorizontalAlignment="Left"
+						   Margin="20 3"
+						   FontWeight="Bold"/>
+				<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="200,10,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="New table mode" VerticalAlignment="Center"/>
+					<ToggleSwitch Grid.Row="0" Grid.Column="2" IsChecked="True" IsEnabled="False"></ToggleSwitch>
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="Show advanced options" VerticalAlignment="Center"/>
+					<ToggleSwitch Name="advanced" Grid.Row="1" Grid.Column="2"></ToggleSwitch>
+					<ComboBox Grid.Row="2" Grid.Column="0"  VerticalAlignment="Center" 
+							  IsVisible="{Binding #advanced.IsChecked}" ItemsSource="{Binding ExcelTabsNames}"
+							  SelectedItem="{Binding SelectedTab}">
+						<ComboBox.ItemTemplate>
+							<DataTemplate x:DataType="vm:TabItem">
+								<StackPanel Orientation="Horizontal">
+									<CheckBox IsChecked="{Binding TabOk}"/>
+									<TextBlock Text="{Binding TabName}" Margin="8 0 0 0" Padding="0"/>
+								</StackPanel>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+					<TextBlock Grid.Row="3" Grid.Column="0" IsVisible="{Binding #advanced.IsChecked}" Text="Treat all columns as text" VerticalAlignment="Center"
+							ToolTip.Tip="Note difference treat as original text vs toString from parsed value, for CSV original value will be used"/>
+					<ToggleSwitch Grid.Row="3" Grid.Column="2" IsVisible="{Binding #advanced.IsChecked}" IsChecked="{Binding AllColumnsAsText}"/>
+				</Grid>
+				<TextBox Text="{Binding TabsWarningMessage}"
+					 Height="55"
+					 TextWrapping="Wrap"
+					 IsVisible="{Binding !!TabsWarningMessage}"
+					 HorizontalAlignment="Left" Width="320" MaxWidth="320"
+					 Padding="3"
+					 Watermark="table names"/>
+			</StackPanel>
+		</Border>
+		
+		<Border Grid.Row="3" Grid.Column="0" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource TextControlForegroundDisabled}" >
+			<StackPanel Margin="5 5 5 5">
+				<TextBlock Text="4. Start/Stop" VerticalAlignment="Center" HorizontalAlignment="Left"
+						   Margin="20 3"
+						   FontWeight="Bold"/>
+				<StackPanel  Orientation="Horizontal" Margin="5 5 5 5">
+				<Button Margin="0 0 10 0" Command="{Binding ImportStartCommand}" CommandParameter="Fast" IsEnabled="{Binding StartEnabled}">Fast start</Button>
+					<Button Margin="0 0 10 0" Command="{Binding ImportStartCommand}" CommandParameter="Continue" IsEnabled="{Binding ContinueEnabled}">Continue</Button>
+					<Button Margin="0 0 10 0" Command="{Binding ImportStartCommand}" CommandParameter="WithSteps" IsEnabled="{Binding StartEnabled}">Start with steps</Button>
+			</StackPanel>
+			</StackPanel>
+		</Border>
+		<TabControl Grid.RowSpan="4" Grid.Column="1" SelectedIndex="{Binding SelIndexOpt}">
+			<TabItem Header="Import list">
+				<DataGrid AutoGenerateColumns="False"
+						  HeadersVisibility="All"
+						  Margin="10 10 0 10"
+						  BorderBrush="{DynamicResource TextControlForegroundDisabled}"
+						  BorderThickness="1"
+						  ItemsSource="{Binding ImportItems}"
+						  IsReadOnly="True"
+						  CanUserSortColumns="False"
+						  CanUserResizeColumns="True"
+						  CanUserReorderColumns="False"
+						  RowHeight="26">		
+					<DataGrid.Columns>
+						<DataGridTemplateColumn Header="Info" MaxWidth="250">
+							<DataTemplate x:DataType="vm:ImportItem">
+								<TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding Info}"
+										   TextAlignment="Center"
+										   MaxWidth="250"
+										   Margin="3"
+										   FontSize="12"
+										   Padding="8 0 4 1"
+										   Background="{Binding Bck}"/>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Header="Stop">
+							<DataTemplate x:DataType="vm:ImportItem">
+								<Button Command="{Binding StopCommand}" 
+										MinHeight="30" Height="30" Margin="0" Padding="1"
+										HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+										BorderThickness="1" BorderBrush="{DynamicResource TextControlForeground}"
+										Background="Transparent"
+										IsEnabled="False">
+									<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Stop</TextBlock>
+								</Button>
+							</DataTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTextColumn Header="Source name" Binding="{Binding SourceName}" x:DataType="vm:ImportItem"/>
+						<DataGridTextColumn Header="Source path" Binding="{Binding SourcePath}" x:DataType="vm:ImportItem"/>
+						<DataGridTextColumn Header="Connection" Binding="{Binding Connection}" x:DataType="vm:ImportItem"/>
+						<DataGridTextColumn Header="Destination" Binding="{Binding Destination}" x:DataType="vm:ImportItem"/>
+						<DataGridTextColumn Header="Start time" Binding="{Binding StartTime}" x:DataType="vm:ImportItem"/>
+						<DataGridTextColumn Header="Elapsed" Binding="{Binding Elapsed}" x:DataType="vm:ImportItem"/>
+						<DataGridTextColumn Header="Estimated" Binding="{Binding Estimated}" x:DataType="vm:ImportItem"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</TabItem>
+				<TabItem Header="Type selection [TODO]">
+					<Grid RowDefinitions="Auto,*,*">
+						<TextBlock Grid.Row="0" Margin="10 5">TODO</TextBlock>
+						<DataGrid Grid.Row="1" IsReadOnly="False" ItemsSource="{Binding ColumnsInGrid}" AutoGenerateColumns="False">
+							<DataGrid.Columns>
+								<DataGridTextColumn Header="Name" IsReadOnly="True" Binding="{Binding ColumnName}"/>
+								<DataGridTextColumn Header="Detected type" IsReadOnly="True" Binding="{Binding DetectedType}"/>
+								<DataGridCheckBoxColumn Header="Force text" IsReadOnly="False" Binding="{Binding DoForceText}"/>
+							</DataGrid.Columns>
+						</DataGrid>
+						<DataGrid Name="previewDataGrid" Grid.Row="2" Margin="0 10 0 0" AutoGenerateColumns="False"/>
+					</Grid>
+				</TabItem>
+		</TabControl>
+		</Grid>
+	</ScrollViewer>
+</UserControl>

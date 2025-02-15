@@ -25,18 +25,15 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-	<Grid Margin="10 5" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
+	<Grid Margin="10 32 10 5" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
 		<Grid.KeyBindings>
-			<KeyBinding
-				Command="{Binding ExportAndOpenCommand}"
-				CommandParameter="Grid"
-				Gesture="F5">
-			</KeyBinding>
+			<KeyBinding Command="{Binding ExportAndOpenCommand}" CommandParameter="Grid" Gesture="F5"/>
+			<KeyBinding Command="{Binding ExportAndOpenCommand}" CommandParameter="Grid" Gesture="Ctrl+Return"/>
 		</Grid.KeyBindings>
-			<ComboBox Grid.Row="0" Grid.Column="0"  Margin="1 1 0 0" MaxDropDownHeight="100" 
+			<!--<ComboBox Grid.Row="0" Grid.Column="0"  Margin="1 1 0 0" MaxDropDownHeight="100" 
 				  SelectedItem="{Binding SelectedDatabase}"
 			      ItemsSource="{Binding DatabasesList}" BorderThickness="0" Width="130"
-				  ToolTip.Tip="NetezzaTest/OracleTest environment variables needed"/>
+				  ToolTip.Tip="NetezzaTest/OracleTest environment variables needed"/>-->
         <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="Auto,Auto,*,Auto">
         <Border Grid.Row="0" Margin="0 1" BorderThickness="1" CornerRadius="10" BorderBrush="Gray" Padding="5" >
             <StackPanel Orientation="Vertical">
@@ -53,6 +50,12 @@
                             <TextBlock xml:space="preserve"> and open</TextBlock>
                         </StackPanel>
                     </Button>
+					<Button Margin="0 1" Command="{Binding ExportToDesktopCommand}" HorizontalAlignment="Stretch">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock FontWeight="Bold">Export</TextBlock>
+							<TextBlock xml:space="preserve"> to desktop</TextBlock>
+						</StackPanel>
+					</Button>
                 </StackPanel>
                 <StackPanel Spacing="5" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Margin="10 0" FontWeight="Bold">format</TextBlock>
@@ -77,13 +80,19 @@
         </StackPanel>
         <!--<TextBox IsVisible="False" Grid.Row="2" Margin="0 1" Text="{Binding Info}" AcceptsReturn="True" Watermark="info"
                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />-->
-		<v2:SqlCodeEditor Name="sqlCodeEditor"
-			Grid.Row="2" Margin="0 1" Document="{Binding Document}"
-						  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-			
+
+			<TabControl Grid.Row="2" Margin="0 1" >
+				<TabItem Header="Log" IsSelected="True">
+					<v2:SqlCodeEditor Document="{Binding LogDocument}"
+	                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+				</TabItem>
+				<TabItem Header="sql" IsSelected="True">
+					<v2:SqlCodeEditor Name="sqlCodeEditor"
+				        Document="{Binding Document}"
+				        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+				</TabItem>
+			</TabControl>
         <Button Grid.Row="3" Margin="0 1" Command="{Binding CopyFromClipCommand}" HorizontalAlignment="Right">Copy text and exit</Button>
-			
 		</Grid>
 	</Grid>
-	
 </Window>

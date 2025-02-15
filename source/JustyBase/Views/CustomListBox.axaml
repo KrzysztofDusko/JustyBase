@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="150" d:DesignHeight="200"
+             x:Class="JustyBase.CustomListBox"
+			 xmlns:vm="using:JustyBase.ViewModels"
+			 x:DataType="vm:CustomListBoxViewModel" 
+			 MaxWidth="300"
+			 x:CompileBindings="True">
+	<UserControl.KeyBindings>
+		<KeyBinding Gesture="Return" Command="{Binding OkCommand}"/>
+		<KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+	</UserControl.KeyBindings>
+	<StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="1">
+			<ComboBox ItemsSource="{Binding FilterTypeTextList}" SelectedItem="{Binding SelectedTextFilterType}"
+					  Height="32"/>
+			<TextBox Name="tbSearch"
+					 Watermark="search..."
+					 DockPanel.Dock="Top"
+					 Text="{Binding FilterTextForList}"
+					 Width="{Binding $parent[UserControl].Width}"
+					 ToolTip.Tip="type to show available values">
+			</TextBox>
+			<CheckBox IsChecked="{Binding NotInMode}" Command="{Binding InModeChangedCommand}" />
+	</StackPanel>
+		<TextBlock Text="the list may not contain all items" DockPanel.Dock="Top" TextWrapping="Wrap"
+				TextAlignment="Center"
+				FontWeight="Normal"
+			    IsVisible="{Binding Warning20k}"
+				Padding="0 2 0 2"
+				Foreground="{DynamicResource NotificationCardWarningBackgroundBrush}"
+				ToolTip.Tip="20 000 limit"/>
+		<ListBox Name="listBox" DockPanel.Dock="Top"
+				 Margin="0 5 0 10" 
+				 MinHeight="100" 
+				 MaxHeight="200"
+				 MinWidth="200"
+				 MaxWidth="400"
+				 ItemsSource="{Binding Items, Mode=OneWay}"
+				 BorderThickness="1"
+				 CornerRadius="2"
+				 BorderBrush="{DynamicResource NotificationCardProgressBackgroundBrush}"
+				 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+			<ListBox.Styles>
+				<Style Selector="ListBoxItem">
+					<Setter Property="Padding" Value="8 0 0 0"/>
+				</Style>
+			</ListBox.Styles>
+			<ListBox.ItemTemplate>
+				<DataTemplate x:DataType="vm:FilterItem">
+					<StackPanel Orientation="Horizontal">
+						<CheckBox IsChecked="{Binding IsChecked}"/>
+						<TextBlock Padding="5 8 0 0" Text="{Binding FilterText}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<TextBlock Text="{Binding FilteredItemsCount, Mode=OneWay}" DockPanel.Dock="Top" IsEnabled="False"
+				    TextAlignment="Center"
+				    Padding="0 2 0 2"
+				    Foreground="{DynamicResource TextControlForegroundDisabled}"/>
+		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+			<Button Name="btOk"  Margin="2" Command="{Binding OkCommand}"
+					ToolTip.Tip="[Return]"
+					Padding="3">OK</Button>
+			<Button Name="btClear" Margin="2" Padding="3" Command="{Binding ClearCommand}">Clear</Button>
+			<Button Name="btCancel" Padding="3" Command="{Binding CancelCommand}"
+					ToolTip.Tip="[Esc]">Cancel</Button>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

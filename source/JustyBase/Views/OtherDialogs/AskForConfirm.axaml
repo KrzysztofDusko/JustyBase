@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:JustyBase.ViewModels"
+		x:Class="JustyBase.Views.OtherDialogs.AskForConfirm"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="250"
+		Width="350"
+		Height="250"
+        Title="AskForConfirm"
+		ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+		CanResize="True"
+		WindowStartupLocation="CenterOwner"
+		ShowActivated="True"
+		Padding="10"
+		Topmost="True"
+		ShowInTaskbar="False"
+		x:DataType="vm:AskForConfirmViewModel"
+		x:CompileBindings="True">
+	<Grid RowDefinitions="Auto,*,Auto">
+		<TextBlock Grid.Row="0" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="0 15 0 5"
+				   Text="{Binding Title}" />
+		<TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"
+				IsReadOnly="True"
+				Text="{Binding TextMessage}" 
+				TextWrapping="Wrap" Margin="10"
+				BorderThickness="0"/>
+		<!--</Border>-->
+		<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0"
+				VerticalAlignment="Bottom"
+				HorizontalAlignment="Center">
+			<Button Name="btYes" Margin="5 10" Command="{Binding ProcessAnswerKeysCommand}" CommandParameter="Yes">Yes</Button>
+			<Button Name="btNo"  Margin="5 10" Command="{Binding ProcessAnswerKeysCommand}" CommandParameter="No">No</Button>
+			<Button Name="btCancel" Margin="5 10" Command="{Binding ProcessAnswerKeysCommand}" CommandParameter="Cancel">Cancel</Button>
+		</StackPanel>
+	</Grid>
+</Window>

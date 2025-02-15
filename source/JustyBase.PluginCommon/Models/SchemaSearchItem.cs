@@ -15,11 +15,6 @@ public record class SchemaSearchItem
     public string ParentName { get; init; }
     public bool FilterNotOk { get; set; }
 
-    public SchemaSearchItem()
-    {
-
-    }
-
     //    public override string ToString()
     //    {
     //        return $@"Type:{Type} 

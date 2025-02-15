@@ -36,8 +36,8 @@ public static class PluginLoadHelper
         {
 #if DEBUG
             string[] files = [
-                @$"{pluginsLocation}NetezzaDotnetPlugin\bin\Debug\net9.0\NetezzaDotnetPlugin.dll",
-                @$"{pluginsLocation}OraclePlugin\bin\Debug\net9.0\OraclePlugin.dll",
+                //@$"{pluginsLocation}NetezzaDotnetPlugin\bin\Debug\net9.0\NetezzaDotnetPlugin.dll",
+                //@$"{pluginsLocation}OraclePlugin\bin\Debug\net9.0\OraclePlugin.dll",
                 @$"{pluginsLocation}DB2Plugin\bin\Debug\net9.0\DB2Plugin.dll",
                 @$"{pluginsLocation}PostgresPlugin\bin\Debug\net9.0\PostgresPlugin.dll",
                 @$"{pluginsLocation}SqlitePlugin\bin\Debug\net9.0\SqlitePlugin.dll",

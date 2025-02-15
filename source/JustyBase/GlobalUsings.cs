@@ -1,0 +1,13 @@
+﻿global using Avalonia;
+global using Avalonia.Controls;
+global using Avalonia.Data.Converters;
+global using Avalonia.Input;
+global using Avalonia.Interactivity;
+global using Avalonia.Layout;
+global using Avalonia.Media;
+global using Avalonia.Platform.Storage;
+global using Avalonia.Styling;
+global using Avalonia.Threading;
+global using AvaloniaEdit.Document;
+global using System.Windows.Input;
+global using TextDocument = AvaloniaEdit.Document.TextDocument;

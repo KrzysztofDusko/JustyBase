@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             x:Class="JustyBase.Views.ToolTipViews.ToolTipTable"
+			 >
+
+	<DockPanel>
+		<TextBlock  DockPanel.Dock="Top"
+			FontWeight="Bold" Foreground="DarkViolet">
+			tooltip test
+		</TextBlock>
+
+		<TextBlock  DockPanel.Dock="Top" TextWrapping="Wrap">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		</TextBlock>
+
+		<StackPanel DockPanel.Dock="Bottom" Orientation="Vertical">
+			<WrapPanel Orientation="Horizontal">
+				<TextBlock 
+		FontWeight="Bold" Foreground="Blue"
+							Margin="0 0 5 0"
+							>
+					Column name
+				</TextBlock>
+				<TextBlock
+		FontWeight="Bold" 
+				Margin="0 0 5 0"
+							>
+					data type
+				</TextBlock>
+				<TextBlock TextWrapping="Wrap">
+					Lorem ipsum
+				</TextBlock>
+			</WrapPanel>
+
+			<WrapPanel Orientation="Horizontal">
+				<TextBlock
+		FontWeight="Bold" Foreground="Blue"
+				Margin="0 0 5 0"
+							>
+					Column name
+				</TextBlock>
+				<TextBlock
+		FontWeight="Bold"
+				Margin="0 0 5 0"
+							>
+					data type
+				</TextBlock>
+				<TextBlock TextWrapping="WrapWithOverflow">
+					Description
+				</TextBlock>
+			</WrapPanel>
+			<WrapPanel Orientation="Horizontal">
+				<TextBlock
+		FontWeight="Bold" Foreground="Blue"
+				Margin="0 0 5 0"
+							>
+					Column name
+				</TextBlock>
+				<TextBlock
+		FontWeight="Bold"
+				Margin="0 0 5 0"
+							>
+					data type
+				</TextBlock>
+				<TextBlock TextWrapping="WrapWithOverflow">
+					Description
+				</TextBlock>
+			</WrapPanel>
+		</StackPanel>
+	</DockPanel>
+	
+</UserControl>

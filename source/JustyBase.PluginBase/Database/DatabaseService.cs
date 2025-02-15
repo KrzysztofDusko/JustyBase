@@ -701,6 +701,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                 _databaseSchemaTable[database] = new(StringComparer.OrdinalIgnoreCase);
                 _databaseDefSchema[database] = defSchema;
             }
+            Connection?.Dispose();
 
             //foreach (var o in databasesList)
             Parallel.ForEach(databasesList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, o =>
@@ -757,6 +758,7 @@ public abstract class DatabaseService : IDatabaseService, IDatabaseWithSpecificI
                 }
             });
         }
+   
     }
 
     // HACK ?

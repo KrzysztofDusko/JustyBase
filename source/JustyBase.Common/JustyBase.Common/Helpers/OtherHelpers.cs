@@ -1,15 +1,14 @@
 ﻿using K4os.Compression.LZ4.Streams;
-using System.Buffers;
 using System.Formats.Tar;
 using System.Text;
 
 namespace JustyBase.Common.Helpers;
 
-public sealed class OtherHelpers
+public sealed class OtherHelpers : IOtherHelpers
 {
 
     private static readonly List<string> _pluginsList = ["SqlitePlugin", "DuckDBPlugin", "MySqlPlugin",
-            "PostgresPlugin", "OraclePlugin", "NetezzaDotnetPlugin", "DB2Plugin" ];
+            "PostgresPlugin", "OraclePlugin", "DB2Plugin" ];
     public async Task DownloadAllPlugins(string pluginDirectory, string downloadBasePath)
     {
         if (Directory.Exists(pluginDirectory))
@@ -36,41 +35,41 @@ public sealed class OtherHelpers
         }
     }
 
-    public async Task DownloadFileWithReverse(string remoteFilePath, string pathToSave)
-    {
-        HttpClient httpClientToDownload = new()
-        {
-            Timeout = TimeSpan.FromMinutes(10)
-        };
+    //public async Task DownloadFileWithReverse(string remoteFilePath, string pathToSave)
+    //{
+    //    HttpClient httpClientToDownload = new()
+    //    {
+    //        Timeout = TimeSpan.FromMinutes(10)
+    //    };
 
-        using (var response = await httpClientToDownload.GetAsync(remoteFilePath, HttpCompletionOption.ResponseHeadersRead))
-        {
-            var contentLength = (int)response.Content.Headers.ContentLength.Value;
-            byte[] arr = ArrayPool<byte>.Shared.Rent(contentLength);
-            int position = 0;
+    //    using (var response = await httpClientToDownload.GetAsync(remoteFilePath, HttpCompletionOption.ResponseHeadersRead))
+    //    {
+    //        var contentLength = (int)response.Content.Headers.ContentLength.Value;
+    //        byte[] arr = ArrayPool<byte>.Shared.Rent(contentLength);
+    //        int position = 0;
 
-            using (var download = await response.Content.ReadAsStreamAsync())
-            {
-                while (position < contentLength)
-                {
-                    int toRead = contentLength - position < 32_768 ? contentLength - position : 32_768;
-                    int readed = download.Read(arr, position, toRead);
-                    position += readed;
-                }
-            }
+    //        using (var download = await response.Content.ReadAsStreamAsync())
+    //        {
+    //            while (position < contentLength)
+    //            {
+    //                int toRead = contentLength - position < 32_768 ? contentLength - position : 32_768;
+    //                int readed = download.Read(arr, position, toRead);
+    //                position += readed;
+    //            }
+    //        }
 
-            FinishDownload(arr, position);
-            ArrayPool<byte>.Shared.Return(arr);
-        }
+    //        FinishDownload(arr, position);
+    //        ArrayPool<byte>.Shared.Return(arr);
+    //    }
 
-        void FinishDownload(byte[] arr, int length)
-        {
-            var sp = arr.AsSpan()[..length];
-            sp.Reverse();
-            using var file = File.Create(pathToSave);
-            file.Write(sp);
-        }
-    }
+    //    void FinishDownload(byte[] arr, int length)
+    //    {
+    //        var sp = arr.AsSpan()[..length];
+    //        sp.Reverse();
+    //        using var file = File.Create(pathToSave);
+    //        file.Write(sp);
+    //    }
+    //}
 
     public string CsvTxtPreviewer(string path)
     {

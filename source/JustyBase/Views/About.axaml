@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:JustyBase.ViewModels"
+		mc:Ignorable="d" 
+        x:Class="JustyBase.Views.About"
+		d:DesignWidth="540" 
+		d:DesignHeight="260"
+		Width="540"
+		Height="260"
+		MinHeight="260"
+		ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="Default"
+		ShowInTaskbar="False"
+		WindowStartupLocation="CenterOwner"
+		BorderThickness="1"
+        Title="About"
+		CanResize="False"
+		x:DataType="vm:AboutViewModel">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Image Grid.Row="0" Grid.Column="1" Source="/Assets/Icon2.png" Stretch="Uniform" VerticalAlignment="Top" Margin="10" />
+		<StackPanel Grid.Row="0" Margin="15" Grid.Column="0" VerticalAlignment="Center">
+			<TextBlock FontWeight="Bold" FontSize="30" FontStyle="Italic" HorizontalAlignment="Center">Justy Base</TextBlock>
+			<TextBlock IsVisible="False" Margin="0 5 0 0" TextAlignment="Center">licence refresh date</TextBlock>
+			<TextBlock IsVisible="False" Name="Warning" FontWeight="Bold" HorizontalAlignment="Center" Margin="0 5 0 0" TextAlignment="Center" 
+					   Text="{Binding WaringText}"/>
+			<TextBlock HorizontalAlignment="Center" Margin="0 5 0 0">Current version:</TextBlock>
+			<TextBlock HorizontalAlignment="Center"
+					   Margin="0 5 0 0"
+					   Name="versionTb" 
+					   Text="{Binding CurrentVersionText}"/>
+			<StackPanel Grid.Column="0" Margin="0 15 0 0" Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Name="btCheckVer" Command="{Binding CheckVersionCommand}">Check update</Button>
+				<Button Name="btUpdate" Command="{Binding UpdateCommand}" 
+						IsEnabled="{Binding IsUpdateAvaiable}"
+						FontWeight="ExtraBold">Update</Button>
+				<Button Command="{Binding DownloadPluginsCommand}">Download plugins</Button>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</Window>

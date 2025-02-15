@@ -1,0 +1,124 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<DefineConstants>AVALONIA</DefineConstants>
+		<OutputType>WinExe</OutputType>
+		<PlatformTarget>x64</PlatformTarget>
+		<TargetFramework>net9.0</TargetFramework>
+		<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+		<ApplicationManifest>App.manifest</ApplicationManifest>
+		<SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+		<Nullable>annotations</Nullable>
+		<LangVersion>preview</LangVersion>
+		<WarningsAsErrors>CA2200</WarningsAsErrors>
+		<ApplicationIcon>Assets\Icon2.ico</ApplicationIcon>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<Copyright>JustyBaseTeam</Copyright>
+		<!--<PublishReadyToRun>false</PublishReadyToRun>
+		<SelfContained>false</SelfContained>-->
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' and '$(EnableAOT)' == 'true'">
+		<PublishAot>true</PublishAot>
+		<TrimMode>link</TrimMode>
+		<!--https://docs.avaloniaui.net/docs/deployment/native-aot-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<TrimmerRootAssembly Include="JustyBase" />
+		<TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
+		<!--<TrimmerRootAssembly Include="Avalonia.Themes.Default" />-->
+		<TrimmerRootAssembly Include="Avalonia.MarkupExtension" />
+		<TrimmerRootAssembly Include="Dock.Model" />
+		<TrimmerRootAssembly Include="Dock.Model.Mvvm" />
+		<TrimmerRootAssembly Include="Dock.Avalonia" />
+		<TrimmerRootAssembly Include="Avalonia.Controls.TreeDataGrid" />
+		<TrimmerRootAssembly Include="Avalonia.Controls.DataGrid" />
+		<!--<<assembly fullname="Dock.ProportionalStackPanel" preserve="All" />
+		<assembly fullname="AvaloniaEdit" preserve="All" />
+		<assembly fullname="Avalonia.Controls.DataGrid" preserve="All" />
+		<assembly fullname="Avalonia.Controls.TreeDataGrid" preserve="All" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <AvaloniaXaml Remove="publish\**" />
+	  <AvaloniaXaml Remove="Releases\**" />
+	  <Compile Remove="publish\**" />
+	  <Compile Remove="Releases\**" />
+	  <EmbeddedResource Remove="publish\**" />
+	  <EmbeddedResource Remove="Releases\**" />
+	  <None Remove="publish\**" />
+	  <None Remove="Releases\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Assets\countdown.json" />
+		<None Remove="Assets\frog.json" />
+		<None Remove="Assets\gears.json" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Assets\Icon2.ico" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.2.3" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.3" />
+		<PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
+		<PackageReference Include="Avalonia.Labs.Lottie" Version="11.2.0" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Dock.Model.Mvvm" Version="11.2.0" />
+		<PackageReference Include="Dock.Model" Version="11.2.0" />
+		<PackageReference Include="Dock.Avalonia" Version="11.2.0" />
+		<PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.8" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.2" />
+		<PackageReference Include="Velopack" Version="0.0.1053" />
+	</ItemGroup>
+	<!--<ItemGroup Condition="'$(Configuration)' == 'Release' and '$(EnableAOT)' == 'true'">
+		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />
+	</ItemGroup>-->
+
+	<ItemGroup>
+		<Compile Update="Views\CustomListBox.axaml.cs">
+			<DependentUpon>CustomListBox.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SqlParametrWindow.axaml.cs">
+			<DependentUpon>SqlParametrWindow.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Tools\AddNewConnectionView.axaml.cs">
+			<DependentUpon>AddNewConnectionView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Tools\LogToolView.axaml.cs">
+			<DependentUpon>c.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Tools\DbSchemaView.axaml.cs">
+			<DependentUpon>DbSchemaView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Tools\SqlResultsView.axaml.cs">
+			<DependentUpon>SqlResultsView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Tools\SchemaSearchView.axaml.cs">
+			<DependentUpon>SchemaSearchView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\Tools\VariablesView.axaml.cs">
+			<DependentUpon>VariablesView.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\JustyBase.Common\JustyBase.Common\JustyBase.Common.csproj" />
+		<ProjectReference Include="..\JustyBase.PluginBase\JustyBase.PluginBase.csproj" />
+		<ProjectReference Include="..\JustyBase.Public.Lib\JustyBase.Public.Lib.csproj" />
+		<ProjectReference Include="..\Plugins\NetezzaDotnetPlugin\NetezzaDotnetPlugin.csproj" />
+		<ProjectReference Include="..\Plugins\NetezzaOdbcPlugin\NetezzaOdbcPlugin.csproj" />
+		<ProjectReference Include="..\Plugins\OraclePlugin\OraclePlugin.csproj" />
+		<ProjectReference Include="..\SqlEditor.Avalonia\SqlEditor.Avalonia.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Formatter\PoorMansAot.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+	<Import Project="..\JustyBase.Shared.Public\JustyBase.Shared.Public.projitems" Label="Shared" />
+</Project>

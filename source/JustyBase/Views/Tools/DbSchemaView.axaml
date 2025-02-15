@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="JustyBase.Views.Tools.DbSchemaView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:JustyBase.ViewModels.Tools"
+             mc:Ignorable="d"
+             d:DesignWidth="300" d:DesignHeight="400"
+             x:DataType="vm:DbSchemaViewModel"
+			 x:CompileBindings="True">
+  <Grid Focusable="True">
+	  <Grid.RowDefinitions>
+		 <RowDefinition Height="*"/>
+		  <RowDefinition Height="Auto"/>
+	  </Grid.RowDefinitions>
+	  <TreeDataGrid x:Name="dbSchemaTreeGrid" Grid.Row="0"
+					ShowColumnHeaders="{Binding ShowHeader}"
+					Source="{Binding SchemaSource}"
+					IsEnabled="{Binding SchemaEnabled}"
+					Focusable="True">
+		<TreeDataGrid.ContextMenu>
+			  <ContextMenu Name="cmSchema" ItemsSource="{Binding MenuItems}">
+			  </ContextMenu>
+		  </TreeDataGrid.ContextMenu>
+	  </TreeDataGrid>
+	  <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource SystemAccentColor}" >
+		  <StackPanel Orientation="Horizontal">
+			  <Button Name="btAddNewConnection" Background="Transparent">
+				  <ToolTip.Tip>
+					  <StackPanel Spacing="3">
+						  <TextBlock FontSize="15">Add new database connection</TextBlock>
+						  <StackPanel Orientation="Horizontal">
+							  <Image Source="/Assets/DatabaseIcons/NetezzaIcons/netezza_icon16.png" Height="32" />
+							  <TextBlock Margin="5 0 0 0" FontSize="14" VerticalAlignment="Center">Netezza</TextBlock>
+						  </StackPanel>
+						  <StackPanel Orientation="Horizontal">
+							  <Image Source="/Assets/DatabaseIcons/OracleIcons/oracle_icon16.png" Height="32" />
+							  <TextBlock Margin="5 0 0 0" FontSize="14" VerticalAlignment="Center">Oracle</TextBlock>
+						  </StackPanel>
+						  <StackPanel Orientation="Horizontal">
+							  <Image Source="/Assets/DatabaseIcons/PostgresIcons/Postgre_icon16.png" Height="32" />
+							  <TextBlock Margin="5 0 0 0" FontSize="14" VerticalAlignment="Center">Postgres</TextBlock>
+						  </StackPanel>
+						  <TextBlock FontSize="14" >more..</TextBlock>
+					  </StackPanel>
+				  </ToolTip.Tip>
+				  <PathIcon Data="{StaticResource AddIcon}"/>
+			  </Button>
+			  <Button Name="btConnectionsSettings" Background="Transparent" ToolTip.Tip="manage connections">
+				  <PathIcon Data="{StaticResource WrenchIcon}"/>
+			  </Button>
+		  </StackPanel>
+	  </Border>
+  </Grid>
+</UserControl>

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using JustyBase.Editor.CompletionProviders;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommons;
+using System.Runtime.CompilerServices;
+using System.Reflection.Emit;
 
 
 namespace JustyBase.Editor;
@@ -16,6 +18,7 @@ public sealed class SqlCodeEditor : CodeTextEditor
     
     public SqlCodeEditor()
     {
+
         this.TextArea.Caret.PositionChanged += CaretOnPositionChanged;
 #if AVALONIA
         this.AddHandler(PointerWheelChangedEvent, (o, e) =>
@@ -49,12 +52,303 @@ public sealed class SqlCodeEditor : CodeTextEditor
             }
         };
 #endif
+#if AVALONIA
+        SetupCommandBindings();
+#endif
     }
+#if AVALONIA
+    private void SetupCommandBindings()
+    {
+        // 
+        var handler = (TextAreaDefaultInputHandler)TextArea.ActiveInputHandler;
+        handler.Detach();
+        //TODO selection up/down
+        var lineUp = new RoutedCommand("LineUp", new KeyGesture(Key.Up, KeyModifiers.Control));
+        var lineDown = new RoutedCommand("LineDown", new KeyGesture(Key.Down, KeyModifiers.Control));
+
+        handler.CommandBindings.Add(new RoutedCommandBinding(lineUp, (o, e) =>
+        {
+            var currentLine = this.TextArea.Caret.Line;
+            if (currentLine > 1)
+            {
+                DocumentLine line0 = this.Document.Lines[currentLine - 1];
+                var line1 = this.Document.Lines[currentLine - 2];
+                EditorHelpers.SwapLines(this, line0, line1);
+            }
+        }));
+
+        handler.CommandBindings.Add(new RoutedCommandBinding(lineDown, (o, e) =>
+        {
+            var currentLine = this.TextArea.Caret.Line;
+            if (currentLine < this.LineCount - 1)
+            {
+                var line0 = this.Document.Lines[currentLine - 1];
+                var line1 = this.Document.Lines[currentLine + 1];
+                EditorHelpers.SwapLines(this, line0, line1);
+            }
+        }));
+
+        //var duplicateLine = new RoutedCommand("DuplicateLine", new KeyGesture(Key.D, KeyModifiers.Control | KeyModifiers.Shift));
+        //var goToLine = new RoutedCommand("GoToLine", new KeyGesture(Key.G, KeyModifiers.Control));
+
+        //handler.CommandBindings.Add(new RoutedCommandBinding(duplicateLine, (o, e) =>
+        //{
+        //    EditorHelpers.DoubleSelectedLine(this);
+        //}));
+        //handler.CommandBindings.Add(new RoutedCommandBinding(goToLine, async (o, e) =>
+        //{
+        //    if (GoToLineAsyncAction is null)
+        //    {
+        //        return;
+        //    }
+        //    int res = await GoToLineAsyncAction();
+        //    if (res > 0 && TextArea is not null)
+        //    {
+        //        TextArea.Caret.Line = res;
+        //        TextArea.Caret.BringCaretToView();
+        //    }
+        //}));
+
+        handler.Attach();
+    }
+#endif
+    protected override async void OnKeyDown(KeyEventArgs e)
+    {
+        _foldingTimer?.Stop();
+        _foldingTimer?.Start();
+
+        base.OnKeyDown(e);
+        // Key.Oem7 = " or '
+        if (TextArea.IsFocused && e.Key == Key.Oem7 && TextArea.Selection.Length < 1024)
+        {
+            int selectionLength = TextArea.Selection.Length;
+            if (selectionLength == 0)
+            {
+                if (e.HasModifiers(ModifierKeys.Shift))
+                {
+                    TextArea.Document.Insert(CaretOffset, "\"");
+                }
+                else
+                {
+                    TextArea.Document.Insert(CaretOffset, "'");
+                }
+                TextArea.Caret.Offset--;
+            }
+            else
+            {
+                if (e.HasModifiers(ModifierKeys.Shift))
+                {
+                    TextArea.Selection.ReplaceSelectionWithText($"\"{TextArea.Selection.GetText()}");
+                }
+                else
+                {
+                    TextArea.Selection.ReplaceSelectionWithText($"'{TextArea.Selection.GetText()}");
+                }
+            }
+        }
+        // D9 = "("
+        else if (TextArea.IsFocused && e.Key == Key.D9 && e.HasModifiers(ModifierKeys.Shift) && TextArea.Selection.Length < 1024)
+        {
+            var selection = TextArea.Selection;
+            int sellen = selection.Length;
+            if (sellen > 0 || selection is not RectangleSelection)
+            {
+                if (sellen == 0 && TextArea.Caret.Offset > 0 && selection is not RectangleSelection)
+                {
+                    selection.ReplaceSelectionWithText($"()");
+                    //textArea.Document.Insert(CaretOffset, ")");
+                    TextArea.Caret.Offset--;
+                }
+                else if (sellen > 0 && selection is RectangleSelection)
+                {
+                    selection.ReplaceSelectionWithText($"({selection.GetText().Replace("\r\n", ")\r\n(")})");
+                    //_removeLastChar = true;
+                }
+                else if (selection is not RectangleSelection)
+                {
+                    selection.ReplaceSelectionWithText($"({selection.GetText()})");
+                    //_removeLastChar = true;
+                }
+                e.Handled = true;
+            }
+        }
+        else if (e.Key == Key.Space && e.HasModifiers(ModifierKeys.Control))
+        {
+            e.Handled = true;
+            var mode = e.HasModifiers(ModifierKeys.Shift)
+                ? TriggerMode.SignatureHelp
+                : TriggerMode.Completion;
+            _ = ShowCompletion(mode);
+        }
+        else if (e.Key == Key.Space && e.HasModifiers(ModifierKeys.None))
+        {
+            _completionWindow?.Close();
+            if (TextArea is not null)
+            {
+                ImmediateReplaceQuickOrTypo(e);
+                //e.Handled = true;
+            }
+        }
+        else if (e.Key == Key.C && e.HasModifiers(ModifierKeys.Alt)/*&& _completionWindow?.IsOpen() != true*/)
+        {
+            if (_completionWindow?.IsOpen() == true)
+            {
+                _completionWindow.Close();
+            }
+            if (TextArea is not null)
+            {
+                ImmediateReplaceStandard();
+                //e.Handled = true;
+            }
+            //e.Handled = true;
+        }
+        else if (e.HasModifiers(ModifierKeys.Control))
+        {
+            switch (e.Key)
+            {
+                case Key.H:
+                    if (ForcedContolhtAction is not null)
+                    {
+                        ForcedContolhtAction.Invoke();
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.F:
+                    if (ForcedContolftAction is not null)
+                    {
+                        ForcedContolftAction.Invoke();
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.D:
+                    if (e.HasModifiers(ModifierKeys.Shift))
+                    {
+                        EditorHelpers.DoubleSelectedLine(this);
+                    }
+                    break;
+                case Key.G:
+                    int res = await GoToLineAsyncAction();
+                    if (res > 0 && TextArea is not null)
+                    {
+                        TextArea.Caret.Line = res;
+                        TextArea.Caret.BringCaretToView();
+                    }
+                    break;
+                case Key.E:
+                    ExpandFoldings();
+                    break;
+                case Key.R:
+                    CollapseFoldings();
+                    break;
+                case Key.U:
+                    if (e.HasModifiers(ModifierKeys.Shift))
+                    {
+                        SelectedText = SelectedText.ToLower();
+                    }
+                    else
+                    {
+                        SelectedText = SelectedText.ToUpper();
+                        //    var HighlightDefinition = this.SyntaxHighlighting;
+                        //    var Highlighter = new AvaloniaEdit.Highlighting.DocumentHighlighter(Document, HighlightDefinition);
+
+                        //    AvaloniaEdit.Highlighting.HighlightedLine result = Highlighter.HighlightLine(0);
+
+                        //    int off = 0;
+                        //    bool isInComment = result.Sections.Any(
+                        //s => s.Offset <= off && s.Offset + s.Length >= off
+                        //     && s.Color.Name == "Comment");
+                        //http://avalonedit.net/documentation/html/4d4ceb51-154d-43f0-b876-ad9640c5d2d8.htm ?
+                        //var documentHighlighter = new AvaloniaEdit.Highlighting.DocumentHighlighter(this.Document, cachedHighlightingDefinition);
+                        //var colorizer = TextArea.TextView.LineTransformers[0];
+                        //var sp = documentHighlighter.GetSpanStack(5);
+                        //bool isInComment = result.Sections.Any(
+                        //    s => s.Offset <= off && s.Offset + s.Length >= off
+                        //         && s.Color.Name == "Comment");
+                    }
+                    break;
+                case Key.J:
+                    if (e.HasModifiers(ModifierKeys.Shift))
+                    {
+                        SelectedText = SelectedText.ChangeCaseRespectingSqlRules(false);
+                    }
+                    else
+                    {
+                        SelectedText = SelectedText.ChangeCaseRespectingSqlRules(true);
+                    }
+                    break;
+                case Key.V:
+                    if (e.HasModifiers(ModifierKeys.Shift) && ContolShiftvAction is not null)
+                    {
+                        await ContolShiftvAction.Invoke();
+                    }
+                    break;
+            }
+        }
+
+        ///replace if typo or "quick snippet"
+        void ImmediateReplaceQuickOrTypo(KeyEventArgs e)
+        {
+            int offset = TextArea.Caret.Offset;
+            Span<char> chars = stackalloc char[LastWordLenLimit];
+            int lastWordLength = EditorHelpers.GetLastWord(TextArea, chars);
+
+            if (lastWordLength <= 8 && _someEditorOptions?.FastReplaceDictionary is not null)
+            {
+                string tmp = chars[..lastWordLength].ToString();
+                if (_someEditorOptions.FastReplaceDictionary.TryGetValue(tmp, out var res))
+                {
+                    int ind = res.IndexOf("${Caret}");
+                    if (ind > 0)
+                    {
+                        ind = res.Length - ind - "${Caret}".Length;
+                        res = res.Replace("${Caret}", "");
+                    }
+                    TextArea.Document.Replace(offset - lastWordLength, lastWordLength, res);
+                    if (ind > 0 && ind < TextArea.Caret.Offset)
+                    {
+                        TextArea.Caret.Offset -= ind;
+                        e.Handled = true;
+                    }
+                }
+            }
+            if (lastWordLength >= 3 && lastWordLength < LastWordLenLimit && _someEditorOptions is not null)
+            {
+                var typoCandidate = chars[..lastWordLength];
+                foreach (var correctWord in _someEditorOptions.TypoPatternList)
+                {
+                    int dist = typoCandidate.DamerauLevenshteinDistance(correctWord);
+                    if (dist <= SqlCodeEditorHelpers.TypoLimit && dist >= 1)
+                    {
+                        TextArea.Document.Replace(offset - lastWordLength, lastWordLength, correctWord);
+                    }
+                }
+            }
+        }
+
+        void ImmediateReplaceStandard()
+        {
+            int offset = TextArea.Caret.Offset;
+            Span<char> chars = stackalloc char[LastWordLenLimit + 1];
+            int lastWordLength = EditorHelpers.GetLastWord(TextArea, chars[1..]);
+
+            if (lastWordLength > 0 && lastWordLength < LastWordLenLimit - 1)
+            {
+                chars[0] = '@';
+                if (_someEditorOptions.GetAllSnippets.TryGetValue(new string(chars[..(lastWordLength + 1)]), out var res))
+                {
+                    TextArea.Document.Replace(offset - lastWordLength, lastWordLength, res.Text);
+                }
+            }
+        }
+    }
+    private const int LastWordLenLimit = 32;
+
     private string LanguageFileExtension => this.Document.FileName is not null ? System.IO.Path.GetExtension(this.Document.FileName).ToLower() : "";
 
     private ISomeEditorOptions _someEditorOptions ;
     public void Initialize(ISqlAutocompleteData sqlAutocompleteData, ISomeEditorOptions someEditorOptions)
     {
+
         _someEditorOptions = someEditorOptions;
         _braceMatcherHighlighter = new BraceMatcherHighlightRenderer(TextArea.TextView);
         AsyncToolTipRequest = OnAsyncToolTipRequest;
@@ -63,7 +357,10 @@ public sealed class SqlCodeEditor : CodeTextEditor
         _textMarkerService = new TextMarkerService(this);
         TextArea.TextView.BackgroundRenderers.Add(_textMarkerService);
         TextArea.TextView.LineTransformers.Add(_textMarkerService);
-        TextArea.TextView.ElementGenerators.Add(new TruncateLongLines());
+        var truncateLongLines = new TruncateLongLines();
+        TextArea.TextView.ElementGenerators.Insert(0, truncateLongLines);
+        //TextArea.TextView.ElementGenerators.Add(truncateLongLines);
+
         this.TextArea.SelectionChanged += TextArea_SelectionChanged;
         if (_someEditorOptions.CollapseFoldingOnStartup && ForceUpdateFoldings())
         {
@@ -357,238 +654,7 @@ public sealed class SqlCodeEditor : CodeTextEditor
         }
     }
 
-    protected override async void OnKeyDown(KeyEventArgs e)
-    {
-        _foldingTimer?.Stop();
-        _foldingTimer?.Start();
-
-        base.OnKeyDown(e);
-        // Key.Oem7 = " or '
-        if (TextArea.IsFocused && e.Key == Key.Oem7 && TextArea is not null && TextArea.Selection.Length < 1024)
-        {
-            int selectionLength = TextArea.Selection.Length;
-            if (selectionLength == 0)
-            {
-                if (e.HasModifiers(ModifierKeys.Shift))
-                {
-                    TextArea.Document.Insert(CaretOffset, "\"");
-                }
-                else
-                {
-                    TextArea.Document.Insert(CaretOffset, "'");
-                }
-                TextArea.Caret.Offset--;
-            }
-            else
-            {
-                if (e.HasModifiers(ModifierKeys.Shift))
-                {
-                    TextArea.Selection.ReplaceSelectionWithText($"\"{TextArea.Selection.GetText()}");
-                }
-                else
-                {
-                    TextArea.Selection.ReplaceSelectionWithText($"'{TextArea.Selection.GetText()}");
-                }
-            }
-        }
-        // D9 = "("
-        else if (TextArea is not null && TextArea.IsFocused && e.Key == Key.D9 && e.HasModifiers(ModifierKeys.Shift) && TextArea is not null && TextArea.Selection.Length < 1024)
-        {
-            var selection = TextArea.Selection;
-            int sellen = selection.Length;
-            if (sellen > 0 || selection is not RectangleSelection)
-            {
-                if (sellen == 0 && TextArea.Caret.Offset > 0 && selection is not RectangleSelection)
-                {
-                    selection.ReplaceSelectionWithText($"()");
-                    //textArea.Document.Insert(CaretOffset, ")");
-                    TextArea.Caret.Offset--;
-                }
-                else if (sellen > 0 && selection is RectangleSelection)
-                {
-                    selection.ReplaceSelectionWithText($"({selection.GetText().Replace("\r\n", ")\r\n(")})");
-                    //_removeLastChar = true;
-                }
-                else if (selection is not RectangleSelection)
-                {
-                    selection.ReplaceSelectionWithText($"({selection.GetText()})");
-                    //_removeLastChar = true;
-                }
-                e.Handled = true;
-            }
-        }
-        else if (e.Key == Key.Space && e.HasModifiers(ModifierKeys.Control))
-        {
-            e.Handled = true;
-            var mode = e.HasModifiers(ModifierKeys.Shift)
-                ? TriggerMode.SignatureHelp
-                : TriggerMode.Completion;
-            _ = ShowCompletion(mode);
-        }
-        else if (e.Key == Key.Space)
-        {
-            _completionWindow?.Close();
-            if (TextArea is not null)
-            {
-                ImmediateReplaceQuickOrTypo(e);
-                //e.Handled = true;
-            }
-        }
-        else if (e.Key == Key.C && e.HasModifiers(ModifierKeys.Alt)/*&& _completionWindow?.IsOpen() != true*/)
-        {
-            if (_completionWindow?.IsOpen() == true)
-            {
-                _completionWindow.Close();
-            }
-            if (TextArea is not null)
-            {
-                ImmediateReplaceStandard();
-                //e.Handled = true;
-            }
-            //e.Handled = true;
-        }
-        else if (e.HasModifiers(ModifierKeys.Control))
-        {
-            switch (e.Key)
-            {
-                case Key.H:
-                    if (ForcedContolhtAction is not null)
-                    {
-                        ForcedContolhtAction.Invoke();
-                        e.Handled = true;
-                    }
-                    break;
-                case Key.F:
-                    if (ForcedContolftAction is not null)
-                    {
-                        ForcedContolftAction.Invoke();
-                        e.Handled = true;
-                    }
-                    break;
-                case Key.D:
-                    if (e.HasModifiers(ModifierKeys.Shift))
-                    {
-                        EditorHelpers.DoubleSelectedLine(this);
-                    }
-                    break;
-                case Key.G:
-                    int res = await GoToLineAsyncAction();
-                    if (res > 0 && TextArea is not null)
-                    {
-                        TextArea.Caret.Line = res;
-                        TextArea.Caret.BringCaretToView();
-                    }
-                    break;
-                case Key.E:
-                    ExpandFoldings();
-                    break;
-                case Key.R:
-                    CollapseFoldings();
-                    break;
-                case Key.U:
-                    if (e.HasModifiers(ModifierKeys.Shift))
-                    {
-                        SelectedText = SelectedText.ToLower();
-                    }
-                    else
-                    {
-                        SelectedText = SelectedText.ToUpper();
-                        //    var HighlightDefinition = this.SyntaxHighlighting;
-                        //    var Highlighter = new AvaloniaEdit.Highlighting.DocumentHighlighter(Document, HighlightDefinition);
-
-                        //    AvaloniaEdit.Highlighting.HighlightedLine result = Highlighter.HighlightLine(0);
-
-                        //    int off = 0;
-                        //    bool isInComment = result.Sections.Any(
-                        //s => s.Offset <= off && s.Offset + s.Length >= off
-                        //     && s.Color.Name == "Comment");
-                        //http://avalonedit.net/documentation/html/4d4ceb51-154d-43f0-b876-ad9640c5d2d8.htm ?
-                        //var documentHighlighter = new AvaloniaEdit.Highlighting.DocumentHighlighter(this.Document, cachedHighlightingDefinition);
-                        //var colorizer = TextArea.TextView.LineTransformers[0];
-                        //var sp = documentHighlighter.GetSpanStack(5);
-                        //bool isInComment = result.Sections.Any(
-                        //    s => s.Offset <= off && s.Offset + s.Length >= off
-                        //         && s.Color.Name == "Comment");
-                    }
-                    break;
-                case Key.J:
-                    if (e.HasModifiers(ModifierKeys.Shift))
-                    {
-                        SelectedText = SelectedText.ChangeCaseRespectingSqlRules(false);
-                    }
-                    else
-                    {
-                        SelectedText = SelectedText.ChangeCaseRespectingSqlRules(true);
-                    }
-                    break;
-                case Key.V:
-                    if (e.HasModifiers(ModifierKeys.Shift) && ContolShiftvAction is not null)
-                    {
-                        await ContolShiftvAction.Invoke();
-                    }
-                    break;
-            }
-        }
-
-        ///replace if typo or "quick snippet"
-        void ImmediateReplaceQuickOrTypo(KeyEventArgs e)
-        {
-            int offset = TextArea.Caret.Offset;
-            Span<char> chars = stackalloc char[EditorHelpers.LastWordLenLimit];
-            int lastWordLength = EditorHelpers.GetLastWord(TextArea, chars);
-
-            if (lastWordLength <= 8 && _someEditorOptions?.FastReplaceDictionary is not null)
-            {
-                string tmp = chars[..lastWordLength].ToString();
-                if (_someEditorOptions.FastReplaceDictionary.TryGetValue(tmp, out var res))
-                {
-                    int ind = res.IndexOf("${Caret}");
-                    if (ind > 0)
-                    {
-                        ind = res.Length - ind - "${Caret}".Length;
-                        res = res.Replace("${Caret}", "");
-                    }
-                    TextArea.Document.Replace(offset - lastWordLength, lastWordLength, res);
-                    if (ind > 0 && ind < TextArea.Caret.Offset)
-                    {
-                        TextArea.Caret.Offset -= ind;
-                        e.Handled = true;
-                    }
-                }
-            }
-            if (lastWordLength >= 3 && lastWordLength < EditorHelpers.LastWordLenLimit && _someEditorOptions is not null)
-            {
-                var typoCandidate = chars[..lastWordLength];
-                foreach (var correctWord in _someEditorOptions.TypoPatternList)
-                {
-                    int dist = typoCandidate.DamerauLevenshteinDistance(correctWord);
-                    if (dist <= SqlCodeEditorHelpers.TypoLimit && dist >= 1)
-                    {
-                        TextArea.Document.Replace(offset - lastWordLength, lastWordLength, correctWord);
-                    }
-                }
-            }
-        }
-
-        void ImmediateReplaceStandard()
-        {
-            int offset = TextArea.Caret.Offset;
-            Span<char> chars = stackalloc char[EditorHelpers.LastWordLenLimit + 1];
-            int lastWordLength = EditorHelpers.GetLastWord(TextArea, chars[1..]);
-
-            if (lastWordLength > 0 && lastWordLength < EditorHelpers.LastWordLenLimit - 1)
-            {
-                chars[0] = '@';
-                if (_someEditorOptions.GetAllSnippets.TryGetValue(new string(chars[..(lastWordLength + 1)]), out var res))
-                {
-                    TextArea.Document.Replace(offset - lastWordLength, lastWordLength, res.Text);
-                }
-            }
-        }
-    }
-
-
-    public Func<Task> ControlHaction;
+    //public Func<Task> ControlHaction;
     public Func<Task<int>> GoToLineAsyncAction;
 
     public Func<Task> ContolShiftvAction;

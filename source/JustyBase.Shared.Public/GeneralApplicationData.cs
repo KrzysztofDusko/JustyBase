@@ -7,22 +7,23 @@ using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginCommon.Models;
 using JustyBase.PluginDatabaseBase;
 using JustyBase.PluginDatabaseBase.Database;
+using NetezzaDotnetPlugin;
 using NetezzaOdbcPlugin;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace JustyBase;
-public class GeneralApplicationData : IGeneralApplicationData
+public sealed partial class GeneralApplicationData : IGeneralApplicationData
 {
     private readonly ISimpleLogger _simpleLogger;
     private readonly IMessageForUserTools _messageForUserTools;
-    private readonly OtherHelpers _otherHelpers;
+    private readonly IOtherHelpers _otherHelpers;
     private readonly IEncryptionHelper _encryptionHelper;
     public ISimpleLogger GlobalLoggerObject => _simpleLogger;
 
@@ -83,6 +84,21 @@ public class GeneralApplicationData : IGeneralApplicationData
                 _simpleLogger.TrackError(ex, isCrash: false);
             }
         }
+        //else if (Environment.GetEnvironmentVariable("NetezzaTest") is string nzEnv)
+        //{
+        //    var connectionString = _encryptionHelper.Decrypt(nzEnv);
+        //    OdbcConnectionStringBuilder builder = new(connectionString);
+        //    _loginTmp["NetezzaTest"] = new LoginDataModel()
+        //    {
+        //        Database = builder["database"] as string,
+        //        DefaultIndex = 0,
+        //        Driver = "NetezzaSQLOdbc",
+        //        ConnectionName = "NetezzaTest",
+        //        Password = builder["password"] as string,
+        //        UserName = builder["username"] as string,
+        //        Server = builder["servername"] as string
+        //    };
+        //}
         else
         {
             _loginTmp["SAMPLE_CONNECTION"] = new LoginDataModel()
@@ -136,11 +152,10 @@ public class GeneralApplicationData : IGeneralApplicationData
     public string SelectedTabIdFromStart { get; set; }
 
     private Dictionary<string, string>? _fastReplace;
+    public Dictionary<string, string> FastReplaceDictionary => _fastReplace ??= Config.AllSnippets.Where(x => x.Value.snippetType == SnippetModel.FAST_STRING).Select(x => new KeyValuePair<string, string>(x.Key, x.Value.Text)).ToDictionary();
 
     private List<string>? _typoList;
-    public Dictionary<string, string> FastReplaceDictionary => _fastReplace ?? Config.AllSnippets.Where(x => x.Value.snippetType == SnippetModel.FAST_STRING).Select(x => new KeyValuePair<string, string>(x.Key, x.Value.Text)).ToDictionary();
-
-    public List<string> TypoPatternList => _typoList ?? Config.AllSnippets.Where(x => x.Value.snippetType == SnippetModel.TYPO_STRING).Select(x => x.Key).ToList();
+    public List<string> TypoPatternList => _typoList ??= Config.AllSnippets.Where(x => x.Value.snippetType == SnippetModel.TYPO_STRING).Select(x => x.Key).ToList();
 
 
     public bool CollapseFoldingOnStartup => Config.CollapseFoldingOnStartup;
@@ -152,7 +167,6 @@ public class GeneralApplicationData : IGeneralApplicationData
 
     public bool IsFromatterAvaiable { get; set; }
 
-    private Assembly _cachedFormatter;
 
     public void ClearTempSippetsObjects()
     {
@@ -168,7 +182,7 @@ public class GeneralApplicationData : IGeneralApplicationData
         return FileVersionInfo.GetVersionInfo(filename).ProductVersion;
     }
 
-    public GeneralApplicationData(IMessageForUserTools messageForUserTools, OtherHelpers otherHelpers, ISimpleLogger simpleLogger, IEncryptionHelper encryptionHelper)
+    public GeneralApplicationData(IMessageForUserTools messageForUserTools, IOtherHelpers otherHelpers, ISimpleLogger simpleLogger, IEncryptionHelper encryptionHelper)
     {
         _messageForUserTools = messageForUserTools;
         _otherHelpers = otherHelpers;
@@ -266,20 +280,20 @@ public class GeneralApplicationData : IGeneralApplicationData
             }
         }
 
-        if (_cachedFormatter is null && !File.Exists(@"PoorMansNetEasy.dll"))
+        if (File.Exists("Formatter/PoorMansAot.dll"))
         {
-            IsFromatterAvaiable = false;
+            IsFromatterAvaiable = true;
         }
         else
         {
-            IsFromatterAvaiable = true;
+            IsFromatterAvaiable = false;
         }
 
 
         //register implementations
         DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQLOdbc, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new NetezzaOdbc(userName, password, "5480", ip, db, connectionTimeout));
-        //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Oracle, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new JustyBase.Services.Database.Oracle(userName, password, "", ip, db, connectionTimeout));
-        //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQL, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Netezza(userName, password, "5480", ip, db, connectionTimeout));
+        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQL, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Netezza(userName, password, "5480", ip, db, connectionTimeout));
+        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Oracle, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new OraclePlugin.Oracle(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.DB2, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new DB2(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.PostgreSql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Postgres(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Sqlite, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Sqlite(userName, password, "", ip, db, connectionTimeout));
@@ -413,11 +427,17 @@ public class GeneralApplicationData : IGeneralApplicationData
         return mn;
     }
 
+    [LibraryImport("Formatter/PoorMansAot.dll")]
+    private static partial IntPtr format_sql(IntPtr first);
+
+
     public async Task<string> GetFormatterSql(string txt)
     {
-        Assembly specialFormatterAssembly = _cachedFormatter ??= Assembly.LoadFrom(@"PoorMansNetEasy.dll");
-        dynamic dynamicFormatter = specialFormatterAssembly.CreateInstance("ExtraFormatter.Formatter");
-        var res = await Task.Run(() => dynamicFormatter.DoFormat(txt));
-        return res;
+        IntPtr argumentPointer = Marshal.StringToCoTaskMemAnsi(txt);
+        IntPtr resultPointer = await Task.Run(() => format_sql(argumentPointer));
+        string? resultString = Marshal.PtrToStringAnsi(resultPointer);
+        // Free the allocated memory
+        Marshal.FreeCoTaskMem(argumentPointer);
+        return resultString ?? txt;
     }
 }

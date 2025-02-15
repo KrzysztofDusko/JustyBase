@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"  d:DesignHeight="140" d:DesignWidth="200"
+        x:Class="JustyBase.Views.OtherDialogs.AskForFileName"
+        Title="AskForFileName"
+		ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+		Height="140" 
+		Width="200"
+		CanResize="False"
+		WindowStartupLocation="CenterOwner"
+		ShowActivated="True"
+		Background="{DynamicResource ButtonForeground}"
+		Padding="4"
+		Topmost="True">
+		<StackPanel Orientation="Vertical" Background="{DynamicResource TextControlBackground}">
+			<TextBox
+				Name="fileNameTb"
+				Watermark="filename"
+				TextAlignment="Center"
+				UseFloatingWatermark="False"
+				Height="15"
+				Width="150"
+				Margin="0 15 0 0"
+				ToolTip.Tip="press return to exit"/>
+			<TextBlock Name="tbExt" Margin="5" TextAlignment="Center" VerticalAlignment="Center">.xlsb</TextBlock>
+			<StackPanel HorizontalAlignment="Center" Margin="0 5 0 0" Orientation="Horizontal">
+				<Button Name="btOk" Margin="4">OK</Button>
+				<Button Name="btClose" Margin="4">Cancel</Button>
+			</StackPanel>
+		</StackPanel>
+</Window>

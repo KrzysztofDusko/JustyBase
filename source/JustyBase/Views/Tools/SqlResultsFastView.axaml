@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="using:JustyBase.ViewModels.Tools"
+             x:Class="JustyBase.Views.Tools.SqlResultsFastView"
+			 x:DataType="vm:SqlResultsFastViewModel">
+	<Grid RowDefinitions="Auto,*,Auto">
+		<TabStrip Grid.Row="0" Margin="5"
+				  SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}"
+				  ItemsSource="{Binding SqlResultsTitles}"
+				  BorderBrush="{DynamicResource DockThemeBorderLowBrush}"
+				  IsEnabled="{Binding IsTabStripEnabled}"
+				  BorderThickness="0 0 0 1">
+			<TabStrip.ItemTemplate>
+				<DataTemplate x:DataType="vm:SqlResultsFastTile">
+					<StackPanel Orientation="Horizontal" IsVisible="{Binding IsTitleVisible}">
+						<TextBlock Text="{Binding ResTitle}"/>
+						<ToggleButton Background="Transparent" Margin="3 0 0 3" Padding="0" FontSize="12"
+							Command="{Binding DockUndockResultCommand}">
+							<PathIcon Margin="0 0 5 0" Data="{StaticResource NotePin}"/>
+						</ToggleButton>
+						<Button Background="Transparent" Padding="0"  Margin="0 0 0 5"
+								UseLayoutRounding="False" Command="{Binding RemoveResultCommand}"
+								HorizontalAlignment="Stretch">
+							<!--Data="{StaticResource CloseX}"-->
+							<PathIcon Data="{StaticResource CloseX}" Height="14">
+								<PathIcon.Styles>
+									<Style Selector="Path">
+										<Setter Property="Margin" Value="2" />
+										<Setter Property="Stretch" Value="Uniform" />
+										<Setter Property="UseLayoutRounding" Value="False" />
+									</Style>
+								</PathIcon.Styles>
+							</PathIcon>
+						</Button>
+					</StackPanel>
+				</DataTemplate>
+			</TabStrip.ItemTemplate>
+		</TabStrip>
+		<ItemsControl Grid.Row="1" ItemsSource="{Binding SqlResultsViewModels}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<Panel/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+		</ItemsControl>
+	</Grid>
+</UserControl>

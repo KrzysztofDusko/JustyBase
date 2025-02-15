@@ -61,9 +61,26 @@ public static partial class EditorHelpers
         editor.BeginChange();
         var line = editor.Document.Lines[editor.TextArea.Caret.Line - 1];
         string txt = editor.Document.GetText(line.Offset, line.Length);
-        editor.Document.Insert(line.EndOffset,"\n"+txt);
+        editor.Document.Insert(line.EndOffset,Environment.NewLine+txt);
         editor.EndChange();
     }
+
+    public static void SwapLines(TextEditor editor, DocumentLine line0, DocumentLine line1)
+    {
+        editor.BeginChange();
+        string txt = editor.Document.GetText(line0.Offset, line0.Length);
+        string ld = "\r\n";
+        if (line0.DelimiterLength == 1)
+        {
+            ld = "\n";
+        }
+        editor.Document.Insert(line1.Offset, txt + ld);
+        editor.Document.Remove(line0.Offset, line0.Length + line0.DelimiterLength);
+        editor.Select(line1.Offset, txt.Length);
+        editor.TextArea.Caret.BringCaretToView();
+        editor.EndChange();
+    }
+
 
     public static void InsertTextToPrevLineAndSelect(this TextEditor editor, string text, bool doSelect = true)
     {
@@ -84,7 +101,6 @@ public static partial class EditorHelpers
         editor.EndChange();
     }
 
-    public const int LastWordLenLimit = 32;
     /// <summary>
     /// fils chars buffer with last word (before current caret position)
     /// </summary>
@@ -109,9 +125,10 @@ public static partial class EditorHelpers
         {
             for (int j = 0; j < i / 2; j++)
             {
-                var c = chars[j];
+                //swap
+                var tmp = chars[j];
                 chars[j] = chars[i - j - 1];
-                chars[i - j - 1] = c;
+                chars[i - j - 1] = tmp;
             }
         }
 

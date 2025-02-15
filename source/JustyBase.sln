@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchy", "Benchmarks\Benchy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Tests", "JustyBase.Tests\JustyBase.Tests.csproj", "{E561C903-EC7F-46CE-B600-0E90BCF2E2CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.PluginDatabaseBase", "JustyBase.PluginBase\JustyBase.PluginDatabaseBase.csproj", "{B9BD2F75-36C3-49EE-B857-E95D10ADB69F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.PluginBase", "JustyBase.PluginBase\JustyBase.PluginBase.csproj", "{B9BD2F75-36C3-49EE-B857-E95D10ADB69F}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "RoslynPad.Shared", "RoslynPad.Shared\RoslynPad.Shared.shproj", "{C14149B4-C29B-4A46-8AF7-A30900F97F3B}"
 EndProject
@@ -44,6 +44,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Public.Lib", "JustyBase.Public.Lib\JustyBase.Public.Lib.csproj", "{899E34C4-DB50-4DAD-ADDF-E6A4F30423F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlEditor.Avalonia", "SqlEditor.Avalonia\SqlEditor.Avalonia.csproj", "{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase", "JustyBase\JustyBase.csproj", "{1579E051-299B-4DB9-8F90-10CBB14F63AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaEdit", "..\..\AvaloniaEdit\src\AvaloniaEdit\AvaloniaEdit.csproj", "{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetezzaDotnetPlugin", "Plugins\NetezzaDotnetPlugin\NetezzaDotnetPlugin.csproj", "{C0347F0B-F6D7-410A-B765-B48BB6EF4202}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.NetezzaDriver", "..\..\PublicNuget\JustyBase.NetezzaDriver\scr\JustyBase.NetezzaDriver\JustyBase.NetezzaDriver.csproj", "{A54FE474-489E-4322-BF7A-D626BBB428C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OraclePlugin", "Plugins\OraclePlugin\OraclePlugin.csproj", "{0994C792-C310-437E-BC27-8E9D2FBA7508}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +113,26 @@ Global
 		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F355169-A3F6-4C01-AACC-B1E6317BA0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,10 +147,13 @@ Global
 		{70BE95F8-8DD8-442F-AA0C-964243F5F85E} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
 		{F3224F1E-F6B7-4DEA-B1C2-7AB90D8EC17D} = {00A62BB7-0958-4F1E-B54A-7BD37A003DE1}
 		{7346AD0F-6734-4FEA-8586-BA76164FAA17} = {00A62BB7-0958-4F1E-B54A-7BD37A003DE1}
-		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A} = {39A0BE66-BF41-422A-801F-C6868FB98FA6}
+		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
+		{C0347F0B-F6D7-410A-B765-B48BB6EF4202} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
+		{0994C792-C310-437E-BC27-8E9D2FBA7508} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{0f355169-a3f6-4c01-aacc-b1e6317ba0be}*SharedItemsImports = 5
+		JustyBase.Shared.Public\JustyBase.Shared.Public.projitems*{1579e051-299b-4db9-8f90-10cbb14f63ab}*SharedItemsImports = 5
 		JustyBase.Shared.Public\JustyBase.Shared.Public.projitems*{85e55d49-5ea3-46fb-840b-edbdd923ee6a}*SharedItemsImports = 13
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{c14149b4-c29b-4a46-8af7-a30900f97f3b}*SharedItemsImports = 13
 	EndGlobalSection

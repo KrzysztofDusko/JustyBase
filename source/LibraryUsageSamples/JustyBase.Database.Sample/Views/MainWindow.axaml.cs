@@ -7,11 +7,9 @@ using JustyBase.Database.Sample.ViewModels;
 using JustyBase.Editor;
 using System.Threading.Tasks;
 using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.Common.Helpers;
 using JustyBase.Helpers;
 using JustyBase.PluginCommon.Contracts;
-using JustyBase.PluginCommon.Models;
-using JustyBase.Common.Contracts;
+using Avalonia.Interactivity;
 
 namespace JustyBase.Database.Sample.Views;
 
@@ -26,9 +24,9 @@ public partial class MainWindow : Window
         this.Loaded += MainWindow_Loaded;
     }
 
-    private void MainWindow_Loaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
     {
-        sqlCodeEditor.Initialize(new TestAutocompleteData((this.DataContext as MainWindowViewModel).GetTestDatabaseService("NetezzaTest")), new TestOptions());
+        sqlCodeEditor.Initialize(new TestAutocompleteData((this.DataContext as MainWindowViewModel).GetTestDatabaseService()), new TestOptions());
         sqlCodeEditor.FoldingSetup();
         sqlCodeEditor.ForceUpdateFoldings();
         sqlCodeEditor.CollapseFoldings();

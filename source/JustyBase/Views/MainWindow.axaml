@@ -1,0 +1,66 @@
+﻿<Window x:Class="JustyBase.Views.MainWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ids="using:Dock.Settings"
+        xmlns:vm="using:JustyBase.ViewModels"
+        xmlns:views="using:JustyBase.Views"
+        mc:Ignorable="d"
+        d:DesignWidth="900" 
+		d:DesignHeight="680"
+        x:Name="JustMainWindow"
+        Icon="/Assets/Icon2.ico"
+        WindowState="Normal" 
+		WindowStartupLocation="CenterScreen"
+		Foreground="{DynamicResource DockThemeForegroundBrush}"
+        TransparencyLevelHint="None"
+		BorderBrush="{DynamicResource DockThemeBorderLowBrush}"
+        FontFamily="Segoe UI, SF Pro Display, Noto Sans, Cantarel"
+        Title="Justy Base" 
+		Height="680"
+		Width="1200"
+		MinWidth="455"
+		MinHeight="400"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+		x:DataType="vm:MainWindowViewModel"
+		ids:DockProperties.IsDragEnabled="True" 
+		ids:DockProperties.IsDropEnabled="True"
+		>
+	<!--Background="{DynamicResource MainBackgroundBrush}"-->
+	<!--Background="{DynamicResource SystemAltHighColor}"-->
+	<!--Background="{DynamicResource SystemChromeLowColor}"-->
+	<!--
+	-->
+	<!--TransparencyLevelHint="AcrylicBlur"
+		AcrylicBlur	3	
+		The window background is a blur-behind with a high blur radius. This level may fallback to Blur.
+		Blur	2	
+		The window background is a blur-behind where nothing is drawn in the window.
+		None	0	
+		The window background is Black where nothing is drawn in the window.
+		Transparent	1	
+		The window background is Transparent where nothing is drawn in the window.	
+	-->
+	<!--Background="{x:Null}"-->
+	<!-- RenderOptions.BitmapInterpolationMode="HighQuality" -->
+	<!-- UseLayoutRounding="True" -->
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+N" Command="{Binding OpenNewTabCommand}"/>
+		<KeyBinding Gesture="Ctrl+T" Command="{Binding OpenNewTabCommand}"/>
+		<KeyBinding Gesture="Ctrl+Tab" Command="{Binding ChangeActiveTabCommand}" CommandParameter="+"/>
+		<KeyBinding Gesture="Ctrl+Shift+Tab" Command="{Binding ChangeActiveTabCommand}" CommandParameter="-"/>
+		<KeyBinding Gesture="Ctrl+B" Command="{Binding ConcentrateModeCommand}"/>
+	</Window.KeyBindings>
+	<Panel>		
+		<Panel Margin="{Binding #JustMainWindow.OffScreenMargin}">
+			<Panel Margin="1 1 0 0">
+				<views:MainView />
+			</Panel>
+		</Panel>
+	</Panel>
+</Window>

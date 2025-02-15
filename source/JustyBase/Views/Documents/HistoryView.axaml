@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:JustyBase.ViewModels.Documents"
+			 xmlns:m="using:JustyBase.Common.Models"
+			 xmlns:ce="using:AvaloniaEdit"
+             mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="450"
+             x:Class="JustyBase.Views.Documents.HistoryView"
+			 x:CompileBindings="True"
+			 x:DataType="vm:HistoryViewModel">
+	<Grid RowDefinitions="Auto,Auto,2*,2,*" ColumnDefinitions="Auto,Auto,*">
+		<TextBox Name="tb" Grid.Row="0" Grid.ColumnSpan="2"
+			 Watermark="search..."
+			 Margin="20"
+			 Height="26"
+			 MinHeight="26"
+		     MinWidth="200"
+			 Padding="0 3 0 0"
+			 Text="{Binding SearchTxt}"
+			 HorizontalAlignment="Stretch"
+			 TextAlignment="Center"
+			 Background="Transparent"/>
+		<DataGrid Grid.Row="2" CanUserSortColumns="True" IsReadOnly="True"
+				  Name="hisotryGrid"
+				  Grid.ColumnSpan="3"
+				  ItemsSource="{Binding HistoryItems}"
+				  SelectedItem="{Binding SelectedItem}"
+				  ClipboardCopyMode="None"
+				  RowBackground="#1000"
+				  BorderBrush="{DynamicResource TextControlForeground}"
+				  CornerRadius="3"
+				  BorderThickness="1"
+				  RowHeight="22"
+				  SelectionMode="Extended"
+				  AutoGenerateColumns="False">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Date" Width="Auto" Binding="{Binding RunDateTime}" x:DataType="m:HistoryEntry" />
+				<DataGridTextColumn Header="Connection" Width="Auto" Binding="{Binding Connection}" x:DataType="m:HistoryEntry"  />
+				<DataGridTextColumn Header="Database" Width="Auto" Binding="{Binding Database}" x:DataType="m:HistoryEntry"  />
+				<DataGridTextColumn Header="SQL" Width="*" Binding="{Binding SqlShort}" x:DataType="m:HistoryEntry" />
+			</DataGrid.Columns>
+		</DataGrid>
+		<GridSplitter Grid.Row="3" Grid.ColumnSpan="3" MinHeight="3" Height="3" Background="{DynamicResource SystemAccentColor}"
+					  ResizeDirection="Rows"/>
+		<ce:TextEditor Name="textEditor"
+			Grid.Row="4"
+			Grid.ColumnSpan="3"
+			ShowLineNumbers="False"
+			FontFamily="Cascadia Code,JetBrains Mono,Consolas,Menlo,Monospace"
+			IsReadOnly="True"
+			Background="Transparent"
+			Document="{Binding Doc}"
+			FontSize="13"
+			Margin="6"/>
+	</Grid>
+</UserControl>

@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="JustyBase.Views.Tools.VariablesView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:JustyBase.ViewModels.Tools"
+			 xmlns:m="using:JustyBase.Models.Tools"
+             mc:Ignorable="d"
+             d:DesignWidth="300" d:DesignHeight="400"
+             x:DataType="vm:VariablesViewModel" 
+			 x:CompileBindings="True">
+  <Grid Focusable="True">
+	  <DataGrid Name="variablesDataGrid" 
+				AutoGenerateColumns="False"
+				CanUserResizeColumns="True"
+			    ItemsSource="{Binding VariableList}"
+				SelectedItem="{Binding SelectedVariable}"
+			    RowHeight="22"
+				ToolTip.Tip="'delete'/'+' key to remove/add new variable"
+				KeyDown="VariablesDataGrid_KeyDown"
+				DoubleTapped="VariablesDataGrid_DoubleTapped">
+		  <DataGrid.Columns>
+			  <DataGridTemplateColumn Header="Variable" IsReadOnly="False" Width="Auto" >
+				  <DataGridTemplateColumn.CellTemplate>
+					  <DataTemplate DataType="m:VariableModel">
+						  <TextBlock Text="{Binding VariableName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3 0" Padding="2"/>
+					  </DataTemplate>
+				  </DataGridTemplateColumn.CellTemplate>
+				  <DataGridTemplateColumn.CellEditingTemplate>
+					  <DataTemplate DataType="m:VariableModel">
+						  <TextBox Text="{Binding VariableName}"
+						           VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
+						           HorizontalAlignment="Stretch"  HorizontalContentAlignment="Stretch"
+						           MinHeight="21" Height="21" FontSize="12" Margin="3 0" Padding="2"/>
+					  </DataTemplate>
+				  </DataGridTemplateColumn.CellEditingTemplate>
+			  </DataGridTemplateColumn>
+			  
+			  <DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*" >
+				  <DataGridTemplateColumn.CellTemplate>
+					  <DataTemplate DataType="m:VariableModel">
+						  <TextBlock Text="{Binding VariableComputedValue}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+					  </DataTemplate>
+				  </DataGridTemplateColumn.CellTemplate>
+				  <DataGridTemplateColumn.CellEditingTemplate>
+					  <DataTemplate DataType="m:VariableModel">
+						  <TextBox Text="{Binding VariableComputedValue}"
+						           VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
+						           HorizontalAlignment="Stretch"  HorizontalContentAlignment="Stretch"
+						           MinHeight="21" Height="21" FontSize="12" Margin="3 0" Padding="2"/>
+					  </DataTemplate>
+				  </DataGridTemplateColumn.CellEditingTemplate>
+			  </DataGridTemplateColumn>
+		  </DataGrid.Columns>
+	  </DataGrid>
+  </Grid>
+</UserControl>

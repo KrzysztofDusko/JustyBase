@@ -900,7 +900,11 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
 #else
             AnimationRefresh();
 #endif
-            await _generalApplicationData.LoadPluginsIfNeeded(PluginsDownloadInfo);
+
+            if (!DatabaseServiceHelpers.IsDriverRegistered(_generalApplicationData, SelectedConnectionName))
+            {
+                await _generalApplicationData.LoadPluginsIfNeeded(PluginsDownloadInfo);
+            }
 
             IDatabaseService actualDatabaseService = await Task.Run(() => DatabaseServiceHelpers.GetDatabaseService(_generalApplicationData, SelectedConnectionName, delayCache: false));
             if (actualDatabaseService is null)
@@ -1153,9 +1157,11 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
                                 && exx1.StackTrace?.Contains("at NZdotNET.ForwardsOnlyDataReader.Read()") == false
                                 && exx1.StackTrace?.Contains("at NZdotNET.NZdotNETState.ProcessBackendResponses_Ver_3") == false
                                 && !exx1.Message.StartsWith("ERROR [42704] [IBM][DB2/NT64]")
+                                && !exx1.Message.StartsWith("ERROR [42000]")
                                 && !exx1.Message.StartsWith("ERROR: Attribute ")
                                 && !exx1.Message.StartsWith("A timeout has occured. If you were establishing a connection")
                                 && !exx1.Message.StartsWith("The CommandText to be set should not be null or Empty!")
+                                && !exx1.Message.StartsWith("ERROR:  relation does not exist")
                                 )
                                 {
                                     _messageForUserTools.ShowSimpleMessageBoxInstance(exx1);

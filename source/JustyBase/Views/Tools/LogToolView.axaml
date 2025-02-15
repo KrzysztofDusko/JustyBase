@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="JustyBase.Views.Tools.LogToolView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:JustyBase.ViewModels.Tools"
+			 xmlns:vmDoc="using:JustyBase.ViewModels.Documents"
+			 xmlns:m="using:JustyBase.Common.Models"
+			 xmlns:mt="using:JustyBase.Models.Tools"
+			 xmlns:conv="using:JustyBase.Converters"
+             mc:Ignorable="d"
+             d:DesignWidth="300" d:DesignHeight="400"
+             x:DataType="vm:LogToolViewModel">
+	<UserControl.Resources>
+		<conv:LogTypeConverter x:Key="logConverter" />
+	</UserControl.Resources>
+	<DockPanel>
+		<DataGrid Name="MyDataGrid"  DockPanel.Dock="Top"
+				  ItemsSource="{Binding LogCollectionView}"
+				  AutoGenerateColumns="False"
+				  IsReadOnly="True"
+				  CanUserResizeColumns="True"
+				 HeadersVisibility="All"
+				  RowHeight="22"
+				  ToolTip.Tip="{ReflectionBinding $self.SelectedItem.Message}"
+				  RowDetailsVisibilityMode="VisibleWhenSelected"
+				  SelectedItem="{Binding SelectedLogItem}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Binding="{Binding MessageType ,Converter={StaticResource logConverter}}" x:DataType="mt:LogMessage"/>
+				<DataGridTextColumn Header="Timestamp"  Binding="{Binding Timestamp ,Converter={StaticResource logConverter}}" x:DataType="mt:LogMessage"/>
+				<DataGridTextColumn Header="Message" Binding="{Binding Message}" MaxWidth="1000" x:DataType="mt:LogMessage" />
+			</DataGrid.Columns>
+			<DataGrid.RowDetailsTemplate>
+				<DataTemplate>
+					<Grid DataContext="{Binding $parent[DataGrid].SelectedItem}" RowDefinitions="150">
+						<DataGrid x:DataType="mt:LogMessage"
+								  Margin="30 2 2 2"
+								  ItemsSource="{Binding InnerMessagesCollectionView}"
+								  AutoGenerateColumns="False"
+								  IsEnabled="True"
+								  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+								  ScrollViewer.VerticalScrollBarVisibility="Auto"
+							      IsReadOnly="True" HeadersVisibility="Column">
+							<DataGrid.Columns>
+								<DataGridTextColumn Header="Time" Binding="{Binding PairTitle ,Converter={StaticResource logConverter}}" x:DataType="m:StringPair"/>
+								<DataGridTextColumn Header="Message" Binding="{Binding PairMessage}" x:DataType="m:StringPair"/>
+							</DataGrid.Columns>
+						</DataGrid>
+					</Grid>
+				</DataTemplate>
+			</DataGrid.RowDetailsTemplate>
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Command="{Binding ClearLogCommand}" Header="Clear log"/>
+					<MenuItem Command="{Binding CopyCommand}" Header="Copy"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+		</DataGrid>
+	</DockPanel>
+</UserControl>

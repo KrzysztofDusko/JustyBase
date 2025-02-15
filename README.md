@@ -20,4 +20,5 @@ This project is based on
 
 <img src="pictures/main.png"> 
 
+<img src="pictures/sample_01.png"> 
 

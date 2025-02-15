@@ -1,0 +1,73 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:JustyBase.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="150"
+		WindowStartupLocation="CenterOwner"
+		SizeToContent="Height"
+		Width="300"
+        x:Class="JustyBase.Views.SqlParametrWindow"
+        TransparencyLevelHint="AcrylicBlur"
+		ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaToDecorationsHint="True"
+		UseLayoutRounding="True"
+		CornerRadius="5"		
+		x:DataType="vm:SqlParametrViewModel" 
+		x:CompileBindings="True">
+	<Window.Styles>
+		<Style Selector="TextBox">
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="MinHeight" Value="20"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Padding" Value="5 3 2 2"/>
+		</Style>
+		<!--<Style Selector="DataGridCell.pinnedStyle" >
+			<Setter Property="HorizontalContentAlignment" Value="Right" />
+		</Style>-->
+	</Window.Styles>
+	<Window.KeyBindings>
+		<KeyBinding Command="{Binding ClickOkCmd}" Gesture="F5"/>
+		<KeyBinding Command="{Binding ClickOkCmd}" Gesture="Return"/>
+		<KeyBinding Command="{Binding ClickCancelCmd}" Gesture="Escape"/>
+	</Window.KeyBindings>
+
+	<Border BorderBrush="{StaticResource SystemAccentColor}" BorderThickness="0" Margin="3" Padding="3"
+	 UseLayoutRounding="True" CornerRadius="5"
+	 HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+	<DockPanel Margin="0 5 0 0 ">
+		<TextBlock 
+			DockPanel.Dock="Top" HorizontalAlignment="Center"
+				   >Please enter value(s)</TextBlock>
+		<DataGrid Name="dg"
+				  DockPanel.Dock="Top" ItemsSource="{Binding MyItems}" AutoGenerateColumns="False"
+				  Padding="10 10 10 10" RowHeight="26">
+			<DataGrid.Columns>
+				<DataGridTextColumn x:DataType="vm:Pair" Width="Auto" IsReadOnly="True"  Header="Name"  Binding="{Binding Key}"/>
+				<DataGridTemplateColumn Header="Value" IsReadOnly="False" Width="*">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="vm:Pair">
+							<TextBox Text="{Binding Value}" Width="{Binding $parent.Width}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+					<DataGridTemplateColumn.CellEditingTemplate>
+						<DataTemplate DataType="vm:Pair">
+							<TextBox Initialized="TextBox_Initialized" Text="{Binding Value}" Width="{Binding $parent.Width}"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellEditingTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+		<!--TextBox DockPanel.Dock="Top" Watermark="{Binding Waterm}"
+			 Text="{Binding TextValue}"
+					 /-->
+		<StackPanel HorizontalAlignment="Center"  DockPanel.Dock="Bottom"  Orientation="Horizontal">
+			<Button Command="{Binding ClickOkCmd}" HotKey="Return" Margin="5">OK</Button>
+			<Button	Command="{Binding ClickCancelCmd}" HotKey="Return" Margin="5"> Cancel</Button>
+		</StackPanel>
+	</DockPanel>
+	</Border>
+</Window>

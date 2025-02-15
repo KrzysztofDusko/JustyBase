@@ -10,7 +10,6 @@
         <FluentTheme />
         <!--<SimpleTheme />-->
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
-
 		<Style Selector="cc|CompletionList">
 			<Setter Property="Template">
 				<ControlTemplate>

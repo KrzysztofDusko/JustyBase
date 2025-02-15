@@ -1,0 +1,81 @@
+<UserControl x:Class="JustyBase.Views.Tools.FileExplorerView"
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:vm="using:JustyBase.ViewModels.Tools"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:DataType="vm:FileExplorerViewModel">
+	<Grid Focusable="True" RowDefinitions="Auto,Auto,*">
+		<StackPanel Grid.Row="0" Orientation="Horizontal">
+			<TextBox Watermark="init path..." Text="{Binding InitialFilePath}" Width="150" MaxWidth="250"
+					 Height="28" MinHeight="28"/>
+			<Button Name="btFileOpen" Command="{Binding OpenDirectoryDialogCmd}" Margin="0" Padding="4">
+				<PathIcon Data="{StaticResource OpenDirectorySymbol}"/>
+			</Button>
+		</StackPanel>		
+    <TabControl Grid.Row="2" TabStripPlacement="Top">
+		<TabItem Header="Search" VerticalContentAlignment="Center">
+			<Grid RowDefinitions="Auto,*">
+				<StackPanel Grid.Row="0" Orientation="Horizontal">
+					<TextBox Margin="2 0 0 0" Padding="5 5 0 0" Height="28" MinHeight="28" Watermark="search..."
+							 Text="{Binding SearchText}"
+							 IsReadOnly="{Binding SearchInProgress}"
+							 Width="150"
+							 MaxWidth="250"
+							 ToolTip.Tip="❗ press enter to search in files content">
+						<TextBox.KeyBindings>
+							<KeyBinding Gesture="Return" Command="{Binding SearchInFilesCommand}"/>
+						</TextBox.KeyBindings>
+					</TextBox>
+					<CheckBox IsChecked="{Binding WholeWords}" Margin="10 0 0 0"
+					  >whole words</CheckBox>
+					<CheckBox IsChecked="{Binding SearchInSqlComments}" Margin="10 0 0 0"
+					  >search in sql comments</CheckBox>
+				</StackPanel>
+				<DataGrid 
+				  Name="fileSearchGrid"
+				  Grid.Row="1"
+					ItemsSource="{Binding SearchItems}"
+				    SelectedItem="{Binding SelectedItem}"
+				    AutoGenerateColumns="False"
+				    CanUserResizeColumns="True"
+				    IsReadOnly="True">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Last write time" Width="120" CanUserResize="False" Binding="{Binding LastWriteTime, StringFormat=g}" x:DataType="vm:SearchItem"/>
+					<DataGridTextColumn Header="Name" Width="*" MinWidth="100" Binding="{Binding ShortName}" x:DataType="vm:SearchItem"/>
+					<DataGridTextColumn Header="Short path" Width="*" MinWidth="100" Binding="{Binding ShortPath}" x:DataType="vm:SearchItem"/>
+					<DataGridTextColumn Header="File length" Width="*" MaxWidth="100" Binding="{Binding Length, StringFormat=N0}" x:DataType="vm:SearchItem"/>
+				</DataGrid.Columns>
+				<DataGrid.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Refresh" Command="{Binding RefreshFileListCmd}"/>
+						<MenuItem Header="Open in explorer" Command="{Binding OpenInExplorerGridCmd}"/>
+					</ContextMenu>
+				</DataGrid.ContextMenu>
+			</DataGrid>
+		</Grid>
+		</TabItem>
+		<TabItem Header="Explorer" VerticalContentAlignment="Center">
+			<TreeDataGrid Name="fileViewer"
+					   Source="{Binding Source}"
+					   ShowColumnHeaders="True"
+					   CanUserResizeColumns="True">
+				<TreeDataGrid.Styles>
+					<Style Selector="TreeDataGrid TreeDataGridRow">
+						<Setter Property="Padding" Value="0"/>
+						<Setter Property="Margin" Value="0"/>
+						<Setter Property="Height" Value="24"/>
+					</Style>
+				</TreeDataGrid.Styles>
+				<TreeDataGrid.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Open in explorer" Command="{Binding ShowInExplorerCommand}"/>
+						<MenuItem Header="Remove permanently from disc" Command="{Binding RemoveFileOrDirectoryCmd}"/>
+					</ContextMenu>
+				</TreeDataGrid.ContextMenu>
+			</TreeDataGrid>
+		</TabItem>
+	</TabControl>
+	</Grid>
+</UserControl>

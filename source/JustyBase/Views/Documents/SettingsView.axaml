@@ -1,0 +1,317 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JustyBase.Views.Documents.SettingsView"
+			 xmlns:vm="using:JustyBase.ViewModels.Documents"
+			 x:CompileBindings="True"
+			 x:DataType="vm:SettingsViewModel">
+	<UserControl.Background>
+	</UserControl.Background>
+	<UserControl.Styles>
+		<Style Selector="FlyoutPresenter.GoodVsibleFlyout">
+			<Setter Property="Background" Value="{StaticResource SystemAccentColor}" />
+			<Setter Property="Foreground" Value="White" />
+		</Style>
+	</UserControl.Styles>
+	<UserControl.Resources>
+		<x:Double x:Key="LabelFontBig">14</x:Double>
+	</UserControl.Resources>
+	<Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,2,*" Margin="0 5 0 0">
+		<TextBox Grid.Row="0"  Grid.ColumnSpan="3" Watermark="search... (todo)"
+				 Margin="30 0 30 5"/>
+		<TreeView  Name="treeView" Grid.Row="1" Grid.Column="0" MinWidth="200" HorizontalAlignment="Left"
+				   BorderThickness="0 0 1 0"
+				   SelectedItem="{Binding SeletedOption}">
+			<TreeView.Styles>
+				<Style Selector="TreeViewItem">
+					<Setter Property="MinHeight" Value="22"/>
+					<Setter Property="Margin" Value="0 1 0 1"/>
+				</Style>
+			</TreeView.Styles>
+			<TreeViewItem Header="General" Tag="General">
+				<TreeViewItem Header="Export data" Tag="Export"/>
+			</TreeViewItem>
+			<TreeViewItem Header="Import from legacy" Tag="ImportSettings"/>
+			<TreeViewItem Header="Snipetts &amp; others" Tag="SnipettsANDkeywords"/>
+			<TreeViewItem Header="Results" Tag="Results">
+				<TreeViewItem Header="Formats" Tag="Formats"/>
+				<TreeViewItem Header="Limits" Tag="Limits"/>
+			</TreeViewItem>
+			<TreeViewItem Header="Apperance" Tag="Apperance"/>
+			<TreeViewItem Header="Others" Tag="Others">
+				<TreeViewItem Header="Diagnostics data" Tag="DiagnosticsData"/>
+			</TreeViewItem>
+		</TreeView>
+		<ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="2">
+			<StackPanel>
+				<StackPanel.Styles>
+					<Style Selector="Border">
+						<Setter Property="BorderThickness" Value="0 0 0 1"/>
+						<Setter Property="BorderBrush" Value="{DynamicResource TextControlForegroundDisabled}"/>
+					</Style>
+				</StackPanel.Styles>
+				<Border>
+					<StackPanel Name="General" HorizontalAlignment="Left">
+						<Label FontWeight="Bold" Content="{Binding $parent.Name}" FontSize="{StaticResource LabelFontBig}"/>
+						<Label Margin="15 0 0 0">Connection timeout [sec]</Label>
+						<NumericUpDown Margin="30 0 0 0" Value="{Binding ConnectionTimeout}"
+									   Watermark="Rows count limit"
+									   Increment="1" Minimum="1" Maximum="60"
+									   AllowSpin="True"
+									   ShowButtonSpinner="False"/>
+						<Label Margin="15 0 0 0">Command timeout [sec]</Label>
+						<NumericUpDown Margin="30 0 0 0" Value="{Binding CommandTimeout}"
+									   Watermark="Rows count limit"
+									   Increment="1" Minimum="-1" Maximum="86400"
+									   AllowSpin="True" ShowButtonSpinner="False"/>
+					</StackPanel>
+				</Border>
+				<Border>
+					<StackPanel Name="Export" HorizontalAlignment="Left">
+						<Label FontWeight="Bold" Content="Export data" FontSize="{StaticResource LabelFontBig}"/>
+						<StackPanel Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="250">Column Serarator in CSV</Label>
+							<ComboBox Width="150"  SelectedValue="{Binding SepInExportedCsv}"
+									  ItemsSource="{Binding SepInExportedCsvList}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="250">Row Serarator in CSV</Label>
+							<ComboBox Width="150" SelectedValue="{Binding SepRowsInExportedCsv}"
+									  ItemsSource="{Binding SepRowsInExportedCsvList}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="250">CSV File encoding</Label>
+							<ComboBox Width="150" SelectedValue="{Binding EncondingName}"
+									  ItemsSource="{Binding EncondingNameList}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="250">Decimal separator in CSV</Label>
+							<ComboBox Width="150" SelectedValue="{Binding DecimalDelimInCsv}"
+									  ItemsSource="{Binding DecimalDelimInCsvList}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="250">Excel data format</Label>
+							<ComboBox Width="150" SelectedValue="{Binding ExcelFormat}"
+									  ItemsSource="{Binding ExcelFormatList}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="250">Excel sheet name</Label>
+							<TextBox Text="{Binding DefaultXlsxSheetName}" Width="150"/>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<StackPanel Name="SnipettsANDkeywords" HorizontalAlignment="Left">
+					<Label FontWeight="Bold" Content="Snipetts &amp; others" FontSize="{StaticResource LabelFontBig}"/>
+					<Button Name="btEditSnippets">Edit snippets</Button>
+				</StackPanel>
+				<Border>
+					<StackPanel Name="Results" HorizontalAlignment="Left">
+						<Label FontWeight="Bold" Content="{Binding $parent.Name}" FontSize="{StaticResource LabelFontBig}"/>
+						<Label Margin="15 0 0 0">Rows count limit</Label>
+						<NumericUpDown Name="Limits" Value="{Binding ResultRowsLimit}"
+									Margin="30 0 0 0" Watermark="Rows count limit" 
+									AllowSpin="False" ShowButtonSpinner="False"
+									FormatString="{}{0:N0}"
+									ToolTip.Tip="value from 100 to 10 000 000 is accepted"/>
+					</StackPanel>
+				</Border>			
+					<StackPanel Name="ImportSettings" HorizontalAlignment="Left">
+						<Label FontWeight="Bold" Content="Import settings from legacy" FontSize="{StaticResource LabelFontBig}"/>
+						<StackPanel Orientation="Horizontal">
+							<Label>Load snippets from snipets.json.enc</Label>
+							<Button Command="{Binding OpenFileDialogCmd}" CommandParameter="snipets.json.enc">
+								<StackPanel Orientation="Horizontal" Spacing="5">
+									<TextBlock>Load</TextBlock>
+									<PathIcon Data="{StaticResource OpenDirectorySymbol}"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+					</StackPanel>
+				<Border>
+					<StackPanel Name="Apperance" HorizontalAlignment="Left">
+						<Label FontWeight="Bold" Content="{Binding $parent.Name}" FontSize="{StaticResource LabelFontBig}"/>
+						<Label FontWeight="SemiBold">⚠ This feature is highly experimental</Label>
+						<Label FontWeight="SemiBold">⚠ After changing any color, please restart the application immediately</Label>
+						<UniformGrid Columns="4">
+							<Label Grid.Row="0" Grid.Column="0" Margin="15 5 0 0" >Accent</Label>
+							<ColorPicker Grid.Row="0" Grid.Column="1" Color="{Binding Accent}"/>
+
+							<Label Grid.Row="1" Grid.Column="0" Margin="15 5 0 0" >AltHigh</Label>
+							<ColorPicker Grid.Row="1" Grid.Column="1" Color="{Binding AltHigh}"/>
+
+							<Label Grid.Row="2" Grid.Column="0" Margin="15 5 0 0" >AltLow</Label>
+							<ColorPicker Grid.Row="2" Grid.Column="1" Color="{Binding AltLow}"/>
+
+							<Label Grid.Row="3" Grid.Column="0" Margin="15 5 0 0" >AltMedium</Label>
+							<ColorPicker Grid.Row="3" Grid.Column="1" Color="{Binding AltMedium}"/>
+
+							<Label Grid.Row="4" Grid.Column="0" Margin="15 5 0 0" >AltMediumHigh</Label>
+							<ColorPicker Grid.Row="4" Grid.Column="1" Color="{Binding AltMediumHigh}"/>
+
+							<Label Grid.Row="5" Grid.Column="0" Margin="15 5 0 0" >AltMediumLow</Label>
+							<ColorPicker Grid.Row="5" Grid.Column="1" Color="{Binding AltMediumLow}"/>
+
+							<Label Grid.Row="6" Grid.Column="0" Margin="15 5 0 0" >BaseHigh</Label>
+							<ColorPicker Grid.Row="6" Grid.Column="1" Color="{Binding BaseHigh}"/>
+
+							<Label Grid.Row="7" Grid.Column="0" Margin="15 5 0 0" >BaseLow</Label>
+							<ColorPicker Grid.Row="7" Grid.Column="1" Color="{Binding BaseLow}"/>
+
+							<Label Grid.Row="8" Grid.Column="0" Margin="15 5 0 0" >BaseMedium</Label>
+							<ColorPicker Grid.Row="8" Grid.Column="1" Color="{Binding BaseMedium}"/>
+
+							<Label Grid.Row="9" Grid.Column="0" Margin="15 5 0 0" >BaseMediumHigh</Label>
+							<ColorPicker Grid.Row="9" Grid.Column="1" Color="{Binding BaseMediumHigh}"/>
+
+							<Label Grid.Row="10" Grid.Column="0" Margin="15 5 0 0" >BaseMediumLow</Label>
+							<ColorPicker Grid.Row="10" Grid.Column="1" Color="{Binding BaseMediumLow}"/>
+
+							<Label Grid.Row="11" Grid.Column="0" Margin="15 5 0 0" >ChromeBlackHigh</Label>
+							<ColorPicker Grid.Row="11" Grid.Column="1" Color="{Binding ChromeBlackHigh}"/>
+
+							<Label Grid.Row="12" Grid.Column="0" Margin="15 5 0 0" >ChromeBlackLow</Label>
+							<ColorPicker Grid.Row="12" Grid.Column="1" Color="{Binding ChromeBlackLow}"/>
+
+							<Label Grid.Row="13" Grid.Column="0" Margin="15 5 0 0" >ChromeBlackMedium</Label>
+							<ColorPicker Grid.Row="13" Grid.Column="1" Color="{Binding ChromeBlackMedium}"/>
+
+							<Label Grid.Row="14" Grid.Column="0" Margin="15 5 0 0" >ChromeBlackMediumLow</Label>
+							<ColorPicker Grid.Row="14" Grid.Column="1" Color="{Binding ChromeBlackMediumLow}"/>
+
+							<Label Grid.Row="15" Grid.Column="0" Margin="15 5 0 0" >ChromeDisabledHigh</Label>
+							<ColorPicker Grid.Row="15" Grid.Column="1" Color="{Binding ChromeDisabledHigh}"/>
+
+							<Label Grid.Row="16" Grid.Column="0" Margin="15 5 0 0" >ChromeDisabledLow</Label>
+							<ColorPicker Grid.Row="16" Grid.Column="1" Color="{Binding ChromeDisabledLow}"/>
+
+							<Label Grid.Row="17" Grid.Column="0" Margin="15 5 0 0" >ChromeGray</Label>
+							<ColorPicker Grid.Row="17" Grid.Column="1" Color="{Binding ChromeGray}"/>
+
+							<Label Grid.Row="18" Grid.Column="0" Margin="15 5 0 0" >ChromeHigh</Label>
+							<ColorPicker Grid.Row="18" Grid.Column="1" Color="{Binding ChromeHigh}"/>
+
+							<Label Grid.Row="19" Grid.Column="0" Margin="15 5 0 0" >ChromeLow</Label>
+							<ColorPicker Grid.Row="19" Grid.Column="1" Color="{Binding ChromeLow}"/>
+
+							<Label Grid.Row="20" Grid.Column="0" Margin="15 5 0 0" >ChromeMedium</Label>
+							<ColorPicker Grid.Row="20" Grid.Column="1" Color="{Binding ChromeMedium}"/>
+
+							<Label Grid.Row="21" Grid.Column="0" Margin="15 5 0 0" >ChromeMediumLow</Label>
+							<ColorPicker Grid.Row="21" Grid.Column="1" Color="{Binding ChromeMediumLow}"/>
+
+							<Label Grid.Row="22" Grid.Column="0" Margin="15 5 0 0" >ChromeWhite</Label>
+							<ColorPicker Grid.Row="22" Grid.Column="1" Color="{Binding ChromeWhite}"/>
+
+							<Label Grid.Row="23" Grid.Column="0" Margin="15 5 0 0" >ListLow</Label>
+							<ColorPicker Grid.Row="23" Grid.Column="1" Color="{Binding ListLow}"/>
+
+							<Label Grid.Row="24" Grid.Column="0" Margin="15 5 0 0" >ListMedium</Label>
+							<ColorPicker Grid.Row="24" Grid.Column="1" Color="{Binding ListMedium}"/>
+
+							<Label Grid.Row="25" Grid.Column="0" Margin="15 5 0 0" >RegionColor</Label>
+							<ColorPicker Grid.Row="25" Grid.Column="1" Color="{Binding RegionColor}"/>
+						<!--</Grid>-->
+						</UniformGrid>
+						<Label FontWeight="SemiBold">⚠ After changing any color, please restart the application immediately</Label>
+						<Button Command="{Binding SerializeSelectedPalettCommand}">Set colors permanently</Button>
+						<Button Command="{Binding BackToDefaultsCommand}">Back to defaults</Button>
+
+						<Label FontWeight="SemiBold">Font sizes</Label>
+						<StackPanel Orientation="Horizontal">
+							<Button Command="{Binding ChangeFontSizeCommand}" CommandParameter="+">Make fonts bigger</Button>
+							<Button Command="{Binding ChangeFontSizeCommand}" CommandParameter="-">Make fonts smaller</Button>
+							<Button Command="{Binding ChangeFontSizeCommand}" CommandParameter="0">Reset Font size</Button>
+						</StackPanel>
+						
+						<StackPanel Orientation="Horizontal">
+							<Label>ControlContentThemeFontSize</Label>
+							<TextBlock VerticalAlignment="Center" Text="{Binding ControlContentThemeFontSize}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label>CompletitionFontSize</Label>
+							<TextBlock VerticalAlignment="Center" Text="{Binding CompletitionFontSize}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label>DefaultFontSizeForDocuments</Label>
+							<TextBlock VerticalAlignment="Center" Text="{Binding DefaultFontSizeForDocuments}"/>
+						</StackPanel>
+
+						<Label FontWeight="SemiBold" Margin="0 10 0 0">Document font</Label>
+						<ComboBox Name="fontDropDown" SelectedIndex="0" Width="250">
+							<ComboBox.ItemTemplate>
+								<DataTemplate x:DataType="FontFamily">
+									<TextBlock Text="{Binding Name}" FontFamily="{Binding}" Width="200"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<!--<Label FontWeight="SemiBold">Line spacing - ⚠ experimental - restart may be required</Label>
+						<StackPanel Orientation="Horizontal">
+							<Button Command="{Binding ChangeLineSpacingCommand}" CommandParameter="+">Make line spacing bigger</Button>
+							<Button Command="{Binding ChangeLineSpacingCommand}" CommandParameter="-">Make line spacing smaller</Button>
+							<Button Command="{Binding ChangeLineSpacingCommand}" CommandParameter="0">Reset line spacin size</Button>
+							<TextBlock Text="{Binding LineSpacingStr}" VerticalAlignment="Center" Margin="20 0"/>
+						</StackPanel>-->
+						<ToggleSwitch OnContent="Show details button [ON]" OffContent="Show details button [OFF]"
+									  IsChecked="{Binding ShowDetailsButton}"/>
+
+						<ToggleSwitch OnContent="UseSplashScreen [ON]" OffContent="UseSplashScreen [OFF]"
+								IsChecked="{Binding UseSplashScreen}"/>
+					</StackPanel>
+				</Border>
+				<Border>
+					<StackPanel Name="Others" HorizontalAlignment="Left">
+						<Label FontWeight="Bold" Content="{Binding $parent.Name}" FontSize="{StaticResource LabelFontBig}"/>						
+						<StackPanel Orientation="Horizontal">
+							<Button Command="{Binding CleanDataFolderCommand}">Clear data folder</Button>
+						</StackPanel>
+						
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center">Return accepts autocomplete</Label>
+							<ToggleSwitch IsChecked="{Binding AutocompleteOnReturn}"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center">Confirm document closing</Label>
+							<ToggleSwitch IsChecked="{Binding ConfirmDocumentClosing}"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center">AutoDownloadUpdate</Label>
+							<ToggleSwitch IsChecked="{Binding AutoDownloadUpdate}"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center">AllowToLoadPlugins</Label>
+							<ToggleSwitch IsChecked="{Binding AllowToLoadPlugins}"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center">AutoDownloadPlugins</Label>
+							<ToggleSwitch IsChecked="{Binding AutoDownloadPlugins}"/>
+						</StackPanel>
+						<!--<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center">UpdateMitigatePaloAlto</Label>
+							<ToggleSwitch IsChecked="{Binding UpdateMitigatePaloAlto}"/>
+						</StackPanel>-->
+						<Label FontWeight="Bold" Content="Diagnostics/crash data" FontSize="{StaticResource LabelFontBig}"/>
+						<StackPanel Name="DiagnosticsData" Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="150">Send diagnostic data</Label>
+							<ToggleSwitch IsChecked="{Binding AcceptDiagData}" IsEnabled="False"/>
+						</StackPanel>
+						<StackPanel Name="CrashData" Orientation="Horizontal">
+							<Label Margin="15 0 0 0" Width="150">Send crash data</Label>
+							<ToggleSwitch  IsChecked="{Binding AcceptCrashData}" IsEnabled="False"/>
+						</StackPanel>
+					</StackPanel>
+				</Border>				
+			</StackPanel>
+		</ScrollViewer>
+		<StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal" Spacing="10"
+					Margin="0 0 20 10">
+			<Button Margin="0">Cancel</Button>
+			<Button Name="btOk" Margin="0">OK</Button>
+		</StackPanel>
+	</Grid>
+</UserControl>

@@ -177,7 +177,11 @@ public static class DatabaseServiceHelpers
                 loginDataModel.ConnectionName = connectionName;
 
                 DatabaseTypeEnum typedDriver = StringToDatabaseTypeEnum(driver);
-                databaseInfo.LoadPluginsIfNeeded(null).Wait();
+                if (!SpecificDbImpelmetations.ContainsKey(typedDriver))
+                {
+                    databaseInfo.LoadPluginsIfNeeded(null).Wait();
+                }
+
                 databaseService = CreateDbInstanceService(typedDriver, userName, password, ip, db, connectionTimeout, databaseInfo.GetDataDir());
             }
             else
@@ -237,6 +241,21 @@ public static class DatabaseServiceHelpers
 
         return _cachedDbServices[connectionName];
     }
+
+    public static bool IsDriverRegistered(IDatabaseInfo? databaseInfo, string connectionName)
+    {
+        if (databaseInfo?.LoginDataDic is not null && databaseInfo.LoginDataDic.TryGetValue(connectionName, out var loginDataModel))
+        {
+            string driver = loginDataModel.Driver;
+            DatabaseTypeEnum typedDriver = StringToDatabaseTypeEnum(driver);
+            if (SpecificDbImpelmetations.ContainsKey(typedDriver))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private static IDatabaseService CreateDbInstanceService(DatabaseTypeEnum typedDriver, string userName, string password, string ip, string db, int connectionTimeout,
     string tempDirectory)

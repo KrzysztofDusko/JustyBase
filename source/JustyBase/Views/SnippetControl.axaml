@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+			 d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JustyBase.SnippetControl"
+			 xmlns:sys="using:System"
+			 xmlns:vm="using:JustyBase.ViewModels"
+			 xmlns:m="using:JustyBase.Common.Models"
+			 x:DataType="vm:SnippetControlViewModel"
+			 x:CompileBindings="True"
+			 Margin="5">
+	<UserControl.DataContext>
+		<vm:SnippetControlViewModel/>
+	</UserControl.DataContext>
+	<UserControl.Resources>
+		<sys:Double x:Key="MyRowHeight">27</sys:Double>
+	</UserControl.Resources>
+	<Grid ColumnDefinitions="2*,3*" RowDefinitions="Auto,*,Auto,*"
+		  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+		<DataGrid Grid.Column="0" Grid.RowSpan="3" CanUserSortColumns="False"
+				  SelectedItem="{Binding SelectedSnippetModel}"
+				  ItemsSource="{Binding SnippetModels}"
+				  SelectedIndex="{Binding SnippetSelectedIndex}"
+				  RowHeight="{DynamicResource MyRowHeight}"
+				  GridLinesVisibility="Horizontal">
+			<DataGrid.Styles>
+				<Style Selector="DataGridCell">
+					<Setter Property="MinHeight" Value="{StaticResource MyRowHeight}" />
+					<Setter Property="Height" Value="{StaticResource MyRowHeight}" />
+					<!--<Setter Property="IsTabStop" Value="False" />-->
+					<!--<Setter Property="VerticalContentAlignment" Value="Center" />-->
+				</Style>
+			</DataGrid.Styles>
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Type" Width="Auto">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate DataType="m:SnippetModel">
+							<ComboBox MinHeight="{StaticResource MyRowHeight}" Height="{StaticResource MyRowHeight}"
+									  Margin="0" ItemsSource="{Binding TEXT_TYPES}" SelectedItem="{Binding SnippetType}">
+								<!--<ComboBox.ItemTemplate>
+									<DataTemplate x:DataType="sys:String">
+										<TextBlock Text="{Binding .}" Margin="0"  Padding="0"></TextBlock>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>-->
+							</ComboBox>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn Header="Name" Width="Auto" MaxWidth="200" Binding="{Binding SnippetName}" x:DataType="m:SnippetModel"
+									IsReadOnly="False"/>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<StackPanel Grid.Column="0" Grid.Row="3" Orientation="Vertical" Margin="20">
+			<Button Command="{Binding AddNewCommand}">Add new</Button>
+			<Button Command="{Binding DeleteCommand}">Delete selected</Button>
+			<Button Command="{Binding SaveCommand}" ToolTip.Tip="to make effect please restart application" >Save</Button>
+		</StackPanel>
+
+
+		<Label Grid.Column="1" Grid.Row="0" Margin="3">Description</Label>
+		<TextBox Grid.Column="1" Grid.Row="1" AcceptsReturn="True" Margin="3"
+				 Text="{Binding SelectedSnippetModel.SnippetDesc}"/>
+
+		<Label Grid.Column="1" Grid.Row="2" Margin="3">Content</Label>
+		<TextBox Grid.Column="1" Grid.Row="3" AcceptsReturn="True" Margin="3"
+				 Text="{Binding SelectedSnippetModel.SnippetText}"/>
+	</Grid>
+</UserControl>
