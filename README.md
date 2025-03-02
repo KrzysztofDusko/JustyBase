@@ -47,7 +47,7 @@ Go to publish folder and run JustyBase
 <img src="pictures/sample_01.png"> 
 
 ## Download compiled version
-* 🚧 WIP...
+* https://github.com/KrzysztofDusko/JustyBase/releases
 ## Help
 * use github issues please
 * 🚧 WIP...
