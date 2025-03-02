@@ -1,5 +1,6 @@
-﻿namespace JustyBase.PluginCommon.Models;
+﻿using System;
 
+namespace JustyBase.Common.Models;
 public record class SchemaSearchItem
 {
     public int Id { get; init; }
@@ -14,16 +15,6 @@ public record class SchemaSearchItem
     public string ParentType { get; init; }
     public string ParentName { get; init; }
     public bool FilterNotOk { get; set; }
-
-    //    public override string ToString()
-    //    {
-    //        return $@"Type:{Type} 
-    //Name: {Name}
-    //Db: {Db}
-    //Desc: {Desc}
-    //Schema: {Schema}
-    //";
-    //    }
 
 
     public string[] GetPath(string connectionName)

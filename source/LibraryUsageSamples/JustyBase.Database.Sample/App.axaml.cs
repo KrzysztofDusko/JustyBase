@@ -39,7 +39,7 @@ public class App : Application
             collection.AddCommonServices();
             // Creates a ServiceProvider containing services from the provided IServiceCollection
             var services = collection.BuildServiceProvider();
-
+            _services = services;
             var vm = services.GetRequiredService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
@@ -49,4 +49,12 @@ public class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    private static ServiceProvider _services;
+    public static T GetRequiredService<T>()
+    {
+        return _services.GetRequiredService<T>();
+    }
+
+
 }

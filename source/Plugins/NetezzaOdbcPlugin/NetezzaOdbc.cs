@@ -10,16 +10,9 @@ namespace NetezzaOdbcPlugin;
 public sealed class NetezzaOdbc : NetezzaCommonClass, INetezza
 {
     public const DatabaseTypeEnum WHO_I_AM_CONST = DatabaseTypeEnum.NetezzaSQLOdbc;
-    public const bool IsThatPluginFree = true;
     public NetezzaOdbc(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)
     {
         DatabaseType = WHO_I_AM_CONST;
-    }
-    public static NetezzaOdbc FromOdbc(string connectionString, int timeout)
-    {
-        OdbcConnectionStringBuilder builder = new OdbcConnectionStringBuilder(connectionString);
-        return new NetezzaOdbc(builder["username"] as string, builder["password"] as string, builder["port"] as string, 
-            builder["servername"] as string, builder["database"] as string, timeout);
     }
 
     protected override string DriverName => "odbc";

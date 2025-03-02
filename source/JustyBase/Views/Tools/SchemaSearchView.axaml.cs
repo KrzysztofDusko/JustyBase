@@ -1,4 +1,5 @@
-﻿using JustyBase.PluginCommon.Models;
+﻿using JustyBase.Common.Models;
+using JustyBase.PluginCommon.Models;
 using JustyBase.ViewModels.Tools;
 
 namespace JustyBase.Views.Tools;

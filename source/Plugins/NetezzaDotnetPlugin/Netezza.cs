@@ -12,7 +12,6 @@ namespace NetezzaDotnetPlugin;
 public sealed class Netezza : NetezzaCommonClass, INetezza, INetezzaDotnet
 {
     public const DatabaseTypeEnum WHO_I_AM_CONST = DatabaseTypeEnum.NetezzaSQL;
-    public const bool IsThatPluginFree = false;
     public Netezza(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)
     {
         DatabaseType = WHO_I_AM_CONST;

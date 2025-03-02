@@ -7,8 +7,7 @@
 			 xmlns:m="using:JustyBase.Models.Tools"
              mc:Ignorable="d"
              d:DesignWidth="300" d:DesignHeight="400"
-             x:DataType="vm:VariablesViewModel" 
-			 x:CompileBindings="True">
+             x:DataType="vm:VariablesViewModel">
   <Grid Focusable="True">
 	  <DataGrid Name="variablesDataGrid" 
 				AutoGenerateColumns="False"

@@ -14,6 +14,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Helpers.NetezzaImporter", "Plugins\Helpers\NetezzaImporter\JustyBase.Helpers.NetezzaImporter.csproj", "{888BBB8E-65F0-43AB-980D-FEDC5B8FC290}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LibraryUsageSamples", "LibraryUsageSamples", "{CA3BF29D-B7C2-44A9-BCEF-5CA8F9D279B3}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.Database.Sample", "LibraryUsageSamples\JustyBase.Database.Sample\JustyBase.Database.Sample.csproj", "{00ACAF89-9712-44B2-B2C2-E2987F585B06}"
 EndProject
@@ -47,13 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlEditor.Avalonia", "SqlEd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase", "JustyBase\JustyBase.csproj", "{1579E051-299B-4DB9-8F90-10CBB14F63AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaEdit", "..\..\AvaloniaEdit\src\AvaloniaEdit\AvaloniaEdit.csproj", "{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetezzaDotnetPlugin", "Plugins\NetezzaDotnetPlugin\NetezzaDotnetPlugin.csproj", "{C0347F0B-F6D7-410A-B765-B48BB6EF4202}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustyBase.NetezzaDriver", "..\..\PublicNuget\JustyBase.NetezzaDriver\scr\JustyBase.NetezzaDriver\JustyBase.NetezzaDriver.csproj", "{A54FE474-489E-4322-BF7A-D626BBB428C0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OraclePlugin", "Plugins\OraclePlugin\OraclePlugin.csproj", "{0994C792-C310-437E-BC27-8E9D2FBA7508}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaEdit", "AvaloniaEdit\AvaloniaEdit.csproj", "{B7C51C16-7171-2CEF-DEC9-E2667870E2B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,22 +118,18 @@ Global
 		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1579E051-299B-4DB9-8F90-10CBB14F63AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B9E963E-4AAC-4291-834A-D2B2F157A1EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0347F0B-F6D7-410A-B765-B48BB6EF4202}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A54FE474-489E-4322-BF7A-D626BBB428C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0994C792-C310-437E-BC27-8E9D2FBA7508}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C51C16-7171-2CEF-DEC9-E2667870E2B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C51C16-7171-2CEF-DEC9-E2667870E2B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C51C16-7171-2CEF-DEC9-E2667870E2B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C51C16-7171-2CEF-DEC9-E2667870E2B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +147,9 @@ Global
 		{0B7BF28A-3D9A-48AD-ACDB-E8AB87F1F88A} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
 		{C0347F0B-F6D7-410A-B765-B48BB6EF4202} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
 		{0994C792-C310-437E-BC27-8E9D2FBA7508} = {762B55DB-C8BB-45D0-A8D9-67200B2831FB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {11E4BD12-00F0-41BD-8216-33619DAD1E3C}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		RoslynPad.Shared\RoslynPad.Shared.projitems*{0f355169-a3f6-4c01-aacc-b1e6317ba0be}*SharedItemsImports = 5

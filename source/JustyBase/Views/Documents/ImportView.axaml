@@ -7,7 +7,6 @@
 			 xmlns:vm="using:JustyBase.ViewModels.Documents"
 			 xmlns:m2="using:JustyBase.Common.Models"
 			 xmlns:sys="using:System"
-			 x:CompileBindings="True"
 			 x:DataType="vm:ImportViewModel">
 	<UserControl.Styles>
 		<Style Selector="ComboBox">

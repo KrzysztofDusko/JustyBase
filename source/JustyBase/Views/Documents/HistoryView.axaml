@@ -7,7 +7,6 @@
 			 xmlns:ce="using:AvaloniaEdit"
              mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="450"
              x:Class="JustyBase.Views.Documents.HistoryView"
-			 x:CompileBindings="True"
 			 x:DataType="vm:HistoryViewModel">
 	<Grid RowDefinitions="Auto,Auto,2*,2,*" ColumnDefinitions="Auto,Auto,*">
 		<TextBox Name="tb" Grid.Row="0" Grid.ColumnSpan="2"
@@ -22,6 +21,7 @@
 			 TextAlignment="Center"
 			 Background="Transparent"/>
 		<DataGrid Grid.Row="2" CanUserSortColumns="True" IsReadOnly="True"
+				  x:DataType="vm:HistoryViewModel"
 				  Name="hisotryGrid"
 				  Grid.ColumnSpan="3"
 				  ItemsSource="{Binding HistoryItems}"

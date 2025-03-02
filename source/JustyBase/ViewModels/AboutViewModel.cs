@@ -6,7 +6,6 @@ using JustyBase.PluginCommon.Contracts;
 using JustyBase.Services;
 using JustyBase.Views.OtherDialogs;
 using System;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Velopack;
@@ -34,7 +33,6 @@ public sealed partial class AboutViewModel : ObservableObject
         {
             _mgr = new UpdateManager(_generalApplicationData.DownloadPluginsBasePath);
         }
-
     }
 
     [ObservableProperty]
@@ -71,7 +69,6 @@ public sealed partial class AboutViewModel : ObservableObject
     {
         if (_mgr is null)
         {
-            _messageForUserTools.ShowSimpleMessageBoxInstance("provide JB_DOWNLOAD_BASE_PATH environment variable to update");
             return;
         }
 

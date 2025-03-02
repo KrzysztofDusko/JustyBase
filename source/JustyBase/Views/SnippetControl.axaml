@@ -4,13 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
 			 d:DesignWidth="800" d:DesignHeight="450"
+			 Margin="5"
              x:Class="JustyBase.SnippetControl"
 			 xmlns:sys="using:System"
 			 xmlns:vm="using:JustyBase.ViewModels"
 			 xmlns:m="using:JustyBase.Common.Models"
-			 x:DataType="vm:SnippetControlViewModel"
-			 x:CompileBindings="True"
-			 Margin="5">
+			 x:DataType="vm:SnippetControlViewModel">
 	<UserControl.DataContext>
 		<vm:SnippetControlViewModel/>
 	</UserControl.DataContext>

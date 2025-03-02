@@ -6,8 +6,7 @@
              x:Class="JustyBase.CustomListBox"
 			 xmlns:vm="using:JustyBase.ViewModels"
 			 x:DataType="vm:CustomListBoxViewModel" 
-			 MaxWidth="300"
-			 x:CompileBindings="True">
+			 MaxWidth="300">
 	<UserControl.KeyBindings>
 		<KeyBinding Gesture="Return" Command="{Binding OkCommand}"/>
 		<KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>

@@ -11,6 +11,9 @@ public sealed class OtherHelpers : IOtherHelpers
             "PostgresPlugin", "OraclePlugin", "DB2Plugin" ];
     public async Task DownloadAllPlugins(string pluginDirectory, string downloadBasePath)
     {
+#if AOT
+        return Task.CompletedTask;
+#else
         if (Directory.Exists(pluginDirectory))
         {
             Directory.Delete(pluginDirectory, true);
@@ -33,6 +36,7 @@ public sealed class OtherHelpers : IOtherHelpers
             await TarFile.ExtractToDirectoryAsync($@"{pluginDirectory}\{driverName}.tar", pluginDirectory, true);
             File.Delete($@"{pluginDirectory}\{driverName}.tar");
         }
+#endif
     }
 
     //public async Task DownloadFileWithReverse(string remoteFilePath, string pathToSave)

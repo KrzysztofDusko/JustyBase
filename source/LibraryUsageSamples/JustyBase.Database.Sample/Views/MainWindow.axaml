@@ -82,6 +82,9 @@
                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />-->
 
 			<TabControl Grid.Row="2" Margin="0 1" >
+				<TabItem Header="connection data">
+					<local:ConnectionData/>
+				</TabItem>
 				<TabItem Header="Log" IsSelected="True">
 					<v2:SqlCodeEditor Document="{Binding LogDocument}"
 	                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>

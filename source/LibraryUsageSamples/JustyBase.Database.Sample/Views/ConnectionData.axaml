@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:JustyBase.Database.Sample.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JustyBase.Database.Sample.ConnectionData"
+             x:DataType="vm:ConnectionDataViewModel">
+	<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="10">
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="Server:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+		<TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Servername}" Margin="0,0,0,5"/>
+
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="Database:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+		<TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Database}" Margin="0,0,0,5"/>
+
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="Username:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+		<TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Username}" Margin="0,0,0,5"/>
+
+		<TextBlock Grid.Row="3" Grid.Column="0" Text="Password:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+		<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Password}" PasswordChar="*" Margin="0,0,0,5"/>
+
+		<TextBlock Grid.Row="4" Grid.Column="0" Text="Port:" VerticalAlignment="Center" Margin="0,0,10,5"/>
+		<TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Port}" Margin="0,0,0,5"/>
+
+		<Button Grid.Row="5" Grid.Column="1" Content="Save" Command="{Binding SaveCommand}" Margin="0,10,0,0"/>
+	</Grid>
+</UserControl>

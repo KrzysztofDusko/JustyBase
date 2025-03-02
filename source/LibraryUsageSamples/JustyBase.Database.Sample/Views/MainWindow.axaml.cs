@@ -69,10 +69,6 @@ public partial class MainWindow : Window
             }
         }
     }
-
-
-
-
 }
 
 public sealed class TestAutocompleteData(IDatabaseService databaseService) : ISqlAutocompleteData

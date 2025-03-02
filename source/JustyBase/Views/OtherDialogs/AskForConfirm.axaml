@@ -16,8 +16,7 @@
 		Padding="10"
 		Topmost="True"
 		ShowInTaskbar="False"
-		x:DataType="vm:AskForConfirmViewModel"
-		x:CompileBindings="True">
+		x:DataType="vm:AskForConfirmViewModel">
 	<Grid RowDefinitions="Auto,*,Auto">
 		<TextBlock Grid.Row="0" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Margin="0 15 0 5"
 				   Text="{Binding Title}" />

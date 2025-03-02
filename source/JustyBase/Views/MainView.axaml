@@ -7,8 +7,7 @@
              xmlns:vm="using:JustyBase.ViewModels"
              mc:Ignorable="d"
              d:DesignWidth="1000" d:DesignHeight="550"
-             x:DataType="vm:MainWindowViewModel" 
-			 x:CompileBindings="True">
+             x:DataType="vm:MainWindowViewModel">
 	<!-- xmlns:ids="using:Dock.Settings" -->
 	<!-- xmlns:dm="using:Dock.Model.Core" -->
 	<!--xmlns:collections="clr-namespace:System.Collections;assembly=netstandard"-->
@@ -43,8 +42,7 @@
 				<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
 					  HorizontalAlignment="Right"
 					  Margin="1"
-					  x:DataType="dmc:IRootDock"
-					  x:CompileBindings="True">
+					  x:DataType="dmc:IRootDock">
 					<Grid.Styles>
 						<Style Selector="TextBox">
 							<Setter Property="MinHeight" Value="0" />

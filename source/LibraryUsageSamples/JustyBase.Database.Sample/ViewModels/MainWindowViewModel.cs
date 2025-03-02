@@ -183,10 +183,9 @@ public partial class MainWindowViewModel : ViewModelBase
                     Info += "-->\n";
                     _netezza.TempDataDirectory = Path.GetTempPath();
                     var res = await _netezza.PerformImportFromXmlAsync(new DbXMLImportJob(), xmlBytes,
-                        (s) => Info += s);
+                        (s) => Info += $"{s}\n");
                     Info += res;
                     Info += " <--\n";
-
                 }
             }
             else if (formats.Contains("Files"))

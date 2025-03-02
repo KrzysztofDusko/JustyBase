@@ -13,8 +13,7 @@
         ExtendClientAreaToDecorationsHint="True"
 		UseLayoutRounding="True"
 		CornerRadius="5"		
-		x:DataType="vm:SqlParametrViewModel" 
-		x:CompileBindings="True">
+		x:DataType="vm:SqlParametrViewModel">
 	<Window.Styles>
 		<Style Selector="TextBox">
 			<Setter Property="FontSize" Value="13"/>

@@ -8,7 +8,9 @@ using JustyBase.PluginCommon.Models;
 using JustyBase.PluginDatabaseBase;
 using JustyBase.PluginDatabaseBase.Database;
 using NetezzaDotnetPlugin;
+#if NZODBC
 using NetezzaOdbcPlugin;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,6 +23,7 @@ using System.Threading.Tasks;
 namespace JustyBase;
 public sealed partial class GeneralApplicationData : IGeneralApplicationData
 {
+    private const string _velopackUpdatePath = "https://objectstorage.eu-frankfurt-1.oraclecloud.com/p/1w5so_2Beqby2WCtYvVCh5Ebhv8qeOjrAjVXcjCYunbziuCB4CPiOQ2wIwnLCgna/n/fr8mzxzkqf1w/b/JustyBaseBacket/o/JustyBaseVelopack/";
     private readonly ISimpleLogger _simpleLogger;
     private readonly IMessageForUserTools _messageForUserTools;
     private readonly IOtherHelpers _otherHelpers;
@@ -31,6 +34,9 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
     private static bool _pluginWasLoaded = false;
     public async Task LoadPluginsIfNeeded(Action? uiAction)
     {
+#if AOT
+      await Task.CompletedTask;
+#else
         if (!_pluginWasLoaded && Config.AllowToLoadPlugins)
         {
             if (!Directory.Exists(IGeneralApplicationData.PluginsDirectory) && Config.AutoDownloadPlugins && !string.IsNullOrWhiteSpace(DownloadPluginsBasePath))
@@ -41,8 +47,8 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
             }
             try
             {
-
 #if DEBUG
+                // DEBUG_PLUGIN_BASE_PATH is directory with plugins
                 PluginLoadHelper.LoadPlugins(Environment.GetEnvironmentVariable("DEBUG_PLUGIN_BASE_PATH"));
 #else
                 PluginLoadHelper.LoadPlugins(IGeneralApplicationData.PluginsDirectory);
@@ -59,6 +65,7 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
                 _pluginWasLoaded = true;
             }
         }
+#endif
     }
 
     private Dictionary<string, LoginDataModel> _loginTmp;
@@ -163,7 +170,7 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
 
     public Dictionary<string, string> VariablesDictionary { get; set; } = [];
 
-    public string DownloadPluginsBasePath => Environment.GetEnvironmentVariable("JB_DOWNLOAD_BASE_PATH") ?? "";
+    public string DownloadPluginsBasePath => _velopackUpdatePath;
 
     public bool IsFromatterAvaiable { get; set; }
 
@@ -291,9 +298,13 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
 
 
         //register implementations
-        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQLOdbc, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new NetezzaOdbc(userName, password, "5480", ip, db, connectionTimeout));
         DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQL, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Netezza(userName, password, "5480", ip, db, connectionTimeout));
+#if NZODBC
+        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.NetezzaSQLOdbc, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new NetezzaOdbc(userName, password, "5480", ip, db, connectionTimeout));
+#endif
+#if ORACLE
         DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Oracle, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new OraclePlugin.Oracle(userName, password, "", ip, db, connectionTimeout));
+#endif
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.DB2, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new DB2(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.PostgreSql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Postgres(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Sqlite, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Sqlite(userName, password, "", ip, db, connectionTimeout));

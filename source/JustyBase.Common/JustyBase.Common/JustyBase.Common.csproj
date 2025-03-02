@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<TrimmerRootAssembly Include="JustyBase.Common"/>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="Parquet.Net" Version="5.1.0" />
+    <PackageReference Include="Parquet.Net" Version="5.1.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.2" />
   </ItemGroup>
 

@@ -12,7 +12,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)GeneralApplicationData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SqlDocumentViewModelHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\DbSchemaModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\HistoryEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IDatabaseSchemaItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SchemaSearchItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\HistoryService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\MessageForUserTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\AddNewConnectionViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\DbObjectQuickMenuViewModel.cs" />

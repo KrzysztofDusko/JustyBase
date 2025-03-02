@@ -5,7 +5,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JustyBase.Views.Documents.SettingsView"
 			 xmlns:vm="using:JustyBase.ViewModels.Documents"
-			 x:CompileBindings="True"
 			 x:DataType="vm:SettingsViewModel">
 	<UserControl.Background>
 	</UserControl.Background>

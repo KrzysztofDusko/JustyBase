@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
     {
         collection.AddSingleton<IEncryptionHelper, WindowsEncryptionHelper>();
         collection.AddSingleton<IAvaloniaSpecificHelpers, AvaloniaSpecificHelpers>();
+        collection.AddTransient<ConnectionDataViewModel>();
         collection.AddTransient<MainWindowViewModel>();
     }
 }

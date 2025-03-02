@@ -6,8 +6,10 @@
 	<EnableDynamicLoading>true</EnableDynamicLoading>
 	  <Copyright>JustyBaseTeam</Copyright>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JustyBase.NetezzaDriver" Version="0.9.0" />
+  </ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\PublicNuget\JustyBase.NetezzaDriver\scr\JustyBase.NetezzaDriver\JustyBase.NetezzaDriver.csproj" />
 		<ProjectReference Include="..\NetezzaBase\NetezzaBase.csproj" />
 		<ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj">
 			<Private>false</Private>

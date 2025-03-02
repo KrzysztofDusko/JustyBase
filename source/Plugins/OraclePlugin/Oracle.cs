@@ -11,7 +11,6 @@ namespace OraclePlugin;
 public sealed class Oracle : DatabaseService
 {
     public const DatabaseTypeEnum WHO_I_AM_CONST = DatabaseTypeEnum.Oracle;
-    public const bool IsThatPluginFree = true;
     public Oracle(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)
     {
         DatabaseType = WHO_I_AM_CONST;

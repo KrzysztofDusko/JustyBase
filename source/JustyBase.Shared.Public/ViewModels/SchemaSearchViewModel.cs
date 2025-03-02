@@ -286,4 +286,3 @@ public sealed partial class SchemaSearchViewModel
         }
     }
 }
-

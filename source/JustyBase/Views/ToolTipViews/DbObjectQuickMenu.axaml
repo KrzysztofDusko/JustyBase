@@ -11,8 +11,7 @@
              x:Class="JustyBase.Views.ToolTipViews.DbObjectQuickMenu"
 			 x:DataType="vm:DbObjectQuickMenuViewModel"
 			 UseLayoutRounding="True"
-			 CornerRadius="5"		
-			 x:CompileBindings="True">
+			 CornerRadius="5">
 	<UserControl.DataContext>
 		<vm:DbObjectQuickMenuViewModel/>
 	</UserControl.DataContext>

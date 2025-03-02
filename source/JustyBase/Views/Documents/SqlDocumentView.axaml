@@ -9,9 +9,8 @@
 			 xmlns:ce="using:JustyBase.Editor"
              mc:Ignorable="d"
              d:DesignWidth="1000" d:DesignHeight="500"
-             x:DataType="vm:SqlDocumentViewModel"
-			 x:CompileBindings="True"
-			 DragDrop.AllowDrop="True">
+			 DragDrop.AllowDrop="True"
+             x:DataType="vm:SqlDocumentViewModel">
 	<UserControl.Styles>
 		<Styles>
 			<Style Selector="SplitButton.semivisibleSbt">
