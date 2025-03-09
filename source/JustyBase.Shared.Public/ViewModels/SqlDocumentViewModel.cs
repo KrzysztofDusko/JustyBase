@@ -20,6 +20,7 @@ using JustyBase.PluginDatabaseBase.Database;
 using JustyBase.Shared.Helpers;
 using JustyBase.ViewModels.Tools;
 using JustyBase.Views;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -105,7 +106,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
 
     private void VmSharedPreparation()
     {
-        CommentLinesCommand = new RelayCommand(SqlEditor.CommentSelectedLines);
+        CommentLinesCommand = new RelayCommand(() => EditorHelpers.CommentSelectedLines(SqlEditor));
         LogItems = [];
 
         if (string.IsNullOrEmpty(SelectedDatabase))
@@ -385,6 +386,41 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         IsReadOnly = false;
         SqlEditor?.Document.Insert(SqlEditor.CaretOffset, result);
     }
+
+
+    /// <summary>
+    /// Aad hock sql validator
+    /// </summary>
+    /// <param name="pasteType"></param>
+    [RelayCommand]
+    private void ValidateSql(string pasteType)
+    {
+        string sql = SqlEditor.SelectedText;
+
+        TSql170Parser parser = new(true, SqlEngineType.All);
+
+        StringBuilder result = new StringBuilder();
+        result.AppendLine();
+        TSqlFragment fragment = null;
+        using (var reader = new StringReader(sql))
+        {
+            fragment = parser.Parse(reader, out IList<ParseError> errors);
+            if (errors.Any())
+            {
+                foreach (var item in errors)
+                {
+                    result.AppendLine($"Column {item.Column} Line {item.Line} offset {item.Offset} Messgage {item.Message}");
+                }
+            }
+        }
+        result.AppendLine();
+        if (result.Length > 10)
+        {
+            result.Insert(0,"--errors :");
+            SqlEditor?.AppendText(result.ToString());
+        }
+    }
+
 
     [RelayCommand]
     private async Task PastClipAsSelectUnionAsync()

@@ -22,7 +22,8 @@ internal class Program
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-        if (Directory.GetFiles(@"\\.\pipe\").Contains(JbMessagePipePath)) //if (File.Exists(PipePath))
+        //if (Directory.GetFiles(@"\\.\pipe\").Contains(JbMessagePipePath)) 
+        if (File.Exists(JbMessagePipePath))
         {
             using StreamWriter streamWriter = new(JbMessagePipePath);
             //try to open next sql file from system (not JB inner option)
@@ -129,11 +130,12 @@ internal class Program
         sb.AppendLine("##### InnerExceptions end");
 
         string msgText = sb.ToString();
-        if (!IngoredErrorMessages.Contains(msgText))
+      
+        if (!msgText.Contains("com.canonical.AppMenu.Registrar") && !IngoredErrorMessages.Contains(msgText))
         {
             GetSimpleLogger.TrackCrashMessagePlusOpenNotepad(sb.ToString(), "TaskScheduler_UnobservedTaskException UnobservedTaskException", isCrash: true);
             GetMessagesService.ShowSimpleMessageBoxInstance(msgText, "Error");
-        }
+        }        
     }
 
     public static readonly HashSet<string> IngoredErrorMessages =

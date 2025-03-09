@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection)
     {
-        collection.AddSingleton<IEncryptionHelper, WindowsEncryptionHelper>();
+        collection.AddSingleton<IEncryptionHelper, WindowsLinuxEncryptionHelper>();
         collection.AddSingleton<IAvaloniaSpecificHelpers, AvaloniaSpecificHelpers>();
         collection.AddTransient<ConnectionDataViewModel>();
         collection.AddTransient<MainWindowViewModel>();

@@ -13,7 +13,7 @@ public static partial class EditorHelpers
     /// add sql comment for selected lines
     /// </summary>
     /// <param name="editor"></param>
-    public static void CommentSelectedLines(this TextEditor editor)
+    public static void CommentSelectedLines(TextEditor editor)
     {
         editor.BeginChange();
         var start = editor.SelectionStart;

@@ -173,6 +173,8 @@
 						Command="{Binding PasteAsInCommand}" CommandParameter="Text"/>
 					<MenuItem Header="Clipboard 1 2 -> (1,2)"
 						Command="{Binding PasteAsInCommand}" CommandParameter="Num"/>
+					<MenuItem Header="Validate SQL"
+							Command="{Binding ValidateSqlCommand}"/>
 				</ContextMenu>
 			</ce:CodeTextEditor.ContextMenu>
 		</ce:SqlCodeEditor>
