@@ -44,18 +44,16 @@ public sealed class Netezza : NetezzaCommonClass, INetezza, INetezzaDotnet
             }
 
             conn = new NzConnection(Username,Password,Ip, databaseName, int.Parse(Port));
-            conn.NoticeReceived += Conn_NoticeReceived;
+            conn.NoticeReceived += Conn_NoticeReceived; ;
         }
 
         return conn;
     }
 
-    private void Conn_NoticeReceived(string obj)
+    private void Conn_NoticeReceived(object sender, NzConnection.NzNoticeEventArgs e)
     {
-        DbMessageAction?.Invoke(obj);
+        DbMessageAction?.Invoke(e.Message);
     }
-
-
 
     private static readonly Regex _exceptAtAchar1 = new Regex(@"\^ found ""(?<found>.*)"" \(at char (?<charNum>[0-9]+)\) expecting");
     private static readonly Regex _wrongSet = new Regex(@"^ERROR: 'SET (?<found>.*)'");

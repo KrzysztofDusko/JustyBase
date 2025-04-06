@@ -1,0 +1,34 @@
+<Solution>
+  <Folder Name="/Benchmarks/">
+    <Project Path="Benchmarks/Benchy/Benchy.csproj" />
+  </Folder>
+  <Folder Name="/JustyBase.Common/">
+    <Project Path="JustyBase.Common/JustyBase.Common.Tools/JustyBase.Common.Tools.csproj" />
+    <Project Path="JustyBase.Common/JustyBase.Common/JustyBase.Common.csproj" />
+  </Folder>
+  <Folder Name="/LibraryUsageSamples/">
+    <File Path="readme.md" />
+    <Project Path="LibraryUsageSamples/JustyBase.Database.Sample/JustyBase.Database.Sample.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/">
+    <Project Path="Plugins/NetezzaBase/NetezzaBase.csproj" />
+    <Project Path="Plugins/NetezzaDotnetPlugin/NetezzaDotnetPlugin.csproj" />
+    <Project Path="Plugins/NetezzaOdbcPlugin/NetezzaOdbcPlugin.csproj" />
+    <Project Path="Plugins/OraclePlugin/OraclePlugin.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Helpers/" Id="9aeee955-f77b-537f-2802-27613590d8d8">
+    <Project Path="Plugins/Helpers/JustyBase.Helpers.Importers/JustyBase.Helpers.Importers.csproj" />
+    <Project Path="Plugins/Helpers/NetezzaImporter/JustyBase.Helpers.NetezzaImporter.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="JustyBase.Tests/JustyBase.Tests.csproj" />
+  </Folder>
+  <Project Path="AvaloniaEdit/AvaloniaEdit.csproj" />
+  <Project Path="JustyBase.PluginBase/JustyBase.PluginBase.csproj" />
+  <Project Path="JustyBase.PluginCommon/JustyBase.PluginCommon.csproj" />
+  <Project Path="JustyBase.Public.Lib/JustyBase.Public.Lib.csproj" />
+  <Project Path="JustyBase.Shared.Public/JustyBase.Shared.Public.shproj" />
+  <Project Path="JustyBase/JustyBase.csproj" />
+  <Project Path="RoslynPad.Shared/RoslynPad.Shared.shproj" />
+  <Project Path="SqlEditor.Avalonia/SqlEditor.Avalonia.csproj" />
+</Solution>

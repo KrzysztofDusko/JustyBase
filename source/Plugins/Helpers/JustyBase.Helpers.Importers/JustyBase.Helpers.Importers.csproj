@@ -13,8 +13,8 @@
   </ItemGroup>
   
   <ItemGroup>
-  	<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" />
-  	<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.2" />
+  	<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
+  	<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.3" />
   </ItemGroup>
   	
 </Project>
