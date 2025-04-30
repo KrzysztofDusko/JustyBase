@@ -59,7 +59,7 @@ public class StringExtensionsTests
     [Fact]
     public void CreateCleanSqlShouldHaveSameResultAsDifferentImplementationV2()
     {
-        foreach (var s in Directory.GetFiles("D:\\DEV\\sqls\\", "*.sql", SearchOption.AllDirectories))
+        foreach (var s in Directory.GetFiles("C:\\DEV\\sqls\\", "*.sql", SearchOption.AllDirectories))
         {
             var expected = CreateCleanSqlAlternativeImplementation(s);
             var result = s.CreateCleanSql();

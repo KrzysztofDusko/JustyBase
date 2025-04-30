@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
+		<Copyright>JustyBaseTeam</Copyright>
+	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="DuckDB.NET.Data.Full" Version="1.2.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginBase.csproj">
+			<Private>false</Private>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</ProjectReference>
+		<ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj">
+			<Private>false</Private>
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</ProjectReference>
+	</ItemGroup>
+</Project>

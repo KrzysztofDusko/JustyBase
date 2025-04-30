@@ -1,4 +1,5 @@
-﻿namespace JustyBase.Editor;
+﻿
+namespace JustyBase.Editor;
 
 public sealed class TruncateLongLines : VisualLineElementGenerator
 {

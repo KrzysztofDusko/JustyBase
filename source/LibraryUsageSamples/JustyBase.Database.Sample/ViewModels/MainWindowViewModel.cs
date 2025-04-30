@@ -97,7 +97,6 @@ public partial class MainWindowViewModel : ViewModelBase
         };
     }
 
-
     public List<string> CsvCompresionModes { get; } =
     [
         "plain",

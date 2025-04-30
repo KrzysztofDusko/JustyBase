@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<DefineConstants>AVALONIA;ORACLE;NZODBC</DefineConstants>
+		<DefineConstants>AVALONIA;ORACLE</DefineConstants>
+		<!--<DefineConstants>AVALONIA;ORACLE;NZODBC</DefineConstants>-->
 		<OutputType>WinExe</OutputType>
 		<PlatformTarget>x64</PlatformTarget>
 		<TargetFramework>net9.0</TargetFramework>
@@ -15,6 +16,7 @@
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<Copyright>JustyBaseTeam</Copyright>
 		<RestoreEnablePackagePruning>true</RestoreEnablePackagePruning>
+		<ServerGarbageCollection>true</ServerGarbageCollection>
 		<!--<PublishReadyToRun>false</PublishReadyToRun>
 		<SelfContained>false</SelfContained>-->
 	</PropertyGroup>
@@ -65,19 +67,19 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="170.28.0" />
 		<PackageReference Include="Velopack" Version="0.0.1053" />
-		<PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.0-beta1" />
-		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.0-beta1" />
+		<PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.3.0-rc1" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.0-rc1" />
 		<PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.3.0-beta1" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.0-rc1" />
 		<PackageReference Include="Avalonia.Labs.Lottie" Version="11.2.0" />
-		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0-beta1" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0-rc1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Dock.Model.Mvvm" Version="11.2.0.2" />
-		<PackageReference Include="Dock.Model" Version="11.2.0.2" />
-		<PackageReference Include="Dock.Avalonia" Version="11.2.0.2" />
+		<PackageReference Include="Dock.Model.Mvvm" Version="11.2.7" />
+		<PackageReference Include="Dock.Model" Version="11.2.7" />
+		<PackageReference Include="Dock.Avalonia" Version="11.2.7" />
 		<PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.8" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
-		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.3" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.4" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Release' and '$(EnableAOT)' == 'true' and '$(EnableAOTCompress)' == 'true'">
 		<PackageReference Include="PublishAotCompressed" Version="1.0.3" />

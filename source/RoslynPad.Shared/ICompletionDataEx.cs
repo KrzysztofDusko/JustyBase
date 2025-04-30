@@ -1,3 +1,4 @@
+
 namespace JustyBase.Editor;
 
 public interface ICompletionDataEx : ICompletionData

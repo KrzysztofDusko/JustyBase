@@ -1,21 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
 	  <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<EnableDynamicLoading>true</EnableDynamicLoading>
-	  <Copyright>JustyBaseTeam</Copyright>
+	 <Copyright>JustyBaseTeam</Copyright>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="JustyBase.NetezzaDriver" Version="1.1.2" />
+    <PackageReference Include="Net.IBM.Data.Db2" Version="9.0.0.200" />
   </ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\NetezzaBase\NetezzaBase.csproj" />
-		<ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj">
+		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginBase.csproj">
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>
-		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginBase.csproj">
+		<ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj">
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>

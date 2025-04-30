@@ -11,10 +11,15 @@
     <Project Path="LibraryUsageSamples/JustyBase.Database.Sample/JustyBase.Database.Sample.csproj" />
   </Folder>
   <Folder Name="/Plugins/">
+    <Project Path="Plugins/DB2Plugin/DB2Plugin.csproj" />
+    <Project Path="Plugins/DuckDBPlugin/DuckDBPlugin.csproj" />
+    <Project Path="Plugins/MySqlPlugin/MySqlPlugin.csproj" />
     <Project Path="Plugins/NetezzaBase/NetezzaBase.csproj" />
     <Project Path="Plugins/NetezzaDotnetPlugin/NetezzaDotnetPlugin.csproj" />
     <Project Path="Plugins/NetezzaOdbcPlugin/NetezzaOdbcPlugin.csproj" />
     <Project Path="Plugins/OraclePlugin/OraclePlugin.csproj" />
+    <Project Path="Plugins/PostgresPlugin/PostgresPlugin.csproj" />
+    <Project Path="Plugins/SqlitePlugin/SqlitePlugin.csproj" />
   </Folder>
   <Folder Name="/Plugins/Helpers/" Id="9aeee955-f77b-537f-2802-27613590d8d8">
     <Project Path="Plugins/Helpers/JustyBase.Helpers.Importers/JustyBase.Helpers.Importers.csproj" />
@@ -23,7 +28,6 @@
   <Folder Name="/Tests/">
     <Project Path="JustyBase.Tests/JustyBase.Tests.csproj" />
   </Folder>
-  <Project Path="AvaloniaEdit/AvaloniaEdit.csproj" />
   <Project Path="JustyBase.PluginBase/JustyBase.PluginBase.csproj" />
   <Project Path="JustyBase.PluginCommon/JustyBase.PluginCommon.csproj" />
   <Project Path="JustyBase.Public.Lib/JustyBase.Public.Lib.csproj" />

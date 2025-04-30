@@ -1,6 +1,6 @@
 To create sample app run the following commands:
 ```bash
-dotnet publish -p publish
+dotnet publish -p publish -o publish
 DEL publish\*.pdb
 ```
 
