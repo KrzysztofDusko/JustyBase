@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.Common.Contracts;
 using System;
@@ -36,7 +38,12 @@ public sealed partial class ConnectionDataViewModel : ViewModelBase
     private void Save()
     {
         string env = $"servername={Servername};port={Port};database={Database};username={Username};password={Password};";
-        Environment.SetEnvironmentVariable("NetezzaTest", _encryptionHelper.Encrypt(env));
+        Environment.SetEnvironmentVariable("NetezzaTest", _encryptionHelper.Encrypt(env),EnvironmentVariableTarget.User);
+        // Shutdown current instance
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.Shutdown();
+        }
     }
 
 }

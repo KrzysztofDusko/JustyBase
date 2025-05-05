@@ -1,12 +1,13 @@
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
+using JustyBase.PluginDatabaseBase.Database;
+using Npgsql;
 using System.Data.Common;
 using System.Text;
-using Npgsql;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.PluginCommon.Enums;
 
 namespace PostgresPlugin;
 
-internal sealed class Postgres : DatabaseService
+public sealed class Postgres : DatabaseService
 {
     public const DatabaseTypeEnum WHO_I_AM_CONST = DatabaseTypeEnum.PostgreSql;
     public Postgres(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)
@@ -24,7 +25,6 @@ internal sealed class Postgres : DatabaseService
         {
             Username = Username,
             Password = Password,
-
             Host = Ip,
             Database = databaseName,
             Timeout = CONNECTION_TIMEOUT,
@@ -39,6 +39,15 @@ internal sealed class Postgres : DatabaseService
     private void Conn_Notice(object sender, NpgsqlNoticeEventArgs e)
     {
         DbMessageAction?.Invoke(e.Notice.MessageText);
+    }
+
+    public override void ChangeDatabaseSpecial(DbConnection con, string databaseName)
+    {
+        if (con.State != System.Data.ConnectionState.Open)
+        {
+            con.Open();
+        }
+        base.ChangeDatabaseSpecial(con, databaseName);
     }
 
     protected override string GetSqlTablesAndOtherObjects(string dbName)
@@ -56,11 +65,11 @@ internal sealed class Postgres : DatabaseService
                      WHEN 'r' THEN 'TABLE'
                      ELSE 'unknown table type'
                    END AS TABLE_TYPE
-                 , OWN.ROLNAME AS OWNER
+                 , /*OWN.ROLNAME*/ 'UNKNOWN' AS OWNER
                  , NULL AS CREATEDATATIME
             FROM   PG_CATALOG.PG_CLASS C
             JOIN PG_CATALOG.PG_NAMESPACE N ON N.OID = C.RELNAMESPACE
-            JOIN PG_CATALOG.PG_AUTHID OWN ON OWN.OID = C.RELOWNER 
+            --JOIN PG_CATALOG.PG_AUTHID OWN ON OWN.OID = C.RELOWNER 
             WHERE
             NOT C.RELISPARTITION
             AND C.RELKIND IN ('v', 'p', 'r')
@@ -74,7 +83,7 @@ internal sealed class Postgres : DatabaseService
                 , NULL AS DESCRIPTION
                 , proc.specific_schema as procedure_schema
                 , proc.routine_type 
-                , 'OWNER TO DO'
+                , 'UNKNOWN' AS OWNER
                 ,  NULL AS CREATEDATATIME
             from information_schema.routines proc
             left join information_schema.parameters args
@@ -474,8 +483,8 @@ ORDER BY
         }
     }
 
-    Dictionary<string, List<string>> indexes;
-    const string indexesSql = @"SELECT
+    private Dictionary<string, List<string>> _indexes;
+    private const string _indexesSql = @"SELECT
                         tablename
                         , indexname
                         , indexdef
@@ -490,32 +499,32 @@ ORDER BY
                     ORDER BY 1,2";
     private string GetIndexes(string tablename)
     {
-        if (indexes == null)
+        if (_indexes == null)
         {
-            indexes = [];
+            _indexes = [];
             using (var conn = GetConnection(null))
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = indexesSql;
+                    cmd.CommandText = _indexesSql;
                     var rdr = cmd.ExecuteReader();
                     if (rdr.HasRows)
                     {
                         while (rdr.Read())
                         {
-                            if (!indexes.ContainsKey(rdr.GetString(0)))
+                            if (!_indexes.ContainsKey(rdr.GetString(0)))
                             {
-                                indexes[rdr.GetString(0)] = [];
+                                _indexes[rdr.GetString(0)] = [];
                             }
-                            indexes[rdr.GetString(0)].Add(rdr.GetString(2));
+                            _indexes[rdr.GetString(0)].Add(rdr.GetString(2));
                         }
                     }
                 }
             }
         }
 
-        if (!indexes.TryGetValue(tablename, out List<string>? value))
+        if (!_indexes.TryGetValue(tablename, out List<string>? value))
         {
             return "";
         }
@@ -533,6 +542,71 @@ join pg_inherits i on i.inhparent = base_tb.oid
 join pg_class pt on pt.oid = i.inhrelid
 where 
   base_tb.oid = '{schema}.{tablename}'::regclass;";
+    }
+
+    public override async Task DbSpecificImportPart(IDbImportJob importJob, string randName, Action<string>? progress, bool tableExists = false)
+    {
+        await Task.Run(() =>
+        {
+            using var conn = GetConnection(null) as NpgsqlConnection;
+            if (conn is null)
+            {
+                return;
+            }
+
+            conn.Open();
+            if (!tableExists)
+            {
+                string[] headers = importJob.ReturnHeadersWithDataTypes(DatabaseTypeEnum.PostgreSql);
+                string SQL = $"CREATE TABLE {randName} ({string.Join(',', headers)});";
+                using DbCommand cmd = conn.CreateCommand();
+                cmd.CommandText = SQL;
+                cmd.ExecuteNonQuery();
+            }
+
+            using var writer = conn.BeginBinaryImport($"COPY {randName} FROM STDIN (FORMAT BINARY)");
+            
+            var reader = importJob.AsReader;
+            int fieldCount = reader.FieldCount;
+            long rowCount = 0;
+            
+            while (reader.Read())
+            {
+                writer.StartRow();
+                
+                for (int i = 0; i < fieldCount; i++)
+                {
+                    if (reader.IsDBNull(i))
+                    {
+                        writer.WriteNull();
+                    }
+                    else
+                    {
+                        writer.Write(reader.GetValue(i));
+                    }
+                }
+
+                rowCount++;
+                if (rowCount % 10000 == 0)
+                {
+                    progress?.Invoke($"Copied {rowCount:N0}");
+                }
+            }
+
+            try
+            {
+                writer.Complete();
+            }
+            catch (Exception ex)
+            {
+                progress?.Invoke($"ERROR! Message: {ex.Message}");
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        });
     }
 
 }

@@ -10,6 +10,7 @@ using JustyBase.PluginDatabaseBase.Database;
 using JustyBase.Helpers;
 using JustyBase.PluginCommon.Contracts;
 using Avalonia.Interactivity;
+using JustyBase.Common.Contracts;
 
 namespace JustyBase.Database.Sample.Views;
 
@@ -21,15 +22,33 @@ public partial class MainWindow : Window
         AddHandler(DragDrop.DragOverEvent, DragOver);
         AddHandler(DragDrop.DropEvent, Drop);
         sqlCodeEditor.SyntaxHighlighting = AvaloniaEdit.Highlighting.HighlightingManager.Instance.GetDefinition("SQL");
-        this.Loaded += MainWindow_Loaded;
+        this.Loaded += MainWindow_LoadedAsync;
     }
 
-    private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
+    private async void MainWindow_LoadedAsync(object? sender, RoutedEventArgs e)
     {
-        sqlCodeEditor.Initialize(new TestAutocompleteData((this.DataContext as MainWindowViewModel).GetTestDatabaseService()), new TestOptions());
-        sqlCodeEditor.FoldingSetup();
-        sqlCodeEditor.ForceUpdateFoldings();
-        sqlCodeEditor.CollapseFoldings();
+        var ds = (this.DataContext as MainWindowViewModel).GetTestDatabaseService();
+        if (ds is not null)
+        {
+            sqlCodeEditor.Initialize(new TestAutocompleteData(ds), new TestOptions());
+            sqlCodeEditor.FoldingSetup();
+            sqlCodeEditor.ForceUpdateFoldings();
+            sqlCodeEditor.CollapseFoldings();
+        }
+        else
+        {
+            var win = new Window()
+            {
+                Content = new ConnectionData()
+                {
+                    DataContext = new ConnectionDataViewModel(App.GetRequiredService<IEncryptionHelper>())
+                },
+                Width = this.Width,
+                Height = this.Height,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            await win.ShowDialog(this);
+        }
     }
     private void DragOver(object? sender, DragEventArgs e)
     {

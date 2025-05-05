@@ -23,27 +23,33 @@ public record DbTypeWithSize(DbSimpleType DatabaseTypeSimple)
         };
     }
 
-    public string ToString(DatabaseTypeEnum databaseType)
+    public string ToString(DatabaseTypeEnum databaseType) => DatabaseTypeSimple switch
     {
-        return DatabaseTypeSimple switch
-        {
-            DbSimpleType.Integer => databaseType != DatabaseTypeEnum.Oracle ? "BIGINT" : "INTEGER",
-            DbSimpleType.Numeric => databaseType != DatabaseTypeEnum.Oracle
-                ? $"NUMERIC({NumericPrecision},{NumericScale})"
-                : $"NUMBER ({NumericPrecision},{NumericScale})",
-            DbSimpleType.Nvarchar => databaseType != DatabaseTypeEnum.Oracle
-                ? $"NVARCHAR({TextLength})"
-                : $"VARCHAR2({TextLength})",
-            DbSimpleType.Date => "DATE",
-            DbSimpleType.TimeStamp => "TIMESTAMP",
-            DbSimpleType.NoInfo => databaseType != DatabaseTypeEnum.Oracle
-                ? $"NVARCHAR({TextLength})"
-                : $"VARCHAR2({TextLength})",
-            DbSimpleType.Boolean => "BOOL",
-            _ => throw new NotImplementedException()
-        };
-    }
+        DbSimpleType.Integer => databaseType != DatabaseTypeEnum.Oracle ? "BIGINT" : "INTEGER",
+        DbSimpleType.Numeric => databaseType != DatabaseTypeEnum.Oracle
+            ? $"NUMERIC({NumericPrecision},{NumericScale})"
+            : $"NUMBER ({NumericPrecision},{NumericScale})",
+        DbSimpleType.Nvarchar => GetTextTypeName(databaseType),
+        DbSimpleType.Date => "DATE",
+        DbSimpleType.TimeStamp => "TIMESTAMP",
+        DbSimpleType.NoInfo => GetTextTypeName(databaseType),
+        DbSimpleType.Boolean => "BOOL",
+        _ => throw new NotImplementedException()
+    };
 
+    private static string GetTextTypeName(DatabaseTypeEnum databaseType) => databaseType switch
+    {
+        DatabaseTypeEnum.NetezzaSQL => "NVARCHAR",
+        DatabaseTypeEnum.NetezzaSQLOdbc => "NVARCHAR",
+        DatabaseTypeEnum.DB2 => "VARCHAR",
+        DatabaseTypeEnum.MsSqlTrusted => "NVARCHAR",
+        DatabaseTypeEnum.Oracle => "VARCHAR2",
+        DatabaseTypeEnum.Sqlite => "TEXT",
+        DatabaseTypeEnum.PostgreSql => "VARCHAR",
+        DatabaseTypeEnum.DuckDB => "TEXT",
+        DatabaseTypeEnum.MySql => "TEXT",
+        _ => throw new NotImplementedException()
+    };
 
     public Type GetNativeType()
     {

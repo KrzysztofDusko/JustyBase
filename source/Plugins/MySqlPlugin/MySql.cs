@@ -78,7 +78,33 @@ public sealed class MySql : DatabaseService
 
     protected override string GetSqlOfColumns(string dbName)
     {
-        throw new NotImplementedException();
+        return """
+            SELECT 
+                RF.REF_ID
+                , C.COLUMN_NAME
+                , C.COLUMN_COMMENT
+                , C.COLUMN_TYPE
+                , C.COLUMN_DEFAULT
+                , C.TABLE_NAME
+                , C.TABLE_SCHEMA
+                , C.TABLE_CATALOG
+            FROM INFORMATION_SCHEMA.COLUMNS C
+            JOIN
+            (
+                SELECT 
+                    DENSE_RANK() OVER (ORDER BY I.TABLE_CATALOG, I.TABLE_SCHEMA, I.TABLE_NAME) AS REF_ID
+                    , I.TABLE_NAME
+                    , I.TABLE_COMMENT
+                    , I.TABLE_SCHEMA
+                    , I.TABLE_TYPE
+                    , '' AS OWNER
+                    , I.CREATE_TIME AS CREATEDATATIME
+                    , I.TABLE_CATALOG
+                FROM INFORMATION_SCHEMA.TABLES I
+            ) RF ON RF.TABLE_CATALOG = C.TABLE_CATALOG AND RF.TABLE_NAME = C.TABLE_NAME 
+                AND RF.TABLE_CATALOG = C.TABLE_CATALOG
+            ORDER BY C.TABLE_CATALOG,C.TABLE_SCHEMA,C.TABLE_NAME
+            """;
     }
 
     protected override string GetSqlTablesAndOtherObjects(string dbName)
@@ -86,14 +112,15 @@ public sealed class MySql : DatabaseService
         return
             """
             SELECT 
-                -1
-                , I.table_name
+                DENSE_RANK() OVER (ORDER BY I.TABLE_CATALOG, I.TABLE_SCHEMA, I.TABLE_NAME) AS REF_ID
+                , I.TABLE_NAME
                 , I.TABLE_COMMENT
-                , I.table_schema
-                , I.table_type
+                , I.TABLE_SCHEMA
+                , I.TABLE_TYPE
                 , '' AS OWNER
-                , CREATE_TIME AS CREATEDATATIME
-            FROM information_schema.tables I
+                , I.CREATE_TIME AS CREATEDATATIME
+                , I.TABLE_CATALOG
+            FROM INFORMATION_SCHEMA.TABLES I
             """;
     }
 
@@ -101,4 +128,5 @@ public sealed class MySql : DatabaseService
     {
         throw new NotImplementedException();
     }
+
 }

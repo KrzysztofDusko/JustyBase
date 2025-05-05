@@ -81,15 +81,12 @@
         <!--<TextBox IsVisible="False" Grid.Row="2" Margin="0 1" Text="{Binding Info}" AcceptsReturn="True" Watermark="info"
                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />-->
 
-			<TabControl Grid.Row="2" Margin="0 1" >
-				<TabItem Header="connection data">
-					<local:ConnectionData/>
-				</TabItem>
-				<TabItem Header="Log" IsSelected="True">
+			<TabControl Grid.Row="2" Margin="0 1" SelectedIndex="{Binding SelectedTabIndex}">
+				<TabItem Header="Log">
 					<v2:SqlCodeEditor Document="{Binding LogDocument}"
 	                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 				</TabItem>
-				<TabItem Header="sql" IsSelected="True">
+				<TabItem Header="sql">
 					<v2:SqlCodeEditor Name="sqlCodeEditor"
 				        Document="{Binding Document}"
 				        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>

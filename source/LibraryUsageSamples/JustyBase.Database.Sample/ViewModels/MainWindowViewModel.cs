@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
@@ -60,6 +62,10 @@ public partial class MainWindowViewModel : ViewModelBase
     public partial bool XlsxSelected { get; set; }
 
 
+    [ObservableProperty]
+    public partial int SelectedTabIndex { get; set; } = 1;
+
+
     public MainWindowViewModel(IAvaloniaSpecificHelpers avaloniaSpecificHelpers, IEncryptionHelper encryptionHelper)
     {
         _avaloniaSpecificHelpers = avaloniaSpecificHelpers;
@@ -67,7 +73,8 @@ public partial class MainWindowViewModel : ViewModelBase
         string? netezzaTest = Environment.GetEnvironmentVariable("NetezzaTest");
         if (netezzaTest is null)
         {
-            throw new ArgumentNullException(nameof(netezzaTest));
+            //throw new ArgumentNullException(nameof(netezzaTest));
+            return;
         }
         netezzaTest = _encryptionHelper.Decrypt(netezzaTest);
 
@@ -109,6 +116,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task CopyFromClip()
     {
+        SelectedTabIndex = 0;
         var clipboard = _avaloniaSpecificHelpers.GetClipboard();
         if (clipboard is null)
         {
@@ -122,6 +130,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async Task ImportFromPath(string path)
     {
+        SelectedTabIndex = 0;
         var _currentImport = new ImportFromExcelFile(x => Info+=x, ISimpleLogger.EmptyLogger)
         {
             FilePath = path
@@ -137,7 +146,9 @@ public partial class MainWindowViewModel : ViewModelBase
         try
         {
             await _currentImport.ImportFromFileAllSteps(_netezza.DatabaseType, _netezza, "", randomName);
+            _currentImport.StandardMessageAction = m => Info += m;
             res = randomName;
+            Info += randomName;
         }
         catch (Exception ex)
         {
@@ -166,6 +177,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
+            SelectedTabIndex = 0;
             var clipboard = _avaloniaSpecificHelpers.GetClipboard();
             if (clipboard is null)
             {
@@ -334,18 +346,26 @@ public partial class MainWindowViewModel : ViewModelBase
         var filePath = Path.Combine(path, StringExtension.RandomSuffix("exported") + ext);
         await Task.Run(() =>
         {
-            var con = _netezza.GetConnection(null, pooling: false);
-            con.Open();
-            var cmd = con.CreateCommand();
-            cmd.CommandText = sql;
-            var rdr = cmd.ExecuteReader();
-            if (csvSelected)
+            try
             {
-                rdr.HandleCsvOrParquetOutput(filePath, null, x => Info += x);
+                var con = _netezza.GetConnection(null, pooling: false);
+                con.Open();
+                var cmd = con.CreateCommand();
+                cmd.CommandText = sql;
+                var rdr = cmd.ExecuteReader();
+                if (csvSelected)
+                {
+                    rdr.HandleCsvOrParquetOutput(filePath, null, x => Info += x);
+                }
+                else
+                {
+                    rdr.HandleExcelOutput(filePath, sql, null, x => Info += x);
+                }
             }
-            else
+            catch (Exception e)
             {
-                rdr.HandleExcelOutput(filePath, sql, null, x => Info += x);
+                Info += e.Message;
+                SelectedTabIndex = 0;
             }
         });
 

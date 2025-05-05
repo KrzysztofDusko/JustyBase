@@ -305,6 +305,12 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
 #if ORACLE
         DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Oracle, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new OraclePlugin.Oracle(userName, password, "", ip, db, connectionTimeout));
 #endif
+#if POSTGRES
+        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.PostgreSql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new PostgresPlugin.Postgres(userName, password,"", ip, db, connectionTimeout));
+#endif
+#if MYSQL
+        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.MySql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new MySqlPlugin.MySql(userName, password, "3306", ip, db, connectionTimeout));
+#endif
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.DB2, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new DB2(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.PostgreSql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Postgres(userName, password, "", ip, db, connectionTimeout));
         //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Sqlite, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Sqlite(userName, password, "", ip, db, connectionTimeout));
