@@ -29,10 +29,10 @@ public record DbTypeWithSize(DbSimpleType DatabaseTypeSimple)
         DbSimpleType.Numeric => databaseType != DatabaseTypeEnum.Oracle
             ? $"NUMERIC({NumericPrecision},{NumericScale})"
             : $"NUMBER ({NumericPrecision},{NumericScale})",
-        DbSimpleType.Nvarchar => GetTextTypeName(databaseType),
+        DbSimpleType.Nvarchar => $"{GetTextTypeName(databaseType)}({TextLength})",
         DbSimpleType.Date => "DATE",
         DbSimpleType.TimeStamp => "TIMESTAMP",
-        DbSimpleType.NoInfo => GetTextTypeName(databaseType),
+        DbSimpleType.NoInfo => $"{GetTextTypeName(databaseType)}({TextLength})",
         DbSimpleType.Boolean => "BOOL",
         _ => throw new NotImplementedException()
     };
