@@ -7,7 +7,7 @@
 	  <Copyright>JustyBaseTeam</Copyright>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JustyBase.NetezzaDriver" Version="1.1.2" />
+    <PackageReference Include="JustyBase.NetezzaDriver" Version="1.1.3" />
   </ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\NetezzaBase\NetezzaBase.csproj" />

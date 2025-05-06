@@ -871,7 +871,7 @@ public sealed partial class SqlDocumentViewModel : ISqlAutocompleteData, ICleana
         bool keepConnectionOpenLocal = KeepConnectionOpen;
         string localTitle = GetTile();
         bool localDoPooling = DoPooling;
-        bool singleCommandLocal = SingleCommand || option?.Contains("|SingleBath") == true;
+        bool singleCommandLocal = SingleCommand || option?.Contains("|SingleBath") == true || option == ".xlsb" || option == ".xlsx";
 
         if (keepConnectionOpenLocal) // only one SQL at same time
         {

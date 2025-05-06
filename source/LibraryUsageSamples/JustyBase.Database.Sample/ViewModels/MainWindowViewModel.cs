@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
@@ -353,6 +351,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 var cmd = con.CreateCommand();
                 cmd.CommandText = sql;
                 var rdr = cmd.ExecuteReader();
+
                 if (csvSelected)
                 {
                     rdr.HandleCsvOrParquetOutput(filePath, null, x => Info += x);
