@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace DB2Plugin;
 
-internal sealed class DB2 : DatabaseService
+public sealed class DB2 : DatabaseService
 {
     public const DatabaseTypeEnum WHO_I_AM_CONST = DatabaseTypeEnum.DB2;
     public DB2(string username, string password, string port, string ip, string db, int connectionTimeout) : base(username, password, port, ip, db, connectionTimeout)

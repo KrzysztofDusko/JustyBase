@@ -8,7 +8,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="MySql.Data" Version="9.3.0" />
-	  <PackageReference Include="System.Text.Json" Version="9.0.4" />
+	  <PackageReference Include="System.Text.Json" Version="9.0.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\JustyBase.PluginBase\JustyBase.PluginBase.csproj">

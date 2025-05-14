@@ -1,0 +1,62 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:JustyBase.Database.Sample.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="JustyBase.Database.Sample.AskForVariable"
+        Width="400"
+        Height="300"
+        WindowStartupLocation="CenterScreen"
+        Title="Enter Variable Value"
+        Background="#f0f0f0"
+        x:DataType="vm:AskForVariableViewModel"
+        Opened="Window_Opened">
+    <Design.DataContext>
+        <vm:AskForVariableViewModel />
+    </Design.DataContext>
+
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Enter" Command="{Binding OkCommand}"/>
+		<KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+    </Window.KeyBindings>
+
+    <Border Margin="20"
+            CornerRadius="8"
+            Background="White"
+            BoxShadow="0 2 10 0 #20000000">
+        <StackPanel Margin="20" Spacing="15">
+            <TextBlock Text="{Binding VariableName, StringFormat='Please enter the value for {0}:'}"
+                     Margin="0,0,0,5"
+                     FontSize="16"
+                     FontWeight="SemiBold"
+                     HorizontalAlignment="Center"/>
+            
+            <TextBox Name="tbVariable"
+                    Height="32"
+                    CornerRadius="4"
+                    Watermark="Enter value here..."
+                    Text="{Binding VariableValue}"
+                    HorizontalAlignment="Stretch">
+                <TextBox.KeyBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding OkCommand}"/>
+                </TextBox.KeyBindings>
+            </TextBox>
+            
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Spacing="10"
+                        Margin="0,10,0,0">
+                <Button Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Width="80"
+                        Height="32"/>
+                <Button Content="OK"
+                        Command="{Binding OkCommand}"
+                        Width="80"
+                        Height="32"
+                        Classes="accent"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

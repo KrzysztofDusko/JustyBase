@@ -7,9 +7,10 @@
 	  <Copyright>JustyBaseTeam</Copyright>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JustyBase.NetezzaDriver" Version="1.1.3" />
+    <PackageReference Include="JustyBase.NetezzaDriver" Version="1.1.4" />
   </ItemGroup>
 	<ItemGroup>
+		<!--<ProjectReference Include="..\..\..\..\PublicNuget\JustyBase.NetezzaDriver\scr\JustyBase.NetezzaDriver\JustyBase.NetezzaDriver.csproj" />-->
 		<ProjectReference Include="..\NetezzaBase\NetezzaBase.csproj" />
 		<ProjectReference Include="..\..\JustyBase.PluginCommon\JustyBase.PluginCommon.csproj">
 			<Private>false</Private>

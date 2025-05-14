@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
@@ -157,6 +158,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async ValueTask<string> GetSql()
     {
         string? sql = Document.Text;
+
         if (!sql.Contains("FROM", StringComparison.OrdinalIgnoreCase) && !sql.Contains("SELECT", StringComparison.OrdinalIgnoreCase))
         {
             var clipboard = _avaloniaSpecificHelpers.GetClipboard();
@@ -167,6 +169,33 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             sql = await clipboard.GetTextAsync();
         }
+
+        if (!string.IsNullOrWhiteSpace(sql) && _variable_regex().IsMatch(sql))
+        {
+            var matches = Regex.Matches(sql, @"\$[a-zA-Z0-9_]+", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var matchesList = matches.Cast<Match>()
+                .OrderByDescending(m => m.Length)
+                .ToList();
+            foreach (Match match in matchesList)
+            {
+                var vvm = new AskForVariable
+                {
+                    DataContext = new AskForVariableViewModel 
+                    { 
+                        VariableName = match.Value 
+                    }
+                };
+                await vvm.ShowDialog(_avaloniaSpecificHelpers.GetMainWindow());
+                var variableValue = ((AskForVariableViewModel)vvm.DataContext).VariableValue;
+                if (string.IsNullOrEmpty(variableValue))
+                {
+                    sql = "";
+                    break;
+                }
+                sql = sql.Replace(match.Value, variableValue, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         return sql??"";
     }
 
@@ -409,4 +438,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         return _netezza;
     }
+
+    [GeneratedRegex(@"\$[a-zA-Z0-9_]+", RegexOptions.IgnoreCase, 200)]
+    private static partial Regex _variable_regex();
 }

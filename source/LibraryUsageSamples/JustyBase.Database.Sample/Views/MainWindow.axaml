@@ -11,7 +11,6 @@
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="PreferSystemChrome"
-        Topmost="True"
         ShowInTaskbar="True"
         x:Class="JustyBase.Database.Sample.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"

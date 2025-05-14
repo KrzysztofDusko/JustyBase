@@ -603,7 +603,7 @@ public sealed partial class SqlResultsViewModel : Tool, ICleanableViewModel
                 {
                     try
                     {
-                        byte byteScale = Convert.ToByte(scale);
+                        byte byteScale = (byte)Math.Clamp(Convert.ToInt32(scale), 0, 127);
                         CurrentResultsTable.NumericScales[nm] = (byteScale == 127) ? (byte)8 : byteScale;
                     }
                     catch (Exception)
@@ -611,7 +611,6 @@ public sealed partial class SqlResultsViewModel : Tool, ICleanableViewModel
                         CurrentResultsTable.NumericScales[nm] = 0;
                     }
                 }
-
                 nm++;
             }
         }

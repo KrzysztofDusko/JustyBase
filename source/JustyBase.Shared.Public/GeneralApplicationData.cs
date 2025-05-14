@@ -311,9 +311,9 @@ public sealed partial class GeneralApplicationData : IGeneralApplicationData
 #if MYSQL
         DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.MySql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new MySqlPlugin.MySql(userName, password, "3306", ip, db, connectionTimeout));
 #endif
-        //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.DB2, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new DB2(userName, password, "", ip, db, connectionTimeout));
-        //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.PostgreSql, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Postgres(userName, password, "", ip, db, connectionTimeout));
-        //DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.Sqlite, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new Sqlite(userName, password, "", ip, db, connectionTimeout));
+#if DB2
+        DatabaseServiceHelpers.AddDatabaseImplementation(DatabaseTypeEnum.DB2, (string userName, string password, string port, string ip, string db, int connectionTimeout) => new DB2Plugin.DB2(userName, password, "", ip, db, connectionTimeout));
+#endif
     }
 
     public string AddNewDocument(string title, string initText = null)
