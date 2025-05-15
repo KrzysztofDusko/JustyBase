@@ -120,12 +120,32 @@ public sealed class TestOptions : ISomeEditorOptions
 
     public Dictionary<string, string> FastReplaceDictionary { get; set; } = new Dictionary<string, string>()
     {
-        { "SX", "SELECT" },
-        { "FX", "FROM" },
-        { "WX", "WHERE" },
-        { "sx", "select" },
-        { "fx", "from" },
-        { "wx", "where" },
+        {"SX", "SELECT" },
+        {"FX", "FROM" },
+        {"WX", "WHERE" },
+        {"LX", "LIMIT" },
+        {"GX", "GROUP BY"},
+        {"OX", "ORDER BY"},
+        {"HX", "HAVING"},
+        {"JX", "JOIN"},
+        {"IX", "INSERT INTO"},
+        {"UX", "UPDATE"},
+        {"DX", "DELETE"},
+        {"TX", "TRUNCATE"},
+        {"CX", "CREATE"},
+        {"sx", "select" },
+        {"fx", "from" },
+        {"wx", "where" },
+        {"lx", "limit" },
+        {"gx", "group by"},
+        {"ox", "order by"},
+        {"hx", "having"},
+        {"jx", "join"},
+        {"ix", "insert into"},
+        {"ux", "update"},
+        {"dx", "delete"},
+        {"tx", "truncate"},
+        {"cx", "create"}
     };
 
     public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION", "BETWEEN"];
