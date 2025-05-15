@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Avalonia;
+using System;
 using System.Text;
-using Avalonia;
 
 namespace JustyBase.Database.Sample;
 

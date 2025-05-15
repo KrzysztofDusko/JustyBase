@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
-using System.Windows.Input;
 
 namespace JustyBase.Database.Sample.ViewModels
 {
@@ -12,7 +11,7 @@ namespace JustyBase.Database.Sample.ViewModels
 
         [ObservableProperty]
         public partial string VariableName { get; set; }
-       
+
         public event EventHandler? CloseRequested;
 
         [RelayCommand]

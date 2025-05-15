@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Avalonia.Input;
+﻿using Avalonia.Input;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using AvaloniaEdit.Document;
@@ -20,6 +12,14 @@ using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommons;
 using JustyBase.Services;
 using NetezzaDotnetPlugin;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace JustyBase.Database.Sample.ViewModels;
 
@@ -37,8 +37,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public string Info
     {
-        get => Dispatcher.UIThread.Invoke<string>(() => LogDocument.Text); 
-        set 
+        get => Dispatcher.UIThread.Invoke<string>(() => LogDocument.Text);
+        set
         {
             Dispatcher.UIThread.Post(() => LogDocument.Text = value);
             OnPropertyChanged(nameof(LogDocument));
@@ -80,7 +80,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var i1 = netezzaTest.IndexOf("servername=", StringComparison.OrdinalIgnoreCase);
         var i2 = netezzaTest.IndexOf(';', i1);
         var servername = netezzaTest[(i1 + "servername=".Length)..i2];
-        
+
         i1 = netezzaTest.IndexOf("database=", StringComparison.OrdinalIgnoreCase);
         i2 = netezzaTest.IndexOf(';', i1);
         var database = netezzaTest[(i1 + "database=".Length)..i2];
@@ -130,7 +130,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public async Task ImportFromPath(string path)
     {
         SelectedTabIndex = 0;
-        var _currentImport = new ImportFromExcelFile(x => Info+=x, ISimpleLogger.EmptyLogger)
+        var _currentImport = new ImportFromExcelFile(x => Info += x, ISimpleLogger.EmptyLogger)
         {
             FilePath = path
         };
@@ -170,9 +170,9 @@ public partial class MainWindowViewModel : ViewModelBase
             sql = await clipboard.GetTextAsync();
         }
 
-        if (!string.IsNullOrWhiteSpace(sql) && _variable_regex().IsMatch(sql))
+        if (!string.IsNullOrWhiteSpace(sql) && _variableRegex().IsMatch(sql))
         {
-            var matches = Regex.Matches(sql, @"\$[a-zA-Z0-9_]+", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var matches = _variableRegex().Matches(sql);
             var matchesList = matches.Cast<Match>()
                 .OrderByDescending(m => m.Length)
                 .ToList();
@@ -180,9 +180,9 @@ public partial class MainWindowViewModel : ViewModelBase
             {
                 var vvm = new AskForVariable
                 {
-                    DataContext = new AskForVariableViewModel 
-                    { 
-                        VariableName = match.Value 
+                    DataContext = new AskForVariableViewModel
+                    {
+                        VariableName = match.Value
                     }
                 };
                 await vvm.ShowDialog(_avaloniaSpecificHelpers.GetMainWindow());
@@ -196,7 +196,7 @@ public partial class MainWindowViewModel : ViewModelBase
             }
         }
 
-        return sql??"";
+        return sql ?? "";
     }
 
     [RelayCommand]
@@ -439,6 +439,6 @@ public partial class MainWindowViewModel : ViewModelBase
         return _netezza;
     }
 
-    [GeneratedRegex(@"\$[a-zA-Z0-9_]+", RegexOptions.IgnoreCase, 200)]
-    private static partial Regex _variable_regex();
+    [GeneratedRegex(@"(\$|\:)[a-zA-Z0-9_]+", RegexOptions.IgnoreCase, 200)]
+    private static partial Regex _variableRegex();
 }

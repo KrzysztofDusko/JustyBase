@@ -4,10 +4,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using JustyBase.Common.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JustyBase.Database.Sample.ViewModels;
 
@@ -38,7 +34,7 @@ public sealed partial class ConnectionDataViewModel : ViewModelBase
     private void Save()
     {
         string env = $"servername={Servername};port={Port};database={Database};username={Username};password={Password};";
-        Environment.SetEnvironmentVariable("NetezzaTest", _encryptionHelper.Encrypt(env),EnvironmentVariableTarget.User);
+        Environment.SetEnvironmentVariable("NetezzaTest", _encryptionHelper.Encrypt(env), EnvironmentVariableTarget.User);
         // Shutdown current instance
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

@@ -1,16 +1,16 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using JustyBase.Database.Sample.ViewModels;
-using JustyBase.Editor;
-using System.Threading.Tasks;
-using JustyBase.PluginDatabaseBase.Database;
-using JustyBase.Helpers;
-using JustyBase.PluginCommon.Contracts;
 using Avalonia.Interactivity;
 using JustyBase.Common.Contracts;
+using JustyBase.Database.Sample.ViewModels;
+using JustyBase.Editor;
+using JustyBase.Helpers;
+using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginDatabaseBase.Database;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace JustyBase.Database.Sample.Views;
 
@@ -128,7 +128,7 @@ public sealed class TestOptions : ISomeEditorOptions
         { "wx", "where" },
     };
 
-    public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION","BETWEEN"];
+    public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION", "BETWEEN"];
 
     public Dictionary<string, string> VariablesDictionary { get; set; } = [];
 

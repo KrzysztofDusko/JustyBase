@@ -10,8 +10,8 @@
 	<Color name="Preprocessor" foreground="Green" exampleText="--region Title" />	
 	<Color name="NumberLiteral" foreground="Brown" exampleText="3.1415f"/>
 	<Color name="Parametr" foreground="#a304c7" background="#D9cacae3" exampleText="$variable"/>
-	
 	<Color name="Parametr2" foreground="#8b0000" background="#D9d3d3d3" exampleText="AMPvariable"/>
+	<Color name="Parametr3" foreground="#a304c7" background="#D9cacae3" exampleText=":variable"/>
 	<Color name="TrueFalse" fontWeight="bold" foreground="DarkCyan" exampleText="b = false; a = true;" />
 
 	<Property name="DocCommentMarker" value="///" />
@@ -81,6 +81,9 @@
 			&amp;[\w\d_]+
 		</Rule>
 
+		<Rule color="Parametr3">
+			\:[\w\d_]+
+		</Rule>
 		<Keywords color="ValueTypeKeywords">
 			<Word>boolean</Word>
 			<Word>float</Word>

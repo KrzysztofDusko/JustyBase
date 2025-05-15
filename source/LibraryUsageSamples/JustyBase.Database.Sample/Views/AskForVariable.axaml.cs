@@ -1,7 +1,4 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using Avalonia.Interactivity;
 using JustyBase.Database.Sample.ViewModels;
 using System;
 
@@ -21,7 +18,8 @@ public partial class AskForVariable : Window
 
     private void AskForVariable_DataContextChanged(object? sender, System.EventArgs e)
     {
-        (this.DataContext as AskForVariableViewModel).CloseRequested += (s, e) => {
+        (this.DataContext as AskForVariableViewModel).CloseRequested += (s, e) =>
+        {
             Close();
         };
     }
