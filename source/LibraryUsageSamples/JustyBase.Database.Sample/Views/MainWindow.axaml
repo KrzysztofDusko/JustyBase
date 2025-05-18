@@ -18,23 +18,15 @@
     </Design.DataContext>
 
 		<Grid ColumnDefinitions="auto,2,*">
-			<Grid Grid.Column="0" RowDefinitions="*,2,*" IsVisible="{Binding IsAdvancedMode}">
+			
+			<Grid Grid.Column="0" RowDefinitions="*,Auto" IsVisible="{Binding IsAdvancedMode}">
 				<Grid Grid.Row="0" RowDefinitions="*,Auto" >
 					<TreeDataGrid x:Name="dbSchemaTreeGrid"  Grid.Row="0"
-						Source="{Binding DbSchemaSource}"
+						Source="{Binding DbSchemaSource^, FallbackValue={x:Static vm:MainWindowViewModel.FallBackchemaSource}}"
 						Focusable="True">
 					</TreeDataGrid>
-					<TextBox x:Name="tbSearch" Grid.Row="10"
-						Width="200" Margin="0 0 0 0"
-						ToolTip.Tip="search in schema"
-						Watermark="search in schema"
-						VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-					<!--Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+					<Button Command="{Binding RefreshDbCommand}" Grid.Row="1">Refresh</Button>
 				</Grid>
-				
-				<GridSplitter Grid.Row="1" ResizeDirection="Rows" Background="Gray" MinHeight="2" />
-				<Panel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-				</Panel>
 			</Grid>
 				
 			<GridSplitter Grid.Column="1" Width="2" Background="Transparent" ResizeDirection="Columns" MinWidth="2"/>
@@ -116,8 +108,7 @@
 									VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 								<GridSplitter Grid.Row="1" IsVisible="{Binding IsAdvancedMode}" Background="Gray" ResizeDirection="Rows" MinHeight="2"/>
 
-								<Grid Grid.Row="2" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
-
+								<Grid Grid.Row="2" RowDefinitions="Auto,*">
 									<StackPanel Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" 
 												IsVisible="{Binding IsAdvancedMode}" Spacing="5">
 										<TextBox x:Name="tbSearchResults" Width="120" Margin="0 0 0 0"  Text="{Binding SearchResultTxt}"

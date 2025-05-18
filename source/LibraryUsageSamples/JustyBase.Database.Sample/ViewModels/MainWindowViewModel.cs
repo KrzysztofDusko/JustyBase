@@ -13,7 +13,9 @@ using JustyBase.Common.Tools.ImportHelpers;
 using JustyBase.Common.Tools.ImportHelpers.XML;
 using JustyBase.Editor;
 using JustyBase.PluginCommon.Contracts;
+using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginCommons;
+using JustyBase.PluginDatabaseBase.Database;
 using JustyBase.Services;
 using NetezzaDotnetPlugin;
 using SpreadSheetTasks;
@@ -25,7 +27,6 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -39,8 +40,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IAvaloniaSpecificHelpers _avaloniaSpecificHelpers;
     private readonly IEncryptionHelper _encryptionHelper;
     private readonly IDatabaseService _netezza;
-
-
     public bool IsAdvancedMode
     {
         get;
@@ -691,7 +690,9 @@ public partial class MainWindowViewModel : ViewModelBase
             _allResults.Add(values);
         }
         RowsCoundText = _allResults.Count.ToString("N0");
-        _resultFlatCollection = new FlatTreeDataGridSource<object[]>(_allResults);       
+        _resultFlatCollection = new FlatTreeDataGridSource<object[]>(_allResults);   
+        
+
 
         // Add columns dynamically based on the reader's schema
         for (int i = 0; i < reader.FieldCount; i++)
@@ -703,17 +704,156 @@ public partial class MainWindowViewModel : ViewModelBase
                 case Type t when t == typeof(string):
                     _resultFlatCollection.Columns.Add(new TextColumn<object[], string>(
                         reader.GetName(i),
-                        x => x[columnIndex].ToString() ?? ""));
+                        x => x[columnIndex].ToString() ?? ""
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<string>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<string>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(byte):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], byte?>(
+                        reader.GetName(i),
+                        x => (byte)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<byte>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<byte>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(short):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], short?>(
+                        reader.GetName(i),
+                        x => (short)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<short>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<short>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(ushort):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], ushort?>(
+                        reader.GetName(i),
+                        x => (ushort)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<ushort>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<ushort>(a, b, columnIndex, -1))
+                        }
+                        ));
                     break;
                 case Type t when t == typeof(int):
-                    _resultFlatCollection.Columns.Add(new TextColumn<object[], int>(
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], int?>(
                         reader.GetName(i),
-                        x => (int)x[columnIndex]));
+                        x => (int)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<int>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<int>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(uint):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], uint?>(
+                        reader.GetName(i),
+                        x => (uint)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<uint>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<uint>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(long):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], long?>(
+                        reader.GetName(i),
+                        x => (long)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<long>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<long>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(ulong):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], ulong?>(
+                        reader.GetName(i),
+                        x => (ulong)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<ulong>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<ulong>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(float):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], float>(
+                        reader.GetName(i),
+                        x => (float)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<float>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<float>(a, b, columnIndex, -1))
+                        }
+                        ));
                     break;
                 case Type t when t == typeof(double):
                     _resultFlatCollection.Columns.Add(new TextColumn<object[], double>(
                         reader.GetName(i),
-                        x => (double)x[columnIndex]));
+                        x => (double)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<double>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<double>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(decimal):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], decimal>(
+                        reader.GetName(i),
+                        x => (decimal)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<decimal>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<decimal>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(DateTime):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], decimal>(
+                        reader.GetName(i),
+                        x => (decimal)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<DateTime>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<DateTime>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(TimeSpan):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], decimal>(
+                        reader.GetName(i),
+                        x => (decimal)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<TimeSpan>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<TimeSpan>(a, b, columnIndex, -1))
+                        }
+                        ));
+                    break;
+                case Type t when t == typeof(bool):
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], decimal>(
+                        reader.GetName(i),
+                        x => (decimal)x[columnIndex]
+                        , null, new TextColumnOptions<object[]>()
+                        {
+                            CompareAscending = ((a, b) => ExtraComparer<bool>(a, b, columnIndex, 1)),
+                            CompareDescending = ((a, b) => ExtraComparer<bool>(a, b, columnIndex, -1))
+                        }
+                        ));
                     break;
                 default:
                     _resultFlatCollection.Columns.Add(new TextColumn<object[], string?>(
@@ -721,6 +861,7 @@ public partial class MainWindowViewModel : ViewModelBase
                         x => x[columnIndex].ToString()));
                     break;
             }
+
         }
 
         Dispatcher.UIThread.Invoke(() =>
@@ -730,67 +871,140 @@ public partial class MainWindowViewModel : ViewModelBase
         });
     }
 
-    [GeneratedRegex(@"([^\:]|$)+(?<variable>(\$|\:)[a-zA-Z0-9_]+)", RegexOptions.IgnoreCase, 200)]
+    [GeneratedRegex(@"([^\:]|$)+(?<variable>(\$|\:)[a-zA-Z]+[a-zA-Z0-9_]+)", RegexOptions.IgnoreCase, 200)]
     private static partial Regex _variableRegex();
 
 
-    private HierarchicalTreeDataGridSource<SchemaItem>? _dbSchemaSource;
-    public HierarchicalTreeDataGridSource<SchemaItem> DbSchemaSource
+
+    public static HierarchicalTreeDataGridSource<SchemaItem> FallBackchemaSource = new HierarchicalTreeDataGridSource<SchemaItem>(new ObservableCollection<SchemaItem>()
     {
-        get
+        new SchemaItem() { Name = "Please", Type = "Wait" }
+    })
+    {
+        Columns =
         {
-            if (_dbSchemaSource == null)
+            new HierarchicalExpanderColumn<SchemaItem>(
+                new TextColumn<SchemaItem, string>("Name", x => x.Name),
+                x => x.Children),
+            new TextColumn<SchemaItem, string>("Type", x => x.Type),
+            new TextColumn<SchemaItem, string>("Database", x => x.Database)
+        }
+    };
+
+    [RelayCommand]
+    private async Task RefreshDb()
+    {
+        _dbSchemaSource = await GetSchema();
+        OnPropertyChanged(nameof(DbSchemaSource));
+    }
+
+    public Task<HierarchicalTreeDataGridSource<SchemaItem>> DbSchemaSource => GetSchema();
+
+    private HierarchicalTreeDataGridSource<SchemaItem>? _dbSchemaSource;
+    private async Task<HierarchicalTreeDataGridSource<SchemaItem>> GetSchema()
+    {
+        if (!IsAdvancedMode)
+        {
+            return FallBackchemaSource;
+        }
+        if (_dbSchemaSource == null)
+        {
+            await Task.Run(_netezza.CacheMainDictionary);
+
+            //await _netezza.CacheAllObjects(new TypeInDatabaseEnum[] { TypeInDatabaseEnum.Procedure,
+            //                TypeInDatabaseEnum.View, TypeInDatabaseEnum.ExternalTable, TypeInDatabaseEnum.Synonym
+            //        });
+
+            var databases = _netezza.GetDatabases("").ToList();
+
+            var data = new ObservableCollection<SchemaItem>();
+            foreach (var db in databases)
             {
-                var data = new ObservableCollection<SchemaItem>
+                var currentdb = new SchemaItem() { Name = db, Type = "Database" };
+                data.Add(currentdb);
+
+                var schemas = _netezza.GetSchemas(db, "");
+                foreach (var schema in schemas)
                 {
-                    new SchemaItem 
-                    { 
-                        Name = "PUBLIC", 
-                        Type = "Schema",
-                        Children = 
+                    var curentSchema = new SchemaItem() { Database = db, Name = schema, Type = "Schema" };
+                    currentdb.Children.Add(curentSchema);
+                    var tables = _netezza.GetDbObjects(db, schema, "", TypeInDatabaseEnum.Table);
+                    foreach (var table in tables)
+                    {
+                        var currentTable = new SchemaItem()
                         {
-                            new SchemaItem 
-                            { 
-                                Name = "CUSTOMERS", 
-                                Type = "Table",
-                                Schema = "PUBLIC",
-                                Children =
-                                {
-                                    new SchemaItem { Name = "CUSTOMER_ID", Type = "Column", Schema = "PUBLIC" },
-                                    new SchemaItem { Name = "NAME", Type = "Column", Schema = "PUBLIC" },
-                                    new SchemaItem { Name = "EMAIL", Type = "Column", Schema = "PUBLIC" }
-                                }
-                            },
-                            new SchemaItem 
-                            { 
-                                Name = "ORDERS", 
-                                Type = "Table",
-                                Schema = "PUBLIC",
-                                Children =
-                                {
-                                    new SchemaItem { Name = "ORDER_ID", Type = "Column", Schema = "PUBLIC" },
-                                    new SchemaItem { Name = "CUSTOMER_ID", Type = "Column", Schema = "PUBLIC" },
-                                    new SchemaItem { Name = "ORDER_DATE", Type = "Column", Schema = "PUBLIC" }
-                                }
-                            }
+                            Database = db,
+                            Name = table.Name,
+                            Type = "Table"
+                        };
+                        curentSchema.Children.Add(currentTable);
+                        var columns = _netezza.GetColumns(db, schema, table.Name, "");
+                        foreach (var column in columns)
+                        {
+                            var currentColumn = new SchemaItem()
+                            {
+                                Database = db,
+                                Name = column.Name,
+                                Type = "Column"
+                            };
+                            currentTable.Children.Add(currentColumn);
                         }
                     }
-                };
+                    var views = _netezza.GetDbObjects(db, schema, "", TypeInDatabaseEnum.View);
+                    foreach (var view in views)
+                    {
+                        var currentView = new SchemaItem()
+                        {
+                            Database = db,
+                            Name = view.Name,
+                            Type = "View"
+                        };
+                        curentSchema.Children.Add(currentView);
+                        var columns = _netezza.GetColumns(db, schema, view.Name, "");
+                        foreach (var column in columns)
+                        {
+                            var currentColumn = new SchemaItem()
+                            {
+                                Database = db,
+                                Name = column.Name,
+                                Type = "Column"
+                            };
+                            currentView.Children.Add(currentColumn);
+                        }
+                    }
+                }
+            }
 
-                _dbSchemaSource = new HierarchicalTreeDataGridSource<SchemaItem>(data)
-                {
-                    Columns =
+            _dbSchemaSource = new HierarchicalTreeDataGridSource<SchemaItem>(data)
+            {
+                Columns =
                     {
                         new HierarchicalExpanderColumn<SchemaItem>(
                             new TextColumn<SchemaItem, string>("Name", x => x.Name),
                             x => x.Children),
                         new TextColumn<SchemaItem, string>("Type", x => x.Type),
-                        new TextColumn<SchemaItem, string>("Schema", x => x.Schema)
+                        new TextColumn<SchemaItem, string>("Database", x => x.Database)
                     }
-                };
-            }
-            return _dbSchemaSource;
+            };
         }
+        return _dbSchemaSource;
+    }
+
+    private static int ExtraComparer<T>(object[] x, object[] y, int columnIndex, int sign) where T : IComparable
+    {
+        if (x[columnIndex] is null && (y[columnIndex] is null))
+        {
+            return 0;
+        }
+        if (x[columnIndex] is null)
+        {
+            return -sign;
+        }
+        if (y[columnIndex] is null)
+        {
+            return sign;
+        }
+        return sign * ((T)x[columnIndex]).CompareTo((T)y[columnIndex]);
     }
 
 }
@@ -799,7 +1013,7 @@ public sealed class SchemaItem
 {
     public string Name { get; set; } = "";
     public string Type { get; set; } = "";
-    public string Schema { get; set; } = "";
+    public string Database { get; set; } = "";
     public ObservableCollection<SchemaItem> Children { get; } = new();
 }
 
