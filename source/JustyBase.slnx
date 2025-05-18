@@ -7,7 +7,6 @@
     <Project Path="JustyBase.Common/JustyBase.Common/JustyBase.Common.csproj" />
   </Folder>
   <Folder Name="/LibraryUsageSamples/">
-    <File Path="readme.md" />
     <Project Path="LibraryUsageSamples/JustyBase.Database.Sample/JustyBase.Database.Sample.csproj" />
   </Folder>
   <Folder Name="/Plugins/">

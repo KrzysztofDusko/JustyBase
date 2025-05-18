@@ -7,11 +7,7 @@
              mc:Ignorable="d"
              d:DesignWidth="300" d:DesignHeight="400"
              x:DataType="vm:DbSchemaViewModel">
-  <Grid Focusable="True">
-	  <Grid.RowDefinitions>
-		 <RowDefinition Height="*"/>
-		  <RowDefinition Height="Auto"/>
-	  </Grid.RowDefinitions>
+  <Grid Focusable="True" RowDefinitions="*,Auto">
 	  <TreeDataGrid x:Name="dbSchemaTreeGrid" Grid.Row="0"
 					ShowColumnHeaders="{Binding ShowHeader}"
 					Source="{Binding SchemaSource}"

@@ -82,7 +82,7 @@
 		</Rule>
 
 		<Rule color="Parametr3">
-			\:[\w\d_]+
+			[^\:|$]\:[\w\d_]+
 		</Rule>
 		<Keywords color="ValueTypeKeywords">
 			<Word>boolean</Word>

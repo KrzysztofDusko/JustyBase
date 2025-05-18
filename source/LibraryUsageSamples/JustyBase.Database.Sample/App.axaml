@@ -9,6 +9,8 @@
     <Application.Styles>
         <FluentTheme />
         <!--<SimpleTheme />-->
+		<StyleInclude
+			Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 		<Style Selector="cc|CompletionList">
 			<Setter Property="Template">

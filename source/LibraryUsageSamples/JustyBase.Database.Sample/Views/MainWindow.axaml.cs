@@ -23,6 +23,15 @@ public partial class MainWindow : Window
         AddHandler(DragDrop.DropEvent, Drop);
         sqlCodeEditor.SyntaxHighlighting = AvaloniaEdit.Highlighting.HighlightingManager.Instance.GetDefinition("SQL");
         this.Loaded += MainWindow_LoadedAsync;
+        this.DataContextChanged += MainWindow_DataContextChanged;
+    }
+
+    private void MainWindow_DataContextChanged(object? sender, EventArgs e)
+    {
+        if (this.DataContext is MainWindowViewModel vm)
+        {
+            vm.TextEditor = this.sqlCodeEditor;
+        }
     }
 
     private async void MainWindow_LoadedAsync(object? sender, RoutedEventArgs e)
@@ -148,7 +157,10 @@ public sealed class TestOptions : ISomeEditorOptions
         {"cx", "create"}
     };
 
-    public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION", "BETWEEN"];
+    public List<string> TypoPatternList { get; set; } = ["SELECT", "WHERE", "HAVING", "PARTITION", "BETWEEN",
+    "DISTINCT","GROUP","ORDER","LIMIT","FIRST_VALUE","LAST_VALUE","DENSE_RANK","DROP","CROSS","JOIN","LEFT","DATE_PART","DECODE",
+    "NULLIF","COALESCE"];
+
 
     public Dictionary<string, string> VariablesDictionary { get; set; } = [];
 

@@ -9,89 +9,139 @@
         Height="350" Width="566"
         MinHeight="350" MinWidth="566"
         WindowStartupLocation="CenterScreen"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="PreferSystemChrome"
         ShowInTaskbar="True"
         x:Class="JustyBase.Database.Sample.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="Justy Base Sample"
 	    DragDrop.AllowDrop="True">
-
-	<!--Icon="/Assets/logo.ico"-->
 	<Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-	<Grid Margin="10 32 10 5" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
-		<Grid.KeyBindings>
-			<KeyBinding Command="{Binding ExportAndOpenCommand}" CommandParameter="Grid" Gesture="F5"/>
-			<KeyBinding Command="{Binding ExportAndOpenCommand}" CommandParameter="Grid" Gesture="Ctrl+Return"/>
-		</Grid.KeyBindings>
-			<!--<ComboBox Grid.Row="0" Grid.Column="0"  Margin="1 1 0 0" MaxDropDownHeight="100" 
-				  SelectedItem="{Binding SelectedDatabase}"
-			      ItemsSource="{Binding DatabasesList}" BorderThickness="0" Width="130"
-				  ToolTip.Tip="NetezzaTest/OracleTest environment variables needed"/>-->
-        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="Auto,Auto,*,Auto">
-        <Border Grid.Row="0" Margin="0 1" BorderThickness="1" CornerRadius="10" BorderBrush="Gray" Padding="5" >
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <Button Command="{Binding ExportCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontWeight="Bold">Export</TextBlock>
-                            <TextBlock xml:space="preserve"> and copy to clipboard</TextBlock>
-                        </StackPanel>
-                    </Button>
-                    <Button Margin="0 1" Command="{Binding ExportAndOpenCommand}" HorizontalAlignment="Stretch">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontWeight="Bold">Export</TextBlock>
-                            <TextBlock xml:space="preserve"> and open</TextBlock>
-                        </StackPanel>
-                    </Button>
-					<Button Margin="0 1" Command="{Binding ExportToDesktopCommand}" HorizontalAlignment="Stretch">
-						<StackPanel Orientation="Horizontal">
-							<TextBlock FontWeight="Bold">Export</TextBlock>
-							<TextBlock xml:space="preserve"> to desktop</TextBlock>
-						</StackPanel>
-					</Button>
-                </StackPanel>
-                <StackPanel Spacing="5" Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Margin="10 0" FontWeight="Bold">format</TextBlock>
-                    <RadioButton GroupName="Export Group" Content="xlsb" IsChecked="{Binding XlsbSelected}" />
-                    <RadioButton GroupName="Export Group" Content="xlsx" IsChecked="{Binding XlsxSelected}" />
-                    <RadioButton GroupName="Export Group" Content="csv" IsChecked="{Binding CsvSelected}" />
-                    <ComboBox SelectedIndex="0" MaxDropDownHeight="100"
-                                SelectedItem="{Binding SelectedMode}"
-                                IsVisible="{Binding CsvSelected}"
-                                ItemsSource="{Binding CsvCompresionModes}" />
-                </StackPanel>
-            </StackPanel>
-        </Border>
-        <StackPanel Grid.Row="1" Margin="0 1" Orientation="Horizontal">
-            <Button Command="{Binding ImportCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontWeight="Bold">Import</TextBlock>
-                    <TextBlock xml:space="preserve"> from clipboard</TextBlock>
-                </StackPanel>
-            </Button>
-            <TextBlock VerticalAlignment="Center" Margin="10 0 0 0">file or excel cells range</TextBlock>
-        </StackPanel>
-        <!--<TextBox IsVisible="False" Grid.Row="2" Margin="0 1" Text="{Binding Info}" AcceptsReturn="True" Watermark="info"
-                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />-->
+		<Grid ColumnDefinitions="auto,2,*">
+			<Grid Grid.Column="0" RowDefinitions="*,2,*" IsVisible="{Binding IsAdvancedMode}">
+				<Grid Grid.Row="0" RowDefinitions="*,Auto" >
+					<TreeDataGrid x:Name="dbSchemaTreeGrid"  Grid.Row="0"
+						Source="{Binding DbSchemaSource}"
+						Focusable="True">
+					</TreeDataGrid>
+					<TextBox x:Name="tbSearch" Grid.Row="10"
+						Width="200" Margin="0 0 0 0"
+						ToolTip.Tip="search in schema"
+						Watermark="search in schema"
+						VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+					<!--Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+				</Grid>
+				
+				<GridSplitter Grid.Row="1" ResizeDirection="Rows" Background="Gray" MinHeight="2" />
+				<Panel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				</Panel>
+			</Grid>
+				
+			<GridSplitter Grid.Column="1" Width="2" Background="Transparent" ResizeDirection="Columns" MinWidth="2"/>
 
-			<TabControl Grid.Row="2" Margin="0 1" SelectedIndex="{Binding SelectedTabIndex}">
-				<TabItem Header="Log">
-					<v2:SqlCodeEditor Document="{Binding LogDocument}"
-	                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-				</TabItem>
-				<TabItem Header="sql">
-					<v2:SqlCodeEditor Name="sqlCodeEditor"
-				        Document="{Binding Document}"
-				        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-				</TabItem>
-			</TabControl>
-        <Button Grid.Row="3" Margin="0 1" Command="{Binding CopyFromClipCommand}" HorizontalAlignment="Right">Copy text and exit</Button>
+			<!--<Menu DockPanel.Dock="Top" IsVisible="{Binding IsAdvancedMode}" Height="32" MinWidth="10" HorizontalAlignment="Left" Margin="0,0,0,0" Background="Transparent">
+				<MenuItem Header="_File">
+					<MenuItem Header="_Open" Command="{Binding OpenFileCommand}"/>
+				</MenuItem>
+			</Menu>-->
+			<Grid Grid.Column="2" Margin="0 0 0 0" RowDefinitions="Auto,*" ColumnDefinitions="Auto,*">
+				<Grid.KeyBindings>
+					<KeyBinding Command="{Binding ExportAndOpenCommand}" CommandParameter="Grid" Gesture="F5"/>
+					<KeyBinding Command="{Binding ExportAndOpenCommand}" CommandParameter="Grid" Gesture="Ctrl+Return"/>
+					<KeyBinding Command="{Binding AdvancedModeCommand}" CommandParameter="_" Gesture="Ctrl+Alt+F10"/>
+					<KeyBinding Command="{Binding AdvancedModeCommand}"  CommandParameter="0" Gesture="Escape"/>
+				</Grid.KeyBindings>
+				<Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="Auto,*,Auto">
+					<Border Grid.Row="0" Margin="0 1" BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5" >
+						<StackPanel Orientation="Vertical">
+							<WrapPanel Orientation="Horizontal">
+								<Button Command="{Binding ExportCommand}">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock FontWeight="Bold">Export</TextBlock>
+										<TextBlock xml:space="preserve"> and copy to clipboard</TextBlock>
+									</StackPanel>
+								</Button>
+								<Button Margin="0 1" Command="{Binding ExportAndOpenCommand}" HorizontalAlignment="Stretch">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock FontWeight="Bold">Export</TextBlock>
+										<TextBlock xml:space="preserve"> and open</TextBlock>
+									</StackPanel>
+								</Button>
+								<Button Margin="0 1" Command="{Binding ExportToDesktopCommand}" HorizontalAlignment="Stretch">
+									<StackPanel Orientation="Horizontal">
+										<TextBlock FontWeight="Bold">Export</TextBlock>
+										<TextBlock xml:space="preserve"> to desktop</TextBlock>
+									</StackPanel>
+								</Button>
+								<Button Command="{Binding ImportCommand}" ToolTip.Tip="from clipboard" Content="Import"/>
+								<Button Command="{Binding CancelQueryCommand}" Content="Cancel" IsVisible="{Binding IsAdvancedMode}" />
+							</WrapPanel>
+							<StackPanel Orientation="Horizontal">
+								<RadioButton IsVisible="{Binding IsAdvancedMode}" GroupName="Export Group" Content="screen" IsChecked="{Binding ScreenSelected}" />
+								<RadioButton GroupName="Export Group" Content="xlsb" IsChecked="{Binding XlsbSelected}" />
+								<RadioButton GroupName="Export Group" Content="xlsx" IsChecked="{Binding XlsxSelected}" />
+								<RadioButton GroupName="Export Group" Content="csv" IsChecked="{Binding CsvSelected}" />
+								<ComboBox SelectedIndex="0" MaxDropDownHeight="100"
+											SelectedItem="{Binding SelectedMode}"
+											IsVisible="{Binding CsvSelected}"
+											ItemsSource="{Binding CsvCompresionModes}" />
+
+							</StackPanel>
+						</StackPanel>
+					</Border>
+					<TabControl Grid.Row="1" Margin="0 1" SelectedIndex="{Binding SelectedTabIndex}"
+								BorderThickness="1" CornerRadius="3" BorderBrush="Gray"
+								TabStripPlacement="Bottom">
+						<TabItem Header="Log">
+							<v2:SqlCodeEditor Document="{Binding LogDocument}"
+								FontFamily="Cascadia Code,JetBrains Mono,Consolas,Menlo,Monospace"
+								VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+						</TabItem>
+						<TabItem>
+							<TabItem.Header>
+								<StackPanel Orientation="Horizontal" Margin="0 0 0 0" VerticalAlignment="Center">
+									<StackPanel.ContextMenu>
+										<ContextMenu>
+											<MenuItem Header="Open" Command="{Binding OpenFileCommand}"/>
+										</ContextMenu>
+									</StackPanel.ContextMenu>
+									<TextBlock FontWeight="Bold">SQL</TextBlock>
+									<TextBlock xml:space="preserve"> editor</TextBlock>
+								</StackPanel>
+							</TabItem.Header>
+							<Grid RowDefinitions="2*, 2, *">
+								<v2:SqlCodeEditor Name="sqlCodeEditor" Grid.Row="0" Padding="2"
+									FontFamily="Cascadia Code,JetBrains Mono,Consolas,Menlo,Monospace"
+									Document="{Binding Document}"
+									VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+								<GridSplitter Grid.Row="1" IsVisible="{Binding IsAdvancedMode}" Background="Gray" ResizeDirection="Rows" MinHeight="2"/>
+
+								<Grid Grid.Row="2" RowDefinitions="Auto,*" ColumnDefinitions="Auto">
+
+									<StackPanel Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" 
+												IsVisible="{Binding IsAdvancedMode}" Spacing="5">
+										<TextBox x:Name="tbSearchResults" Width="120" Margin="0 0 0 0"  Text="{Binding SearchResultTxt}"
+											ToolTip.Tip="search in results"	Watermark="search in results"/>
+										<Button Command="{Binding ExportAndOpenFromListCommand}">Open in excel</Button>
+										<TextBlock Text="{Binding RowsCoundText}" VerticalAlignment="Center"/>
+									</StackPanel>
+									<TreeDataGrid Grid.Row="1" Name="tgdResults"  IsVisible="{Binding IsAdvancedMode}"
+											FontFamily="Monospace"
+											Source="{Binding ResultFlatCollection}">
+										<TreeDataGrid.Styles>
+											<Style Selector="TreeDataGrid TreeDataGridRow:nth-last-child(2n)">
+												<Setter Property="Background" Value="#20808080"/>
+											</Style>
+										</TreeDataGrid.Styles>
+									</TreeDataGrid>
+								</Grid>
+							</Grid>
+						</TabItem>
+					</TabControl>
+				</Grid>
+			</Grid>
 		</Grid>
-	</Grid>
+
+	
+
 </Window>
