@@ -15,7 +15,6 @@ using JustyBase.Editor;
 using JustyBase.PluginCommon.Contracts;
 using JustyBase.PluginCommon.Enums;
 using JustyBase.PluginCommons;
-using JustyBase.PluginDatabaseBase.Database;
 using JustyBase.Services;
 using NetezzaDotnetPlugin;
 using SpreadSheetTasks;
@@ -88,13 +87,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     public partial bool ScreenSelected { get; set; }
 
-
     [ObservableProperty]
     public partial int SelectedTabIndex { get; set; } = 1;
-
-
-    public ObservableCollection<LogItemViewModel> LogItems = new ObservableCollection<LogItemViewModel>();
-
 
     public MainWindowViewModel(IAvaloniaSpecificHelpers avaloniaSpecificHelpers, IEncryptionHelper encryptionHelper)
     {
@@ -107,26 +101,30 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
         netezzaTest = _encryptionHelper.Decrypt(netezzaTest);
+        var parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "servername", "" },
+                { "database", "" },
+                { "username", "" },
+                { "password", "" },
+                { "port", "" }
+            };
 
-        var i1 = netezzaTest.IndexOf("servername=", StringComparison.OrdinalIgnoreCase);
-        var i2 = netezzaTest.IndexOf(';', i1);
-        var servername = netezzaTest[(i1 + "servername=".Length)..i2];
+        foreach (var param in parameters.Keys.ToList())
+        {
+            var startIndex = netezzaTest.IndexOf($"{param}=", StringComparison.OrdinalIgnoreCase);
+            if (startIndex >= 0)
+            {
+                startIndex += param.Length + 1; // Skip parameter name and equals sign
+                var endIndex = netezzaTest.IndexOf(';', startIndex);
+                if (endIndex < 0) endIndex = netezzaTest.Length;
+                parameters[param] = netezzaTest[startIndex..endIndex];
+            }
+        }
 
-        i1 = netezzaTest.IndexOf("database=", StringComparison.OrdinalIgnoreCase);
-        i2 = netezzaTest.IndexOf(';', i1);
-        var database = netezzaTest[(i1 + "database=".Length)..i2];
-
-        i1 = netezzaTest.IndexOf("username=", StringComparison.OrdinalIgnoreCase);
-        i2 = netezzaTest.IndexOf(';', i1);
-        var username = netezzaTest[(i1 + "username=".Length)..i2];
-
-        i1 = netezzaTest.IndexOf("password=", StringComparison.OrdinalIgnoreCase);
-        i2 = netezzaTest.IndexOf(';', i1);
-        var password = netezzaTest[(i1 + "password=".Length)..i2];
-
-        i1 = netezzaTest.IndexOf("port=", StringComparison.OrdinalIgnoreCase);
-        i2 = netezzaTest.IndexOf(';', i1);
-        var port = netezzaTest[(i1 + "port=".Length)..i2];
+        var (servername, database, username, password, port) =
+            (parameters["servername"], parameters["database"],
+             parameters["username"], parameters["password"], parameters["port"]);
 
         _netezza = new Netezza(username, password, port, servername, database, 3600)
         {
@@ -151,7 +149,6 @@ public partial class MainWindowViewModel : ViewModelBase
         if (clipboard is null)
         {
             Info = "ERROR - Clipboard is empty\n";
-            LogItems.Add(new LogItemViewModel("ERROR - Clipboard is empty\n"));
             return;
         }
 
@@ -197,13 +194,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
         if (!sql.Contains("FROM", StringComparison.OrdinalIgnoreCase) && !sql.Contains("SELECT", StringComparison.OrdinalIgnoreCase))
         {
-            var clipboard = _avaloniaSpecificHelpers.GetClipboard();
-            if (clipboard is null)
-            {
-                Info += "ERROR - Clipboard is empty\n";
-                return "";
-            }
-            sql = await clipboard.GetTextAsync();
+            Info += "no sql detected\n";
+            return "";
         }
 
         var matches = _variableRegex().Matches(sql);
@@ -214,11 +206,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 .ToList();
             foreach (Match match in matchesList)
             {
+                var variableName = match.Groups["variable"].Value;
                 var vvm = new AskForVariable
                 {
                     DataContext = new AskForVariableViewModel
                     {
-                        VariableName = match.Groups["variable"].Value
+                        VariableName = variableName
                     }
                 };
                 await vvm.ShowDialog(_avaloniaSpecificHelpers.GetMainWindow());
@@ -228,7 +221,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     sql = "";
                     break;
                 }
-                sql = sql.Replace(match.Value, variableValue, StringComparison.OrdinalIgnoreCase);
+                sql = sql.Replace(variableName, variableValue, StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -259,7 +252,6 @@ public partial class MainWindowViewModel : ViewModelBase
             if (clipboard is null)
             {
                 Info = "ERROR - Clipboard is empty\n";
-                LogItems.Add(new LogItemViewModel("ERROR - Clipboard is empty\n"));
                 return;
             }
 
@@ -489,7 +481,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 _dbCommand = cmd;
                 var rdr = cmd.ExecuteReader();
                 
-
                 if (!ScreenSelected)
                 {
                     filePath = Path.Combine(path, StringExtension.RandomSuffix("exported") + ext);
@@ -562,7 +553,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         LogDocument.Text = string.Empty;
         OnPropertyChanged(nameof(LogDocument));
-        LogItems.Clear();
     }
 
     [RelayCommand]
@@ -873,7 +863,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [GeneratedRegex(@"([^\:]|$)+(?<variable>(\$|\:)[a-zA-Z]+[a-zA-Z0-9_]+)", RegexOptions.IgnoreCase, 200)]
     private static partial Regex _variableRegex();
-
 
 
     public static HierarchicalTreeDataGridSource<SchemaItem> FallBackchemaSource = new HierarchicalTreeDataGridSource<SchemaItem>(new ObservableCollection<SchemaItem>()

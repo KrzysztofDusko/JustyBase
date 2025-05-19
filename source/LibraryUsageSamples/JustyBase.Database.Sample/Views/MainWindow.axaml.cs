@@ -22,21 +22,21 @@ public partial class MainWindow : Window
         AddHandler(DragDrop.DragOverEvent, DragOver);
         AddHandler(DragDrop.DropEvent, Drop);
         sqlCodeEditor.SyntaxHighlighting = AvaloniaEdit.Highlighting.HighlightingManager.Instance.GetDefinition("SQL");
-        this.Loaded += MainWindow_LoadedAsync;
-        this.DataContextChanged += MainWindow_DataContextChanged;
+        Loaded += MainWindow_LoadedAsync;
+        DataContextChanged += MainWindow_DataContextChanged;
     }
 
     private void MainWindow_DataContextChanged(object? sender, EventArgs e)
     {
-        if (this.DataContext is MainWindowViewModel vm)
+        if (DataContext is MainWindowViewModel vm)
         {
-            vm.TextEditor = this.sqlCodeEditor;
+            vm.TextEditor = sqlCodeEditor;
         }
     }
 
     private async void MainWindow_LoadedAsync(object? sender, RoutedEventArgs e)
     {
-        var ds = (this.DataContext as MainWindowViewModel).GetTestDatabaseService();
+        var ds = (DataContext as MainWindowViewModel).GetTestDatabaseService();
         if (ds is not null)
         {
             sqlCodeEditor.Initialize(new TestAutocompleteData(ds), new TestOptions());
