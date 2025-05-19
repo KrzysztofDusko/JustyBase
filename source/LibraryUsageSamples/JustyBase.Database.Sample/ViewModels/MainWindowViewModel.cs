@@ -813,9 +813,9 @@ public partial class MainWindowViewModel : ViewModelBase
                         ));
                     break;
                 case Type t when t == typeof(DateTime):
-                    _resultFlatCollection.Columns.Add(new TextColumn<object[], decimal>(
+                    _resultFlatCollection.Columns.Add(new TextColumn<object[], DateTime>(
                         reader.GetName(i),
-                        x => (decimal)x[columnIndex]
+                        x => (DateTime)x[columnIndex]
                         , null, new TextColumnOptions<object[]>()
                         {
                             CompareAscending = ((a, b) => ExtraComparer<DateTime>(a, b, columnIndex, 1)),
